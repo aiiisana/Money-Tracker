@@ -19,32 +19,31 @@ class MyCardRecyclerViewAdapter(
 ) : RecyclerView.Adapter<MyCardRecyclerViewAdapter.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-
-        return ViewHolder(
-            FragmentCardBinding.inflate(
-                LayoutInflater.from(parent.context),
-                parent,
-                false
-            )
-        )
-
+        // Inflate your new layout (item_card.xml)
+        val view = LayoutInflater.from(parent.context)
+            .inflate(R.layout.fragment_card, parent, false)
+        return ViewHolder(view)
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val item = values[position]
-        holder.idView.text = item.id
-        holder.contentView.text = item.content
+        // For demonstration, just binding your placeholder data
+        // But you can adapt it to real card info
+
+        holder.cardTitle.text = "My Credit Card" // or item.content
+        holder.cardNumber.text = "**** **** **** 1234"
+        holder.cardHolder.text = "John Doe"
+        holder.expireDate.text = "Exp: 12/24"
+        holder.cvv.text = "CVV: 123"
     }
 
     override fun getItemCount(): Int = values.size
 
-    inner class ViewHolder(binding: FragmentCardBinding) : RecyclerView.ViewHolder(binding.root) {
-        val idView: TextView = binding.itemNumber
-        val contentView: TextView = binding.content
-
-        override fun toString(): String {
-            return super.toString() + " '" + contentView.text + "'"
-        }
+    inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        val cardTitle: TextView = itemView.findViewById(R.id.tv_card_title)
+        val cardNumber: TextView = itemView.findViewById(R.id.tv_card_number)
+        val cardHolder: TextView = itemView.findViewById(R.id.tv_card_holder)
+        val expireDate: TextView = itemView.findViewById(R.id.tv_expire_date)
+        val cvv: TextView = itemView.findViewById(R.id.tv_cvv)
     }
-
 }
