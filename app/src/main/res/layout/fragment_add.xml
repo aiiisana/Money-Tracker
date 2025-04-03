@@ -522,7 +522,7 @@
                     android:textColor="#FFFFFF"
                     android:textSize="18sp"
                     android:textStyle="bold"
-                    android:background="#2962FF"
+                    android:background="@drawable/cr19b6a66ff"
                     android:layout_margin="15dp"
                     android:padding="15dp"/>
 

@@ -31,7 +31,15 @@ class MyCardRecyclerViewAdapter(
         // But you can adapt it to real card info
 
         holder.cardTitle.text = "My Credit Card" // or item.content
-        holder.cardNumber.text = "**** **** **** 1234"
+        val cardNumber = "**** **** **** 1234"
+        // Split the card number into 4 parts
+        val cardNumberParts = cardNumber.split(" ")
+
+        holder.cardNumberPart1.text = cardNumberParts[0]
+        holder.cardNumberPart2.text = cardNumberParts[1]
+        holder.cardNumberPart3.text = cardNumberParts[2]
+        holder.cardNumberPart4.text = cardNumberParts[3]
+
         holder.cardHolder.text = "John Doe"
         holder.expireDate.text = "Exp: 12/24"
         holder.cvv.text = "CVV: 123"
@@ -41,7 +49,10 @@ class MyCardRecyclerViewAdapter(
 
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val cardTitle: TextView = itemView.findViewById(R.id.tv_card_title)
-        val cardNumber: TextView = itemView.findViewById(R.id.tv_card_number)
+        val cardNumberPart1: TextView = itemView.findViewById(R.id.tv_card_number_part1)
+        val cardNumberPart2: TextView = itemView.findViewById(R.id.tv_card_number_part2)
+        val cardNumberPart3: TextView = itemView.findViewById(R.id.tv_card_number_part3)
+        val cardNumberPart4: TextView = itemView.findViewById(R.id.tv_card_number_part4)
         val cardHolder: TextView = itemView.findViewById(R.id.tv_card_holder)
         val expireDate: TextView = itemView.findViewById(R.id.tv_expire_date)
         val cvv: TextView = itemView.findViewById(R.id.tv_cvv)

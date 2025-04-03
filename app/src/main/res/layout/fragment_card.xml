@@ -47,6 +47,7 @@
         </LinearLayout>
 
         <!-- Card Number Sections -->
+        <!-- Card Number Sections -->
         <LinearLayout
             android:id="@+id/card_number_section"
             android:layout_width="match_parent"
