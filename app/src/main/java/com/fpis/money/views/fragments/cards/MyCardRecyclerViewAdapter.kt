@@ -41,6 +41,7 @@ class MyCardRecyclerViewAdapter(
         holder.cardNumber2.text = "* * * *"
         holder.cardNumber3.text = "* * * *"
         holder.cardNumber4.text = "1234"
+
         holder.cardHolder.text = "John Doe"
         holder.expireDate.text = "**/**"
         holder.cvv.text = "CVV: ***"

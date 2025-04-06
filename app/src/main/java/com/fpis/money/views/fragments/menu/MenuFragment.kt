@@ -1,5 +1,6 @@
 package com.fpis.money.views.fragments.menu
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -9,11 +10,13 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.core.content.ContextCompat
+
 import com.fpis.money.R
+import com.fpis.money.views.activities.login.LoginActivity
+import com.google.firebase.auth.FirebaseAuth
 
 class MenuFragment : Fragment() {
 
-    // Menu item layouts
     private lateinit var privacyPolicyLayout: LinearLayout
     private lateinit var eulaLayout: LinearLayout
     private lateinit var rateUsLayout: LinearLayout
@@ -28,10 +31,16 @@ class MenuFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_menu, container, false)
-    }
+        val view = inflater.inflate(R.layout.fragment_menu, container, false)
 
+        val logOutLayout: LinearLayout = view.findViewById(R.id.log_out_layout)
+        logOutLayout.setOnClickListener {
+            logOut()
+        }
+
+        return view
+    }
+    
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
