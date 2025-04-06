@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import com.fpis.money.R
+import com.fpis.money.utils.database.AppDatabase
 import com.fpis.money.views.fragments.add.AddFragment
 import com.fpis.money.views.fragments.cards.CardFragment
 import com.fpis.money.views.fragments.home.HomeFragment
@@ -24,11 +25,16 @@ class MainActivity : AppCompatActivity() {
     private val fragmentManager = supportFragmentManager
     private var activeFragment: Fragment = fragmentFive
 
+    private lateinit var db: AppDatabase
+
+
     @SuppressLint("MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        db = AppDatabase.getDatabase(this)
 
         setupFragments()
         setupBottomNavigation()

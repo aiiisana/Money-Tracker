@@ -12,7 +12,7 @@ import android.widget.TextView
 import androidx.core.content.ContextCompat
 
 import com.fpis.money.R
-import com.fpis.money.utils.SharedPreferencesManager
+import com.fpis.money.utils.preferences.SharedPreferencesManager
 import com.fpis.money.views.activities.login.LoginActivity
 import com.google.firebase.auth.FirebaseAuth
 

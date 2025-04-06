@@ -10,7 +10,7 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import com.fpis.money.R
-import com.fpis.money.utils.SharedPreferencesManager
+import com.fpis.money.utils.preferences.SharedPreferencesManager
 import com.fpis.money.views.activities.MainActivity
 
 class LoginActivity : AppCompatActivity() {

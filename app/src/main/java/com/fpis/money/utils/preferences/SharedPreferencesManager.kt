@@ -1,4 +1,4 @@
-package com.fpis.money.utils
+package com.fpis.money.utils.preferences
 
 import android.content.Context
 import android.content.SharedPreferences

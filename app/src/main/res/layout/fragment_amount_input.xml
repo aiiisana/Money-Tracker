@@ -10,9 +10,9 @@
         android:id="@+id/tv_amount"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="-₸0"
+        android:text="₸0"
         android:textSize="28sp"
-        android:textColor="@android:color/holo_red_light"
+        android:textColor="@color/white"
         android:gravity="center"
         android:paddingBottom="20dp" />
 

@@ -1,29 +1,25 @@
 package com.fpis.money.views.fragments.records
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
-import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.fpis.money.R
-import com.fpis.money.views.fragments.records.placeholder.PlaceholderContent
 
-/**
- * A fragment representing a list of Items.
- */
 class RecordFragment : Fragment() {
 
-    private var columnCount = 1
+    private lateinit var recordViewModel: RecordViewModel
+    private lateinit var recyclerView: RecyclerView
+    private lateinit var adapter: RecordRecyclerViewAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        arguments?.let {
-            columnCount = it.getInt(ARG_COLUMN_COUNT)
-        }
+        recordViewModel = ViewModelProvider(this).get(RecordViewModel::class.java)
     }
 
     override fun onCreateView(
@@ -32,31 +28,22 @@ class RecordFragment : Fragment() {
     ): View? {
         val view = inflater.inflate(R.layout.fragment_record_list, container, false)
 
-        // Set the adapter
-        if (view is RecyclerView) {
-            with(view) {
-                layoutManager = when {
-                    columnCount <= 1 -> LinearLayoutManager(context)
-                    else -> GridLayoutManager(context, columnCount)
-                }
-                adapter = RecordRecyclerViewAdapter(PlaceholderContent.ITEMS)
+        recyclerView = view.findViewById(R.id.list)
+        recyclerView.layoutManager = LinearLayoutManager(context)
+
+        adapter = RecordRecyclerViewAdapter(emptyList())
+        recyclerView.adapter = adapter
+
+        recordViewModel.allTransactions.observe(viewLifecycleOwner) { transactions ->
+            Log.d("RecordFragment", "Transactions received: ${transactions.size}")
+            if (transactions.isNotEmpty()) {
+                adapter.updateData(transactions)
+            } else {
+                Log.d("RecordFragment", "No transactions found")
             }
         }
+
+
         return view
-    }
-
-    companion object {
-
-        // TODO: Customize parameter argument names
-        const val ARG_COLUMN_COUNT = "column-count"
-
-        // TODO: Customize parameter initialization
-        @JvmStatic
-        fun newInstance(columnCount: Int) =
-            RecordFragment().apply {
-                arguments = Bundle().apply {
-                    putInt(ARG_COLUMN_COUNT, columnCount)
-                }
-            }
     }
 }

@@ -2,23 +2,29 @@ package com.fpis.money.views.fragments.add
 
 import android.app.DatePickerDialog
 import android.app.TimePickerDialog
+import android.content.Context
 import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.InputMethodManager
 import android.widget.*
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.findNavController
 import com.fpis.money.R
 import com.fpis.money.views.fragments.records.RecordFragment
+import java.text.SimpleDateFormat
 import java.util.*
 
 class AddFragment : Fragment() {
 
     private var currentType = "expense"
     private var amount = "0"
+    private lateinit var selectedCategory: String
 
     private lateinit var amountValue: TextView
     private lateinit var tabExpense: TextView
@@ -32,8 +38,7 @@ class AddFragment : Fragment() {
     private lateinit var categoryText: TextView
     private lateinit var categoryIcon: ImageView
     private lateinit var dateTimeValue: TextView
-
-    private var selectedCategory: String = ""
+    private lateinit var notes: EditText
 
     private val iconMap = mapOf(
         "Food & Drink" to R.drawable.ic_food_drink,
@@ -46,10 +51,13 @@ class AddFragment : Fragment() {
         "Add New Category" to R.drawable.ic_add
     )
 
+    private lateinit var addViewModel: AddViewModel
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View {
+    ): View? {
+        addViewModel = ViewModelProvider(this, AddViewModelFactory(requireActivity().application)).get(AddViewModel::class.java)
         return inflater.inflate(R.layout.fragment_add, container, false)
     }
 
@@ -74,6 +82,8 @@ class AddFragment : Fragment() {
         val dateTimeSelectionLayout = view.findViewById<LinearLayout>(R.id.date_time_selection_layout)
         dateTimeValue = view.findViewById(R.id.date_time_value)
 
+        notes = view.findViewById(R.id.notes_input)
+
         updateAmountValue()
         updateTabSelection()
 
@@ -81,12 +91,50 @@ class AddFragment : Fragment() {
         tabExpense.setOnClickListener { setType("expense") }
         tabIncome.setOnClickListener { setType("income") }
         tabTransfer.setOnClickListener { openTransferFragment() }
-        addBtn.setOnClickListener { logNewRecord() }
+        addBtn.setOnClickListener { saveTransaction() }
         categorySelection.setOnClickListener { showCategoryBottomSheet() }
 
         dateTimeSelectionLayout.setOnClickListener {
             showDateTimePicker()
         }
+    }
+
+    private fun saveTransaction() {
+        val inputMethodManager = activity?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        inputMethodManager.hideSoftInputFromWindow(view?.windowToken, 0)
+
+        val dateTimeString = dateTimeValue.text.toString()
+        val formatter = SimpleDateFormat("dd MMM yyyy, hh:mm a", Locale.getDefault()) // Убедись, что локаль правильная
+
+        try {
+            val date: Date? = formatter.parse(dateTimeString)
+            val timestamp: Long = date?.time ?: 0L // Если дата не парсится, будет использоваться 0L
+
+            if (timestamp == 0L) {
+                throw Exception("Invalid date")
+            }
+
+            addViewModel.saveTransaction(currentType, amount, selectedCategory, timestamp, notes.text.toString())
+            resetFields()
+
+            findNavController().navigate(R.id.action_addFragment_to_recordFragment)
+
+        } catch (e: Exception) {
+            Log.e("AddFragment", "Error parsing date: ${e.message}")
+            Toast.makeText(context, "Invalid date format", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    private fun resetFields() {
+        amount = "0"
+        currentType = "expense"
+        selectedCategory = ""
+        amountValue.text = "₸$amount"
+        categoryText.text = "Select Category"
+        categoryIcon.setImageResource(R.drawable.ic_launcher_foreground)
+        dateTimeValue.text = "Select Date & Time"
+        updateAmountValue()
+        updateTabSelection()
     }
 
     private fun showAmountInputBottomSheet() {
@@ -179,37 +227,12 @@ class AddFragment : Fragment() {
         }
 
         val bottomSheet = CategoryBottomSheet(categories) { category ->
-            Log.d("AddFragment", "Category selected: $category")
             selectedCategory = category
             categoryText.text = category
             categoryIcon.setImageResource(iconMap[category] ?: R.drawable.ic_launcher_foreground)
         }
 
         bottomSheet.show(parentFragmentManager, "CategoryBottomSheet")
-    }
-
-    private fun logNewRecord() {
-        Log.d("NewRecord", "Type: $currentType, Amount: $amount, Category: $selectedCategory")
-
-        resetFields()
-
-        val recordFragment = RecordFragment()
-        parentFragmentManager.beginTransaction()
-            .replace(R.id.fragment_container, recordFragment)
-            .addToBackStack(null)
-            .commit()
-    }
-
-    private fun resetFields() {
-        amount = "0"
-        currentType = "expense"
-        selectedCategory = ""
-        amountValue.text = "₸$amount"
-        categoryText.text = "Select Category"
-        categoryIcon.setImageResource(R.drawable.ic_launcher_foreground)
-        dateTimeValue.text = "Select Date & Time"
-        updateAmountValue()
-        updateTabSelection()
     }
 
     private fun showDateTimePicker() {

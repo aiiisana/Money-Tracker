@@ -5,10 +5,10 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.fpis.money.databinding.FragmentRecordBinding
-import com.fpis.money.views.fragments.records.placeholder.PlaceholderContent.PlaceholderItem
+import com.fpis.money.models.Transaction
 
 class RecordRecyclerViewAdapter(
-    private val values: List<PlaceholderItem>
+    private var values: List<Transaction>
 ) : RecyclerView.Adapter<RecordRecyclerViewAdapter.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -20,13 +20,18 @@ class RecordRecyclerViewAdapter(
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val item = values[position]
-        holder.categoryName.text = item.id // или item.categoryName
-        holder.cardHeader.text = item.content // или item.cardType
-        holder.amountValue.text = "-₸25.56" // сюда подставь из item, если есть
-        holder.date.text = "31 Aug 2023" // сюда тоже из item дату, если есть
+        holder.categoryName.text = item.category
+        holder.cardHeader.text = item.subCategory
+        holder.amountValue.text = "-₸${item.amount}"
+        holder.date.text = item.date.toString()
     }
 
     override fun getItemCount(): Int = values.size
+
+    fun updateData(newValues: List<Transaction>) {
+        values = newValues
+        notifyDataSetChanged()
+    }
 
     inner class ViewHolder(binding: FragmentRecordBinding) : RecyclerView.ViewHolder(binding.root) {
         val categoryName: TextView = binding.categoryName

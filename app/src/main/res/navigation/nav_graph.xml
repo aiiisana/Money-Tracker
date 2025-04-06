@@ -20,7 +20,11 @@
         android:id="@+id/addFragment"
         android:name="com.fpis.money.views.fragments.add.AddFragment"
         android:label="Add"
-        tools:layout="@layout/fragment_add"/>
+        tools:layout="@layout/fragment_add">
+        <action
+            android:id="@+id/action_addFragment_to_recordFragment"
+            app:destination="@id/recordFragment" />
+    </fragment>
 
     <fragment
         android:id="@+id/cardFragment"
