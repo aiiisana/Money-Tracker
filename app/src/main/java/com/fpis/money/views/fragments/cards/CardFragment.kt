@@ -2,29 +2,16 @@ package com.fpis.money.views.fragments.cards
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
-import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageButton
 import com.fpis.money.R
 import com.fpis.money.views.fragments.cards.placeholder.PlaceholderContent
 
-/**
- * A fragment representing a list of Items.
- */
 class CardFragment : Fragment() {
-
-    private var columnCount = 1
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-        arguments?.let {
-            columnCount = it.getInt(ARG_COLUMN_COUNT)
-        }
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -32,31 +19,26 @@ class CardFragment : Fragment() {
     ): View? {
         val view = inflater.inflate(R.layout.fragment_card_list, container, false)
 
-        // Set the adapter
-        if (view is RecyclerView) {
-            with(view) {
-                layoutManager = when {
-                    columnCount <= 1 -> LinearLayoutManager(context)
-                    else -> GridLayoutManager(context, columnCount)
-                }
-                adapter = MyCardRecyclerViewAdapter(PlaceholderContent.ITEMS)
-            }
+        // Set up RecyclerView
+        val recyclerView = view.findViewById<RecyclerView>(R.id.list)
+        recyclerView.layoutManager = LinearLayoutManager(context)
+
+        // Create a smaller sample list (just 3 items for testing)
+        val sampleItems = PlaceholderContent.ITEMS.take(3)
+
+        recyclerView.adapter = MyCardRecyclerViewAdapter(sampleItems)
+
+        // Set up add button click listener
+        val addButton = view.findViewById<ImageButton>(R.id.button_add)
+        addButton.setOnClickListener {
+            // Handle add card action
         }
+
         return view
     }
 
     companion object {
-
-        // TODO: Customize parameter argument names
-        const val ARG_COLUMN_COUNT = "column-count"
-
-        // TODO: Customize parameter initialization
         @JvmStatic
-        fun newInstance(columnCount: Int) =
-            CardFragment().apply {
-                arguments = Bundle().apply {
-                    putInt(ARG_COLUMN_COUNT, columnCount)
-                }
-            }
+        fun newInstance() = CardFragment()
     }
 }

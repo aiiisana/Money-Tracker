@@ -9,4 +9,8 @@
     <color name="white">#FFFFFFFF</color>
     <color name="active_color">#6A66FF</color>
     <color name="inactive_color">#FFFFFF</color>
+    <color name="wallet_purple">#6A66FF</color>
+    <color name="credit_card_blue">#4285F4</color>
+    <color name="debit_card_orange">#FF7043</color>
+    <color name="purple_6a66ff">#6A66FF</color>
 </resources>
