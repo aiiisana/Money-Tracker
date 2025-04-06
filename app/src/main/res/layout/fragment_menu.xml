@@ -79,7 +79,7 @@
                                 android:layout_width="22dp"
                                 android:layout_height="22dp"
                                 android:scaleType="fitXY"
-                                android:src="@mipmap/ic_launcher" />
+                                android:src="@drawable/ic_premium" />
                         </LinearLayout>
                     </LinearLayout>
 
@@ -117,7 +117,7 @@
                             android:layout_width="17dp"
                             android:layout_height="17dp"
                             android:scaleType="fitXY"
-                            android:src="@mipmap/ic_launcher" />
+                            android:src="@drawable/ic_premium" />
                     </LinearLayout>
 
                     <TextView
@@ -181,7 +181,7 @@
                                     android:layout_width="17dp"
                                     android:layout_height="17dp"
                                     android:scaleType="fitXY"
-                                    android:src="@mipmap/ic_launcher" />
+                                    android:src="@drawable/ic_privacy_policy" />
                             </LinearLayout>
 
                             <TextView
@@ -200,7 +200,7 @@
                             android:layout_width="24dp"
                             android:layout_height="24dp"
                             android:scaleType="fitXY"
-                            android:src="@mipmap/ic_launcher" />
+                            android:src="@drawable/ic_arrow_right" />
                     </LinearLayout>
 
                     <!-- EULA -->
@@ -237,7 +237,7 @@
                                     android:layout_width="17dp"
                                     android:layout_height="17dp"
                                     android:scaleType="fitXY"
-                                    android:src="@mipmap/ic_launcher" />
+                                    android:src="@drawable/ic_eula" />
                             </LinearLayout>
 
                             <TextView
@@ -256,7 +256,7 @@
                             android:layout_width="24dp"
                             android:layout_height="24dp"
                             android:scaleType="fitXY"
-                            android:src="@mipmap/ic_launcher" />
+                            android:src="@drawable/ic_arrow_right" />
                     </LinearLayout>
 
                     <!-- Rate Us -->
@@ -293,7 +293,8 @@
                                     android:layout_width="17dp"
                                     android:layout_height="17dp"
                                     android:scaleType="fitXY"
-                                    android:src="@mipmap/ic_launcher" />
+                                    android:src="@drawable/ic_rate_us"
+                                    android:fillType="evenOdd" />
                             </LinearLayout>
 
                             <TextView
@@ -302,7 +303,7 @@
                                 android:layout_height="wrap_content"
                                 android:layout_weight="1"
                                 android:text="Rate us"
-                                android:textColor="#6A66FF"
+                                android:textColor="#FFFFFF"
                                 android:textSize="16sp"
                                 android:textStyle="bold" />
                         </LinearLayout>
@@ -312,7 +313,7 @@
                             android:layout_width="24dp"
                             android:layout_height="24dp"
                             android:scaleType="fitXY"
-                            android:src="@mipmap/ic_launcher" />
+                            android:src="@drawable/ic_arrow_right" />
                     </LinearLayout>
 
                     <!-- Support -->
@@ -349,7 +350,7 @@
                                     android:layout_width="17dp"
                                     android:layout_height="17dp"
                                     android:scaleType="fitXY"
-                                    android:src="@mipmap/ic_launcher" />
+                                    android:src="@drawable/ic_support" />
                             </LinearLayout>
 
                             <TextView
@@ -368,7 +369,7 @@
                             android:layout_width="24dp"
                             android:layout_height="24dp"
                             android:scaleType="fitXY"
-                            android:src="@mipmap/ic_launcher" />
+                            android:src="@drawable/ic_arrow_right" />
                     </LinearLayout>
 
                     <!-- Restore Purchases -->
@@ -405,7 +406,7 @@
                                     android:layout_width="17dp"
                                     android:layout_height="17dp"
                                     android:scaleType="fitXY"
-                                    android:src="@mipmap/ic_launcher" />
+                                    android:src="@drawable/ic_restore_purchases" />
                             </LinearLayout>
 
                             <TextView
@@ -424,7 +425,7 @@
                             android:layout_width="24dp"
                             android:layout_height="24dp"
                             android:scaleType="fitXY"
-                            android:src="@mipmap/ic_launcher" />
+                            android:src="@drawable/ic_arrow_right" />
                     </LinearLayout>
 
                     <!-- Log Out -->
@@ -461,7 +462,7 @@
                                     android:layout_width="17dp"
                                     android:layout_height="17dp"
                                     android:scaleType="fitXY"
-                                    android:src="@mipmap/ic_launcher" />
+                                    android:src="@drawable/ic_log_out" />
                             </LinearLayout>
 
                             <TextView
@@ -477,10 +478,10 @@
 
                         <ImageView
                             android:id="@+id/log_out_arrow"
-                            android:layout_width="24dp"
-                            android:layout_height="24dp"
+                            android:layout_width="23dp"
+                            android:layout_height="23dp"
                             android:scaleType="fitXY"
-                            android:src="@mipmap/ic_launcher" />
+                            android:src="@drawable/ic_arrow_right" />
                     </LinearLayout>
                 </LinearLayout>
             </LinearLayout>
