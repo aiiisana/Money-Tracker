@@ -12,6 +12,7 @@ import android.widget.TextView
 import androidx.core.content.ContextCompat
 
 import com.fpis.money.R
+import com.fpis.money.utils.SharedPreferencesManager
 import com.fpis.money.views.activities.login.LoginActivity
 import com.google.firebase.auth.FirebaseAuth
 
@@ -40,7 +41,7 @@ class MenuFragment : Fragment() {
 
         return view
     }
-    
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -219,5 +220,16 @@ class MenuFragment : Fragment() {
                 // Log out logic
             }
         }
+    }
+
+    private fun logOut() {
+        FirebaseAuth.getInstance().signOut()
+
+        val sharedPrefs = SharedPreferencesManager(requireContext())
+        sharedPrefs.setUserLoggedIn(false)
+
+        val intent = Intent(activity, LoginActivity::class.java)
+        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+        startActivity(intent)
     }
 }

@@ -1,20 +1,81 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="wrap_content"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="horizontal">
+    android:orientation="horizontal"
+    android:background="#08090C">
 
-    <TextView
-        android:id="@+id/item_number"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:id="@+id/list_item"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="@dimen/text_margin"
-        android:textAppearance="?attr/textAppearanceListItem" />
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
 
-    <TextView
-        android:id="@+id/content"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_margin="@dimen/text_margin"
-        android:textAppearance="?attr/textAppearanceListItem" />
+        <!-- Левая часть с иконкой и текстом -->
+        <LinearLayout
+            android:id="@+id/naming"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="horizontal">
+            <ImageView
+                android:id="@+id/category_icon"
+                android:layout_width="44dp"
+                android:layout_height="44dp"
+                android:layout_marginEnd="10dp"
+                android:src="@drawable/ic_shopping"
+                android:scaleType="fitXY" />
+            <LinearLayout
+                android:id="@+id/text_container"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingVertical="5dp"
+                android:orientation="vertical">
+                <TextView
+                    android:id="@+id/category_name"
+                    android:textColor="#FFFFFF"
+                    android:textSize="14sp"
+                    android:layout_height="wrap_content"
+                    android:layout_width="match_parent"
+                    android:textStyle="bold"
+                    android:text="Shopping" />
+                <TextView
+                    android:id="@+id/card_header"
+                    android:textColor="#FFFFFF"
+                    android:textSize="12sp"
+                    android:layout_height="wrap_content"
+                    android:layout_width="match_parent"
+                    android:textStyle="bold"
+                    android:text="Credit Card" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <!-- Правая часть с суммой и датой -->
+        <LinearLayout
+            android:id="@+id/details_container"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical">
+            <TextView
+                android:id="@+id/amount_value"
+                android:textColor="#DA3C3C"
+                android:textSize="14sp"
+                android:textStyle="bold"
+                android:text="-₸25.56"
+                android:gravity="right"
+                android:layout_height="wrap_content"
+                android:layout_width="match_parent"/>
+            <TextView
+                android:id="@+id/date"
+                android:textColor="#FFFFFF"
+                android:textSize="12sp"
+                android:textStyle="bold"
+                android:text="31 Aug 2023"
+                android:gravity="right"
+                android:layout_height="wrap_content"
+                android:layout_width="match_parent"/>
+        </LinearLayout>
+    </LinearLayout>
 </LinearLayout>

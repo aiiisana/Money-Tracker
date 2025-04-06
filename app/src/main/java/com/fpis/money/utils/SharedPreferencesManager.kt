@@ -1,11 +1,10 @@
 package com.fpis.money.utils
 
-
 import android.content.Context
 import android.content.SharedPreferences
 
-
 class SharedPreferencesManager(context: Context) {
+
     private val sharedPreferences: SharedPreferences =
         context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE)
     private val editor: SharedPreferences.Editor = sharedPreferences.edit()
@@ -18,6 +17,7 @@ class SharedPreferencesManager(context: Context) {
 
     val login: String?
         get() = sharedPreferences.getString(KEY_LOGIN, null)
+
     val password: String?
         get() = sharedPreferences.getString(KEY_PASSWORD, null)
 
@@ -27,9 +27,24 @@ class SharedPreferencesManager(context: Context) {
         editor.apply()
     }
 
+    fun setUserLoggedIn(loggedIn: Boolean) {
+        editor.putBoolean(KEY_IS_LOGGED_IN, loggedIn)
+        editor.apply()
+    }
+
+    fun isUserLoggedIn(): Boolean {
+        return sharedPreferences.getBoolean(KEY_IS_LOGGED_IN, false)
+    }
+
+    fun clearAll() {
+        editor.clear()
+        editor.apply()
+    }
+
     companion object {
         private const val PREF_NAME = "loginPrefs"
         private const val KEY_LOGIN = "login"
         private const val KEY_PASSWORD = "password"
+        private const val KEY_IS_LOGGED_IN = "is_logged_in"
     }
 }

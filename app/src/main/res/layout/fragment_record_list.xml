@@ -10,4 +10,5 @@
     android:layout_marginRight="16dp"
     app:layoutManager="LinearLayoutManager"
     tools:context=".views.fragments.records.RecordFragment"
-    tools:listitem="@layout/fragment_record" />
+    tools:listitem="@layout/fragment_record"
+    android:background="#08090C"/>

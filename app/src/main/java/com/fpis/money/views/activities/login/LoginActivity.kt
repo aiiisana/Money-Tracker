@@ -10,6 +10,7 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import com.fpis.money.R
+import com.fpis.money.utils.SharedPreferencesManager
 import com.fpis.money.views.activities.MainActivity
 
 class LoginActivity : AppCompatActivity() {
@@ -18,12 +19,20 @@ class LoginActivity : AppCompatActivity() {
     private lateinit var loginPassword: EditText
     private lateinit var loginButton: Button
     private lateinit var signupRedirectText: TextView
+    private lateinit var sharedPrefs: SharedPreferencesManager
 
     private val loginViewModel: LoginViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        sharedPrefs = SharedPreferencesManager(this)
         setContentView(R.layout.activity_login)
+        if (sharedPrefs.isUserLoggedIn()) {
+            val intent = Intent(this, MainActivity::class.java)
+            startActivity(intent)
+            finish()
+            return
+        }
 
         loginUsername = findViewById(R.id.emailInput)
         loginPassword = findViewById(R.id.passwordInput)
@@ -49,10 +58,10 @@ class LoginActivity : AppCompatActivity() {
             when (result) {
                 is LoginResult.Success -> {
                     val user = result.user
-                    // Выводим данные пользователя в логи
                     println("User logged in: Username: ${user.username}, Email: ${user.email}")
 
-                    // Переходим на главный экран
+                    sharedPrefs.setUserLoggedIn(true)
+
                     val intent = Intent(this@LoginActivity, MainActivity::class.java)
                     startActivity(intent)
                     finish()

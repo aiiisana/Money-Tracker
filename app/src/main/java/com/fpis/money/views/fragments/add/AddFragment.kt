@@ -1,15 +1,19 @@
 package com.fpis.money.views.fragments.add
 
+import android.app.DatePickerDialog
+import android.app.TimePickerDialog
 import android.graphics.Color
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
-import android.widget.TextView
+import android.widget.*
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.fpis.money.R
+import com.fpis.money.views.fragments.records.RecordFragment
+import java.util.*
 
 class AddFragment : Fragment() {
 
@@ -20,6 +24,27 @@ class AddFragment : Fragment() {
     private lateinit var tabExpense: TextView
     private lateinit var tabIncome: TextView
     private lateinit var tabTransfer: TextView
+    private lateinit var addBtn: Button
+    private lateinit var indicatorExpense: LinearLayout
+    private lateinit var indicatorIncome: LinearLayout
+    private lateinit var amountLabel: TextView
+    private lateinit var categorySelection: LinearLayout
+    private lateinit var categoryText: TextView
+    private lateinit var categoryIcon: ImageView
+    private lateinit var dateTimeValue: TextView
+
+    private var selectedCategory: String = ""
+
+    private val iconMap = mapOf(
+        "Food & Drink" to R.drawable.ic_food_drink,
+        "Shopping" to R.drawable.ic_shopping,
+        "Health" to R.drawable.health,
+        "Transport" to R.drawable.ic_transport,
+        "Interest" to R.drawable.ic_interest,
+        "Life & Event" to R.drawable.ic_event,
+        "Income" to R.drawable.ic_interest,
+        "Add New Category" to R.drawable.ic_add
+    )
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -31,21 +56,37 @@ class AddFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        // Initialize views
         amountValue = view.findViewById(R.id.amount_value)
-        tabExpense = view.findViewById(R.id.tab_expense)
-        tabIncome = view.findViewById(R.id.tab_income)
-        tabTransfer = view.findViewById(R.id.tab_transfer)
+        tabExpense = view.findViewById(R.id.expense_button_text)
+        tabIncome = view.findViewById(R.id.income_button_text)
+        tabTransfer = view.findViewById(R.id.transfer_button_text)
+        addBtn = view.findViewById(R.id.add_record_button)
 
-        // Set initial state
+        indicatorIncome = view.findViewById(R.id.income_button_indicator)
+        indicatorExpense = view.findViewById(R.id.expense_button_indicator)
+
+        amountLabel = view.findViewById(R.id.amount_label)
+
+        categorySelection = view.findViewById(R.id.category_selection_layout)
+        categoryText = view.findViewById(R.id.category_name)
+        categoryIcon = view.findViewById(R.id.category_icon)
+
+        val dateTimeSelectionLayout = view.findViewById<LinearLayout>(R.id.date_time_selection_layout)
+        dateTimeValue = view.findViewById(R.id.date_time_value)
+
         updateAmountValue()
         updateTabSelection()
 
-        // Set click listeners
         amountValue.setOnClickListener { showAmountInputBottomSheet() }
         tabExpense.setOnClickListener { setType("expense") }
         tabIncome.setOnClickListener { setType("income") }
-        tabTransfer.setOnClickListener { setType("transfer") }
+        tabTransfer.setOnClickListener { openTransferFragment() }
+        addBtn.setOnClickListener { logNewRecord() }
+        categorySelection.setOnClickListener { showCategoryBottomSheet() }
+
+        dateTimeSelectionLayout.setOnClickListener {
+            showDateTimePicker()
+        }
     }
 
     private fun showAmountInputBottomSheet() {
@@ -60,21 +101,23 @@ class AddFragment : Fragment() {
         currentType = type
         updateAmountValue()
         updateTabSelection()
+
+        if (type == "income") {
+            selectedCategory = "Income"
+            categoryText.text = selectedCategory
+            categoryIcon.setImageResource(iconMap[selectedCategory] ?: R.drawable.ic_launcher_foreground)
+        }
     }
 
     private fun updateAmountValue() {
         when (currentType) {
             "expense" -> {
                 amountValue.text = "-₸$amount"
-                amountValue.setTextColor(
-                    ContextCompat.getColor(requireContext(), R.color.red)
-                )
+                amountValue.setTextColor(ContextCompat.getColor(requireContext(), R.color.red))
             }
             "income" -> {
                 amountValue.text = "₸$amount"
-                amountValue.setTextColor(
-                    ContextCompat.getColor(requireContext(), R.color.green)
-                )
+                amountValue.setTextColor(ContextCompat.getColor(requireContext(), R.color.green))
             }
             "transfer" -> {
                 amountValue.text = "₸$amount"
@@ -88,14 +131,14 @@ class AddFragment : Fragment() {
 
         when (currentType) {
             "expense" -> {
-                tabExpense.setTextColor(
-                    ContextCompat.getColor(requireContext(), R.color.red)
-                )
+                amountLabel.text = "Expense"
+                indicatorExpense.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.red))
+                tabExpense.setTextColor(ContextCompat.getColor(requireContext(), R.color.red))
             }
             "income" -> {
-                tabIncome.setTextColor(
-                    ContextCompat.getColor(requireContext(), R.color.green)
-                )
+                amountLabel.text = "Income"
+                indicatorIncome.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.green))
+                tabIncome.setTextColor(ContextCompat.getColor(requireContext(), R.color.green))
             }
             "transfer" -> {
                 tabTransfer.setTextColor(Color.WHITE)
@@ -107,5 +150,111 @@ class AddFragment : Fragment() {
         tabExpense.setTextColor(Color.WHITE)
         tabIncome.setTextColor(Color.WHITE)
         tabTransfer.setTextColor(Color.WHITE)
+        indicatorIncome.setBackgroundColor(Color.parseColor("#0DEAECF0"))
+        indicatorExpense.setBackgroundColor(Color.parseColor("#0DEAECF0"))
+    }
+
+    private fun openTransferFragment() {
+        val transferFragment = TransferFragment()
+
+        parentFragmentManager.beginTransaction()
+            .replace(R.id.fragment_container, transferFragment)
+            .addToBackStack(null)
+            .commit()
+    }
+
+    private fun showCategoryBottomSheet() {
+        val categories = if (currentType == "income") {
+            listOf("Income")
+        } else {
+            listOf(
+                "Food & Drink",
+                "Shopping",
+                "Health",
+                "Transport",
+                "Interest",
+                "Life & Event",
+                "Add New Category"
+            )
+        }
+
+        val bottomSheet = CategoryBottomSheet(categories) { category ->
+            Log.d("AddFragment", "Category selected: $category")
+            selectedCategory = category
+            categoryText.text = category
+            categoryIcon.setImageResource(iconMap[category] ?: R.drawable.ic_launcher_foreground)
+        }
+
+        bottomSheet.show(parentFragmentManager, "CategoryBottomSheet")
+    }
+
+    private fun logNewRecord() {
+        Log.d("NewRecord", "Type: $currentType, Amount: $amount, Category: $selectedCategory")
+
+        resetFields()
+
+        val recordFragment = RecordFragment()
+        parentFragmentManager.beginTransaction()
+            .replace(R.id.fragment_container, recordFragment)
+            .addToBackStack(null)
+            .commit()
+    }
+
+    private fun resetFields() {
+        amount = "0"
+        currentType = "expense"
+        selectedCategory = ""
+        amountValue.text = "₸$amount"
+        categoryText.text = "Select Category"
+        categoryIcon.setImageResource(R.drawable.ic_launcher_foreground)
+        dateTimeValue.text = "Select Date & Time"
+        updateAmountValue()
+        updateTabSelection()
+    }
+
+    private fun showDateTimePicker() {
+        val calendar = Calendar.getInstance()
+        val year = calendar.get(Calendar.YEAR)
+        val month = calendar.get(Calendar.MONTH)
+        val day = calendar.get(Calendar.DAY_OF_MONTH)
+        val hour = calendar.get(Calendar.HOUR_OF_DAY)
+        val minute = calendar.get(Calendar.MINUTE)
+
+        val datePickerDialog = DatePickerDialog(
+            requireContext(),
+            { _, selectedYear, selectedMonth, selectedDay ->
+                val timePickerDialog = TimePickerDialog(
+                    requireContext(),
+                    { _, selectedHour, selectedMinute ->
+                        val selectedDateTime = String.format(
+                            "%02d %s %04d, %02d:%02d %s",
+                            selectedDay,
+                            getMonthName(selectedMonth),
+                            selectedYear,
+                            if (selectedHour > 12) selectedHour - 12 else selectedHour,
+                            selectedMinute,
+                            if (selectedHour >= 12) "PM" else "AM"
+                        )
+                        dateTimeValue.text = selectedDateTime
+                    },
+                    hour,
+                    minute,
+                    false
+                )
+                timePickerDialog.show()
+            },
+            year,
+            month,
+            day
+        )
+        datePickerDialog.show()
+    }
+
+    private fun getMonthName(month: Int): String {
+        val months = arrayOf(
+            "Jan", "Feb", "Mar", "Apr", "May", "Jun",
+            "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
+        )
+        return months[month]
     }
 }

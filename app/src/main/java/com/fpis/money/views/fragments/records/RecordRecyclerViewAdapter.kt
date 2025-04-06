@@ -1,50 +1,37 @@
 package com.fpis.money.views.fragments.records
 
-import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-import com.fpis.money.R
-
-import com.fpis.money.views.fragments.records.placeholder.PlaceholderContent.PlaceholderItem
+import androidx.recyclerview.widget.RecyclerView
 import com.fpis.money.databinding.FragmentRecordBinding
+import com.fpis.money.views.fragments.records.placeholder.PlaceholderContent.PlaceholderItem
 
-/**
- * [RecyclerView.Adapter] that can display a [PlaceholderItem].
- * TODO: Replace the implementation with code for your data type.
- */
 class RecordRecyclerViewAdapter(
     private val values: List<PlaceholderItem>
 ) : RecyclerView.Adapter<RecordRecyclerViewAdapter.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-
-        return ViewHolder(
-            FragmentRecordBinding.inflate(
-                LayoutInflater.from(parent.context),
-                parent,
-                false
-            )
+        val binding = FragmentRecordBinding.inflate(
+            LayoutInflater.from(parent.context), parent, false
         )
-
+        return ViewHolder(binding)
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val item = values[position]
-        holder.idView.text = item.id
-        holder.contentView.text = item.content
+        holder.categoryName.text = item.id // или item.categoryName
+        holder.cardHeader.text = item.content // или item.cardType
+        holder.amountValue.text = "-₸25.56" // сюда подставь из item, если есть
+        holder.date.text = "31 Aug 2023" // сюда тоже из item дату, если есть
     }
 
     override fun getItemCount(): Int = values.size
 
     inner class ViewHolder(binding: FragmentRecordBinding) : RecyclerView.ViewHolder(binding.root) {
-        val idView: TextView = binding.itemNumber
-        val contentView: TextView = binding.content
-
-        override fun toString(): String {
-            return super.toString() + " '" + contentView.text + "'"
-        }
+        val categoryName: TextView = binding.categoryName
+        val cardHeader: TextView = binding.cardHeader
+        val amountValue: TextView = binding.amountValue
+        val date: TextView = binding.date
     }
-
 }
