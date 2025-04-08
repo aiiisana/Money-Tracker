@@ -30,7 +30,18 @@
         android:id="@+id/cardFragment"
         android:name="com.fpis.money.views.fragments.cards.CardFragment"
         android:label="Card"
-        tools:layout="@layout/fragment_card_list"/>
+        tools:layout="@layout/fragment_card_list">
+        <action
+            android:id="@+id/action_cardFragment_to_addCardFragment"
+            app:destination="@id/addCardFragment" />
+    </fragment>
+
+
+    <fragment
+        android:id="@+id/addCardFragment"
+    android:name="com.fpis.money.views.fragments.cards.AddCardFragment"
+    android:label="Add Card"
+    tools:layout="@layout/fragment_add_card" />
 
     <fragment
         android:id="@+id/menuFragment"

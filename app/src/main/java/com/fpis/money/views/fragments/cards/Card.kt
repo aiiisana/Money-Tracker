@@ -1,4 +1,5 @@
-package com.fpis.money.models
+package com.fpis.money.views.fragments.cards
+
 
 data class Card(
     var id: String = "",
