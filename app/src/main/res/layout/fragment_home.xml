@@ -36,7 +36,7 @@
                     android:layout_width="28dp"
                     android:layout_height="28dp"
                     android:layout_marginEnd="93dp"
-                    android:src="@mipmap/ic_launcher"
+                    android:src="@drawable/ic_home_arrow"
                     android:scaleType="fitXY"
                     />
                 <LinearLayout
@@ -47,7 +47,7 @@
                     android:gravity="center_vertical"
                     android:background="@drawable/cr6b121418"
                     android:paddingVertical="5dp"
-                    android:layout_marginEnd="94dp"
+                    android:layout_marginEnd="120dp"
                     android:clickable="true"
                     android:focusable="true"
                     android:orientation="horizontal">
@@ -68,7 +68,7 @@
                         android:layout_width="18dp"
                         android:layout_height="18dp"
                         android:layout_marginEnd="9dp"
-                        android:src="@mipmap/ic_launcher"
+                        android:src="@drawable/ic_home_ar_down2"
                         android:scaleType="fitXY"
                         />
                 </LinearLayout>
@@ -76,7 +76,8 @@
                     android:id="@+id/reuvnntrs0pn"
                     android:layout_width="28dp"
                     android:layout_height="28dp"
-                    android:src="@mipmap/ic_launcher"
+                    android:src="@drawable/ic_home_arrow"
+                    android:scaleX="-1"
                     android:scaleType="fitXY"
                     />
             </LinearLayout>
@@ -122,7 +123,7 @@
                     android:id="@+id/r2tggiv586wg"
                     android:layout_width="24dp"
                     android:layout_height="24dp"
-                    android:src="@mipmap/ic_launcher"
+                    android:src="@drawable/ic_home_ar_down"
                     android:scaleType="fitXY"
                     />
             </LinearLayout>
@@ -137,200 +138,212 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:orientation="vertical">
+
                     <LinearLayout
                         android:id="@+id/r7qkhfwpji9m"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:background="@drawable/cr12b121418"
+                        android:orientation="vertical"
                         android:paddingTop="15dp"
-                        android:paddingBottom="25dp"
-                        android:orientation="vertical">
+                        android:paddingBottom="25dp">
+
                         <LinearLayout
                             android:id="@+id/r87ytudrz9uf"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:gravity="center_vertical"
-                            android:layout_marginBottom="15dp"
                             android:layout_marginHorizontal="20dp"
+                            android:layout_marginBottom="15dp"
+                            android:gravity="center_vertical"
                             android:orientation="horizontal">
+
                             <TextView
                                 android:id="@+id/r5wz0dqi21n7"
-                                android:textColor="#FFFFFF"
-                                android:textSize="18sp"
-                                android:textStyle="bold"
-                                android:layout_height="wrap_content"
                                 android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
                                 android:layout_weight="1"
                                 android:text="Budget"
-                                />
+                                android:textColor="#FFFFFF"
+                                android:textSize="18sp"
+                                android:textStyle="bold" />
+
                             <LinearLayout
                                 android:id="@+id/rf3vvw5b4tjd"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:background="@drawable/cr10b6a66ff1a"
-                                android:padding="10dp"
                                 android:clickable="true"
                                 android:focusable="true"
-                                android:orientation="vertical">
+                                android:orientation="vertical"
+                                android:padding="10dp">
+
                                 <TextView
                                     android:id="@+id/r4ehuqm15o2p"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="All Budgets"
                                     android:textColor="#6A66FF"
                                     android:textSize="12sp"
-                                    android:textStyle="bold"
-                                    android:layout_height="wrap_content"
-                                    android:layout_width="wrap_content"
-                                    android:text="All Budgets"
-                                    />
+                                    android:textStyle="bold" />
                             </LinearLayout>
                         </LinearLayout>
+
                         <LinearLayout
                             android:id="@+id/rwf83xjkz9c"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginHorizontal="20dp"
                             android:orientation="vertical">
+
                             <LinearLayout
                                 android:id="@+id/rv4q7tbax4th"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:layout_marginBottom="25dp"
                                 android:orientation="vertical">
+
                                 <LinearLayout
                                     android:id="@+id/r93ezhn389x8"
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
                                     android:layout_marginBottom="15dp"
                                     android:orientation="vertical">
+
                                     <TextView
                                         android:id="@+id/r2gswwyrlq43"
-                                        android:textColor="#FFFFFF"
-                                        android:textStyle="bold"
-                                        android:layout_marginBottom="5dp"
-                                        android:layout_height="wrap_content"
                                         android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginBottom="5dp"
                                         android:layout_weight="1"
                                         android:text="₸483,000.00 left"
-                                        />
+                                        android:textColor="#FFFFFF"
+                                        android:textSize="28sp"
+                                        android:textStyle="bold" />
+
                                     <TextView
                                         android:id="@+id/rg1ohu7vm6na"
-                                        android:textColor="#FFFFFF"
-                                        android:textSize="12sp"
-                                        android:textStyle="bold"
-                                        android:layout_height="wrap_content"
                                         android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
                                         android:layout_weight="1"
                                         android:text="-₸277,000 spent this month"
-                                        />
+                                        android:textColor="#9E9E9E"
+                                        android:textSize="14sp"
+                                        android:textStyle="bold" />
                                 </LinearLayout>
+
                                 <LinearLayout
                                     android:id="@+id/rxveltjdzj6"
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
                                     android:background="@drawable/cr19b6a66ff1a"
                                     android:orientation="vertical">
+
                                     <LinearLayout
                                         android:id="@+id/rmrg11ps7xhr"
                                         android:layout_width="176dp"
                                         android:layout_height="6dp"
                                         android:background="@drawable/cr19b6a66ff"
-                                        android:orientation="vertical">
-                                    </LinearLayout>
+                                        android:orientation="vertical"></LinearLayout>
                                 </LinearLayout>
                             </LinearLayout>
+
                             <LinearLayout
                                 android:id="@+id/roq88o6w44mc"
                                 android:layout_width="match_parent"
                                 android:layout_height="1dp"
-                                android:background="#0DFFFFFF"
                                 android:layout_marginBottom="25dp"
-                                android:orientation="vertical">
-                            </LinearLayout>
+                                android:background="#0DFFFFFF"
+                                android:orientation="vertical"></LinearLayout>
+
                             <LinearLayout
                                 android:id="@+id/r15ic2vybbrq"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:gravity="center_vertical"
-                                android:paddingHorizontal="15dp"
-                                android:orientation="horizontal">
+                                android:orientation="horizontal"
+                                android:paddingHorizontal="15dp">
+
                                 <com.google.android.material.imageview.ShapeableImageView
                                     android:id="@+id/rxim720knfd"
-                                    app:shapeAppearanceOverlay="@style/cr35"
                                     android:layout_width="24dp"
                                     android:layout_height="24dp"
                                     android:layout_marginEnd="10dp"
-                                    android:src="@mipmap/ic_launcher"
                                     android:scaleType="fitXY"
-                                    />
+                                    android:src="@drawable/ic_circular_progress"
+                                    app:shapeAppearanceOverlay="@style/cr35" />
+
                                 <LinearLayout
                                     android:id="@+id/rz6h649ncek"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:layout_marginEnd="25dp"
                                     android:orientation="vertical">
+
                                     <TextView
                                         android:id="@+id/rucdlzmkrjlp"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginBottom="2dp"
+                                        android:text="Entertainment"
                                         android:textColor="#FFFFFF"
                                         android:textSize="12sp"
-                                        android:textStyle="bold"
-                                        android:layout_marginBottom="2dp"
-                                        android:layout_height="wrap_content"
-                                        android:layout_width="wrap_content"
-                                        android:text="Entertainment"
-                                        />
+                                        android:textStyle="bold" />
+
                                     <TextView
                                         android:id="@+id/rpenb33b77xg"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:text="₸156,500 spent"
                                         android:textColor="#66FFA3"
                                         android:textSize="12sp"
-                                        android:textStyle="bold"
-                                        android:layout_height="wrap_content"
-                                        android:layout_width="wrap_content"
-                                        android:text="₸156,500 spent"
-                                        />
+                                        android:textStyle="bold" />
                                 </LinearLayout>
+
                                 <LinearLayout
                                     android:id="@+id/rtrik66ylvzp"
                                     android:layout_width="0dp"
                                     android:layout_height="wrap_content"
                                     android:layout_weight="1"
-                                    android:gravity="center_vertical"
                                     android:background="@drawable/cr35bff94661a"
-                                    android:paddingVertical="10dp"
-                                    android:orientation="horizontal">
+                                    android:gravity="center_vertical"
+                                    android:orientation="horizontal"
+                                    android:paddingVertical="10dp">
+
                                     <com.google.android.material.imageview.ShapeableImageView
                                         android:id="@+id/rzq2sb82qscq"
-                                        app:shapeAppearanceOverlay="@style/cr35"
                                         android:layout_width="24dp"
                                         android:layout_height="24dp"
                                         android:layout_marginStart="15dp"
                                         android:layout_marginEnd="10dp"
-                                        android:src="@mipmap/ic_launcher"
                                         android:scaleType="fitXY"
-                                        />
+                                        android:src="@drawable/ic_circular_progress"
+                                        app:shapeAppearanceOverlay="@style/cr35" />
+
                                     <LinearLayout
                                         android:id="@+id/ro744g33gdwd"
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
                                         android:layout_marginEnd="15dp"
                                         android:orientation="vertical">
+
                                         <TextView
                                             android:id="@+id/rb1jkxtvtiq7"
+                                            android:layout_width="wrap_content"
+                                            android:layout_height="wrap_content"
+                                            android:layout_marginBottom="2dp"
+                                            android:text="Food"
                                             android:textColor="#FFFFFF"
                                             android:textSize="12sp"
-                                            android:textStyle="bold"
-                                            android:layout_marginBottom="2dp"
-                                            android:layout_height="wrap_content"
-                                            android:layout_width="wrap_content"
-                                            android:text="Food"
-                                            />
+                                            android:textStyle="bold" />
+
                                         <TextView
                                             android:id="@+id/rn6ubd8927c"
+                                            android:layout_width="wrap_content"
+                                            android:layout_height="wrap_content"
+                                            android:text="₸80,000 spent"
                                             android:textColor="#FF9366"
                                             android:textSize="12sp"
-                                            android:textStyle="bold"
-                                            android:layout_height="wrap_content"
-                                            android:layout_width="wrap_content"
-                                            android:text="₸80,000 spent"
-                                            />
+                                            android:textStyle="bold" />
                                     </LinearLayout>
                                 </LinearLayout>
                             </LinearLayout>

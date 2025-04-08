@@ -8,8 +8,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageButton
+import androidx.navigation.fragment.findNavController
 import com.fpis.money.R
 import com.fpis.money.views.fragments.cards.placeholder.PlaceholderContent
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 
 class CardFragment : Fragment() {
 
@@ -28,11 +30,6 @@ class CardFragment : Fragment() {
 
         recyclerView.adapter = MyCardRecyclerViewAdapter(sampleItems)
 
-        // Set up add button click listener
-        val addButton = view.findViewById<ImageButton>(R.id.button_add)
-        addButton.setOnClickListener {
-            // Handle add card action
-        }
 
         return view
     }
