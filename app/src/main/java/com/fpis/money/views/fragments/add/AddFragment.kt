@@ -104,11 +104,11 @@ class AddFragment : Fragment() {
         inputMethodManager.hideSoftInputFromWindow(view?.windowToken, 0)
 
         val dateTimeString = dateTimeValue.text.toString()
-        val formatter = SimpleDateFormat("dd MMM yyyy, hh:mm a", Locale.getDefault()) // Убедись, что локаль правильная
+        val formatter = SimpleDateFormat("dd MMM yyyy, hh:mm a", Locale.getDefault())
 
         try {
             val date: Date? = formatter.parse(dateTimeString)
-            val timestamp: Long = date?.time ?: 0L // Если дата не парсится, будет использоваться 0L
+            val timestamp: Long = date?.time ?: 0L
 
             if (timestamp == 0L) {
                 throw Exception("Invalid date")
@@ -117,11 +117,11 @@ class AddFragment : Fragment() {
             addViewModel.saveTransaction(currentType, amount, selectedCategory, timestamp, notes.text.toString())
             resetFields()
 
-            findNavController().navigate(R.id.action_addFragment_to_recordFragment)
+            val navController = findNavController()
+            navController.navigate(R.id.action_addFragment_to_recordFragment)
 
         } catch (e: Exception) {
             Log.e("AddFragment", "Error parsing date: ${e.message}")
-            Toast.makeText(context, "Invalid date format", Toast.LENGTH_SHORT).show()
         }
     }
 
@@ -204,11 +204,9 @@ class AddFragment : Fragment() {
 
     private fun openTransferFragment() {
         val transferFragment = TransferFragment()
-
         parentFragmentManager.beginTransaction()
             .replace(R.id.fragment_container, transferFragment)
-            .addToBackStack(null)
-            .commit()
+            .commit()  // без addToBackStack
     }
 
     private fun showCategoryBottomSheet() {

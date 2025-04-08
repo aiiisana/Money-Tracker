@@ -10,7 +10,6 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.core.content.ContextCompat
-
 import com.fpis.money.R
 import com.fpis.money.utils.preferences.SharedPreferencesManager
 import com.fpis.money.views.activities.login.LoginActivity
@@ -25,21 +24,13 @@ class MenuFragment : Fragment() {
     private lateinit var restorePurchasesLayout: LinearLayout
     private lateinit var logOutLayout: LinearLayout
 
-    // Currently selected menu item
     private var selectedMenuItem: LinearLayout? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val view = inflater.inflate(R.layout.fragment_menu, container, false)
-
-        val logOutLayout: LinearLayout = view.findViewById(R.id.log_out_layout)
-        logOutLayout.setOnClickListener {
-            logOut()
-        }
-
-        return view
+        return inflater.inflate(R.layout.fragment_menu, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -79,7 +70,6 @@ class MenuFragment : Fragment() {
     }
 
     private fun resetAllMenuItems() {
-        // Reset all menu items to default state
         val menuItems = listOf(
             privacyPolicyLayout,
             eulaLayout,
@@ -89,61 +79,37 @@ class MenuFragment : Fragment() {
             logOutLayout
         )
 
-        menuItems.forEach { menuItem ->
-            resetMenuItemColors(menuItem)
-        }
-
-        // Clear selected menu item
+        menuItems.forEach { resetMenuItemColors(it) }
         selectedMenuItem = null
     }
 
     private fun selectMenuItem(menuItem: LinearLayout) {
-        // Reset previous selection if any
         selectedMenuItem?.let { resetMenuItemColors(it) }
-
-        // Set new selection
         setMenuItemColors(menuItem, true)
         selectedMenuItem = menuItem
     }
 
     private fun resetMenuItemColors(menuItem: LinearLayout) {
-        // Get references to the views inside the menu item
         val iconContainer = menuItem.findViewById<LinearLayout>(getIconContainerId(menuItem))
         val icon = menuItem.findViewById<ImageView>(getIconId(menuItem))
         val text = menuItem.findViewById<TextView>(getTextId(menuItem))
         val arrow = menuItem.findViewById<ImageView>(getArrowId(menuItem))
 
-        // Reset background of icon container - keep it transparent
         iconContainer.setBackgroundResource(R.drawable.cr9bffffff0d)
-
-        // Reset text color
         text.setTextColor(ContextCompat.getColor(requireContext(), android.R.color.white))
-
-        // Reset icon tint
         icon.setColorFilter(ContextCompat.getColor(requireContext(), android.R.color.white))
-
-        // Reset arrow tint
         arrow.setColorFilter(ContextCompat.getColor(requireContext(), android.R.color.white))
     }
 
     private fun setMenuItemColors(menuItem: LinearLayout, isSelected: Boolean) {
-        // Get references to the views inside the menu item
         val iconContainer = menuItem.findViewById<LinearLayout>(getIconContainerId(menuItem))
         val icon = menuItem.findViewById<ImageView>(getIconId(menuItem))
         val text = menuItem.findViewById<TextView>(getTextId(menuItem))
         val arrow = menuItem.findViewById<ImageView>(getArrowId(menuItem))
 
         if (isSelected) {
-            // Set purple color for all elements without changing the background
-            // The background should remain dark/transparent as in the image
-
-            // Set purple text color - using exact #6A66FF color
             text.setTextColor(ContextCompat.getColor(requireContext(), R.color.purple_6a66ff))
-
-            // Set purple icon tint
             icon.setColorFilter(ContextCompat.getColor(requireContext(), R.color.purple_6a66ff))
-
-            // Set purple arrow tint
             arrow.setColorFilter(ContextCompat.getColor(requireContext(), R.color.purple_6a66ff))
         } else {
             resetMenuItemColors(menuItem)
@@ -199,25 +165,24 @@ class MenuFragment : Fragment() {
     }
 
     private fun handleMenuItemAction(menuItem: LinearLayout) {
-        // Implement actions for each menu item
         when (menuItem.id) {
             R.id.privacy_policy_layout -> {
-                // Navigate to Privacy Policy screen or show dialog
+                // Навигация к Privacy Policy
             }
             R.id.eula_layout -> {
-                // Navigate to EULA screen or show dialog
+                // Навигация к EULA
             }
             R.id.rate_us_layout -> {
-                // Open app store for rating
+                // Навигация на Play Market
             }
             R.id.support_layout -> {
-                // Navigate to Support screen or open email client
+                // Открытие почты
             }
             R.id.restore_purchases_layout -> {
-                // Restore purchases logic
+                // Логика восстановления покупок
             }
             R.id.log_out_layout -> {
-                // Log out logic
+                logOut()
             }
         }
     }

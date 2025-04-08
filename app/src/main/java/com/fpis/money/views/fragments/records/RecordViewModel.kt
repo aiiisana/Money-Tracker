@@ -14,4 +14,10 @@ class RecordViewModel(application: Application) : AndroidViewModel(application) 
     private val transactionDao = AppDatabase.getDatabase(application).transactionDao()
 
     val allTransactions: LiveData<List<Transaction>> = transactionDao.getAllTransactions()
+
+    fun deleteTransaction(transaction: Transaction) {
+        viewModelScope.launch(Dispatchers.IO) {
+            transactionDao.delete(transaction)
+        }
+    }
 }

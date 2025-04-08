@@ -59,6 +59,6 @@ class AmountInputBottomSheet(private val onAmountEntered: (String) -> Unit) :
     }
 
     private fun updateAmount() {
-        amountTextView.text = "-₸$amount"
+        amountTextView.text = "₸$amount"
     }
 }

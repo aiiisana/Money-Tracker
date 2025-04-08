@@ -186,15 +186,14 @@
 
                         <TextView
                             android:id="@+id/amount_value"
-                            android:textColor="#DA3C3C"
-                            android:textSize="46sp"
-                            android:textStyle="bold"
-                            android:layout_height="wrap_content"
                             android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:gravity="center"
-                            android:text="-₸1450"
-                            />
+                            android:text="-₸0"
+                            android:textColor="#DA3C3C"
+                            android:textSize="46sp"
+                            android:textStyle="bold" />
                     </LinearLayout>
                 </LinearLayout>
 
@@ -308,7 +307,7 @@
                             android:layout_height="wrap_content"
                             android:layout_width="match_parent"
                             android:layout_weight="1"
-                            android:text="Transport"
+                            android:text="Select Category"
                             />
                     </LinearLayout>
 
@@ -373,20 +372,20 @@
                             android:layout_marginBottom="8dp">
 
                             <!-- Taxi -->
-                            <LinearLayout
-                                android:id="@+id/taxi_subcategory"
-                                style="@style/SubcategoryItem"
-                                android:background="@drawable/bg_subcategory"
-                                tools:ignore="TouchTargetSizeCheck">
-                                <com.google.android.material.imageview.ShapeableImageView
-                                    android:id="@+id/taxi_icon"
-                                    style="@style/SubcategoryIcon"
-                                    android:src="@drawable/ic_car"/>
-                                <TextView
-                                    android:id="@+id/taxi_label"
-                                    style="@style/SubcategoryText"
-                                    android:text="Taxi"/>
-                            </LinearLayout>
+<!--                            <LinearLayout-->
+<!--                                android:id="@+id/taxi_subcategory"-->
+<!--                                style="@style/SubcategoryItem"-->
+<!--                                android:background="@drawable/bg_subcategory"-->
+<!--                                tools:ignore="TouchTargetSizeCheck">-->
+<!--                                <com.google.android.material.imageview.ShapeableImageView-->
+<!--                                    android:id="@+id/taxi_icon"-->
+<!--                                    style="@style/SubcategoryIcon"-->
+<!--                                    android:src="@drawable/ic_car"/>-->
+<!--                                <TextView-->
+<!--                                    android:id="@+id/taxi_label"-->
+<!--                                    style="@style/SubcategoryText"-->
+<!--                                    android:text="Taxi"/>-->
+<!--                            </LinearLayout>-->
 
                             <!-- Rent -->
                             <LinearLayout
@@ -407,20 +406,20 @@
                             </LinearLayout>
 
                             <!-- Plane -->
-                            <LinearLayout
-                                android:id="@+id/plane_subcategory"
-                                style="@style/SubcategoryItem"
-                                android:background="@drawable/bg_subcategory"
-                                tools:ignore="TouchTargetSizeCheck">
-                                <com.google.android.material.imageview.ShapeableImageView
-                                    android:id="@+id/plane_icon"
-                                    style="@style/SubcategoryIcon"
-                                    android:src="@drawable/ic_car"/>
-                                <TextView
-                                    android:id="@+id/plane_label"
-                                    style="@style/SubcategoryText"
-                                    android:text="Plane"/>
-                            </LinearLayout>
+<!--                            <LinearLayout-->
+<!--                                android:id="@+id/plane_subcategory"-->
+<!--                                style="@style/SubcategoryItem"-->
+<!--                                android:background="@drawable/bg_subcategory"-->
+<!--                                tools:ignore="TouchTargetSizeCheck">-->
+<!--                                <com.google.android.material.imageview.ShapeableImageView-->
+<!--                                    android:id="@+id/plane_icon"-->
+<!--                                    style="@style/SubcategoryIcon"-->
+<!--                                    android:src="@drawable/ic_car"/>-->
+<!--                                <TextView-->
+<!--                                    android:id="@+id/plane_label"-->
+<!--                                    style="@style/SubcategoryText"-->
+<!--                                    android:text="Plane"/>-->
+<!--                            </LinearLayout>-->
 
                             <!-- Add -->
                             <LinearLayout
@@ -486,7 +485,7 @@
                             android:layout_height="wrap_content"
                             android:layout_width="match_parent"
                             android:layout_weight="1"
-                            android:text="23 Aug 2023, 09:34 PM"
+                            android:text="Select Date &amp; Time"
                             />
                     </LinearLayout>
 
@@ -542,7 +541,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:background="@null"
-                        android:hint="From airport to city center"
+                        android:hint="Type your notes"
                         android:padding="10dp"
                         android:textColor="#FFFFFF"
                         android:textColorHint="#80FFFFFF"
