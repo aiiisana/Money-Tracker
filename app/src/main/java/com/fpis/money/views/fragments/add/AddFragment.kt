@@ -122,6 +122,7 @@ class AddFragment : Fragment() {
 
         } catch (e: Exception) {
             Log.e("AddFragment", "Error parsing date: ${e.message}")
+            Toast.makeText(context, "Invalid format", Toast.LENGTH_LONG).show()
         }
     }
 
