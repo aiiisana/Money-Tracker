@@ -79,6 +79,7 @@ dependencies {
     implementation("com.google.firebase:firebase-firestore-ktx")
     implementation("com.google.firebase:firebase-database-ktx")
     implementation("com.google.firebase:firebase-analytics-ktx")
+    implementation("com.larswerkman:HoloColorPicker:1.5")
 
     val room_version = "2.6.1"
 

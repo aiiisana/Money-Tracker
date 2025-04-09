@@ -1,28 +1,30 @@
 package com.fpis.money.views.fragments.cards
 
 import android.annotation.SuppressLint
+import android.app.AlertDialog
+import android.app.Dialog
 import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageButton
+import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.cardview.widget.CardView
-import androidx.navigation.fragment.findNavController
 import com.fpis.money.R
-
+import com.fpis.money.views.fragments.cards.showCustomToast
 import com.fpis.money.views.fragments.cards.placeholder.PlaceholderContent.PlaceholderItem
 
 class MyCardRecyclerViewAdapter(
-    private val values: List<PlaceholderItem>
+    private val values: List<PlaceholderItem>,
+    private val onEditCard: (Int) -> Unit
 ) : RecyclerView.Adapter<MyCardRecyclerViewAdapter.ViewHolder>() {
 
     // Map to store visibility state for each card position
     private val visibilityMap = mutableMapOf<Int, Boolean>()
+    private var cardsList = values.toMutableList()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        // Use the new item_card.xml layout
         val view = LayoutInflater.from(parent.context)
             .inflate(R.layout.fragment_card, parent, false)
         return ViewHolder(view)
@@ -67,13 +69,62 @@ class MyCardRecyclerViewAdapter(
             notifyItemChanged(position)
         }
 
-        holder.moreIcon.setOnClickListener {
-            // Show options menu
+        holder.moreIcon.setOnClickListener { view ->
+            // Show options dialog
+            showCardOptionsDialog(view, position)
         }
-        // Set up add button click listener
     }
 
-    override fun getItemCount(): Int = values.size
+    private fun showCardOptionsDialog(view: View, position: Int) {
+        val context = view.context
+
+        // Create and show the custom dialog
+        CardOption(
+            context,
+            onEditClick = {
+                // Handle edit card
+                onEditCard(position)
+            },
+            onDeleteClick = {
+                // Show confirmation dialog before deleting
+                showDeleteConfirmationDialog(context, position)
+            }
+        ).show()
+    }
+
+    private fun showDeleteConfirmationDialog(context: android.content.Context, position: Int) {
+        val dialog = Dialog(context)
+        dialog.setContentView(R.layout.card_delete_conf)
+
+        // Set up dialog window properties
+        dialog.window?.apply {
+            setBackgroundDrawableResource(android.R.color.transparent)
+            attributes.windowAnimations = R.style.DialogAnimation
+        }
+
+        // Set up click listeners
+        val cancelButton = dialog.findViewById<Button>(R.id.btn_cancel)
+        val deleteButton = dialog.findViewById<Button>(R.id.btn_delete)
+
+        cancelButton.setOnClickListener {
+            dialog.dismiss()
+        }
+
+        deleteButton.setOnClickListener {
+            // Delete the card
+            if (position < cardsList.size) {
+                cardsList.removeAt(position)
+                notifyItemRemoved(position)
+                notifyItemRangeChanged(position, cardsList.size)
+                showCustomToast(context, "Card deleted", ToastType.SUCCESS)
+            }
+            dialog.dismiss()
+        }
+
+        dialog.show()
+    }
+
+    override fun getItemCount(): Int = cardsList.size
 
     inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val cardTitle: TextView = view.findViewById(R.id.tv_card_title)

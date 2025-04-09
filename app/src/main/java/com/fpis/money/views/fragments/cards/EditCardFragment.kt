@@ -19,20 +19,21 @@ import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import com.fpis.money.R
-import com.fpis.money.databinding.FragmentAddCardBinding
-import com.fpis.money.views.fragments.cards.showCustomToast
+import com.fpis.money.databinding.FragmentEditCardBinding
 import com.fpis.money.views.fragments.cards.ToastType
+import com.fpis.money.views.fragments.cards.showCustomToast
 import com.larswerkman.holocolorpicker.ColorPicker
 import com.larswerkman.holocolorpicker.SaturationBar
 import java.io.FileNotFoundException
 import java.util.Calendar
 import java.util.UUID
 
-class AddCardFragment : Fragment() {
+class EditCardFragment : Fragment() {
 
-    private var _binding: FragmentAddCardBinding? = null
+    private var _binding: FragmentEditCardBinding? = null
     private val binding get() = _binding!!
     private var selectedColor = "#4285F4" // Default blue color
+    private var cardId: String = ""
     private var customImageUri: Uri? = null
     private val PICK_IMAGE_REQUEST = 1
 
@@ -41,12 +42,21 @@ class AddCardFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        _binding = FragmentAddCardBinding.inflate(inflater, container, false)
+        _binding = FragmentEditCardBinding.inflate(inflater, container, false)
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        // Get card data from arguments
+        arguments?.let {
+            cardId = it.getString(ARG_CARD_ID, "")
+            // Load card data if ID is provided
+            if (cardId.isNotEmpty()) {
+                loadCardData(cardId)
+            }
+        }
 
         setupUI()
         setupTextChangeListeners()
@@ -56,6 +66,16 @@ class AddCardFragment : Fragment() {
         updateColorCircle()
     }
 
+    private fun loadCardData(cardId: String) {
+        // In a real app, you would fetch the card data from your database
+        // For this example, we'll use dummy data
+        binding.etCardHolder.setText("Batyr Khan")
+        binding.etCardNumber.setText("123456789012")
+        binding.etExpiryDate.setText("12/25")
+        binding.etCvv.setText("123")
+        selectedColor = "#4CAF50" // Green color
+    }
+
     private fun setupUI() {
         // Set up close button
         binding.btnClose.setOnClickListener {
@@ -63,8 +83,8 @@ class AddCardFragment : Fragment() {
             parentFragmentManager.popBackStack()
         }
 
-        // Set up add card button
-        binding.btnAddCard.setOnClickListener {
+        // Set up save button
+        binding.btnSave.setOnClickListener {
             if (validateForm()) {
                 saveCard()
             }
@@ -421,7 +441,7 @@ class AddCardFragment : Fragment() {
 
     private fun saveCard() {
         val card = Card(
-            id = UUID.randomUUID().toString(),
+            id = cardId.ifEmpty { UUID.randomUUID().toString() },
             cardHolder = binding.etCardHolder.text.toString().trim(),
             cardNumber = binding.etCardNumber.text.toString().trim().replace("\\D".toRegex(), ""),
             expiryDate = binding.etExpiryDate.text.toString().trim(),
@@ -435,10 +455,10 @@ class AddCardFragment : Fragment() {
         if (customImageUri != null) {
             // In a real app, you would save the image to storage and store the path
             // For this example, we'll just show a message
-            showCustomToast(requireContext(), "Card added with custom image", ToastType.SUCCESS)
+            showCustomToast(requireContext(), "Card updated with custom image", ToastType.SUCCESS)
         } else {
-            // Here you would save the card to your database
-            showCustomToast(requireContext(), "Card added successfully", ToastType.SUCCESS)
+            // Here you would update the card in your database
+            showCustomToast(requireContext(), "Card updated", ToastType.SUCCESS)
         }
 
         parentFragmentManager.popBackStack()
@@ -482,7 +502,13 @@ class AddCardFragment : Fragment() {
     }
 
     companion object {
+        private const val ARG_CARD_ID = "card_id"
+
         @JvmStatic
-        fun newInstance() = AddCardFragment()
+        fun newInstance(cardId: String = "") = EditCardFragment().apply {
+            arguments = Bundle().apply {
+                putString(ARG_CARD_ID, cardId)
+            }
+        }
     }
 }

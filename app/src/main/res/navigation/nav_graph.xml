@@ -34,6 +34,22 @@
         <action
             android:id="@+id/action_cardFragment_to_addCardFragment"
             app:destination="@id/addCardFragment" />
+
+        <action
+            android:id="@+id/action_cardFragment_to_editCardFragment"
+            app:destination="@id/editCardFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/editCardFragment"
+        android:name="com.fpis.money.views.fragments.cards.EditCardFragment"
+        android:label="Edit Card"
+        tools:layout="@layout/fragment_edit_card">
+        <argument
+            android:name="card_id"
+            app:argType="string"
+            app:nullable="true"
+            android:defaultValue=""/>
     </fragment>
 
 

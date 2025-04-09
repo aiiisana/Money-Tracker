@@ -28,19 +28,17 @@ class CardFragment : Fragment() {
         // Create a smaller sample list (just 3 items for testing)
         val sampleItems = PlaceholderContent.ITEMS.take(5)
 
-        recyclerView.adapter = MyCardRecyclerViewAdapter(sampleItems)
+        // Set up adapter with edit card callback
+        recyclerView.adapter = MyCardRecyclerViewAdapter(sampleItems) { position ->
+            // Handle edit card action
+            showEditCardFragment(position)
+        }
 
         // Set up the add button to show AddCardFragment
         val addButton = view.findViewById<View>(R.id.button_add)
         addButton?.setOnClickListener {
             try {
-                // Get the MainActivity and call its method to show the AddCardFragment
-                val mainActivity = activity as? MainActivity
-                if (mainActivity != null) {
-                    showAddCardFragment()
-                } else {
-                    Log.e("CardFragment", "Activity is not MainActivity")
-                }
+                showAddCardFragment()
             } catch (e: Exception) {
                 Log.e("CardFragment", "Error showing AddCardFragment: ${e.message}")
                 e.printStackTrace()
@@ -62,6 +60,23 @@ class CardFragment : Fragment() {
             .add(R.id.fragment_container, addCardFragment)
             .hide(this)
             .addToBackStack("addCard")
+            .commit()
+    }
+
+    private fun showEditCardFragment(position: Int) {
+        // Create a new instance of EditCardFragment with the card ID
+        // In a real app, you would get the actual card ID from your data source
+        val cardId = "card_id_$position"
+        val editCardFragment = EditCardFragment.newInstance(cardId)
+
+        // Get the fragment manager from the activity
+        val fragmentManager = parentFragmentManager
+
+        // Add the EditCardFragment to the container and hide the current fragment
+        fragmentManager.beginTransaction()
+            .add(R.id.fragment_container, editCardFragment)
+            .hide(this)
+            .addToBackStack("editCard")
             .commit()
     }
 

@@ -11,7 +11,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="24dp"
-        android:text="Add Card"
+        android:text="Edit Card"
         android:textColor="@android:color/white"
         android:textSize="24sp"
         android:textStyle="bold"
@@ -229,6 +229,7 @@
                 android:hint="John Doe"
                 android:inputType="textPersonName"
                 android:padding="16dp"
+                android:text="Ömer Aslan"
                 android:textColor="@android:color/white"
                 android:textColorHint="#666666" />
 
@@ -252,10 +253,11 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@android:color/transparent"
-                android:hint="1234 5678 9012"
+                android:hint="1234 5678 9012 3456"
                 android:inputType="number"
                 android:maxLength="19"
                 android:padding="16dp"
+                android:text="1234 1234 1234 1234"
                 android:textColor="@android:color/white"
                 android:textColorHint="#666666" />
 
@@ -283,6 +285,7 @@
                 android:inputType="date"
                 android:maxLength="5"
                 android:padding="16dp"
+                android:text="12/YY"
                 android:textColor="@android:color/white"
                 android:textColorHint="#666666" />
 
@@ -310,6 +313,7 @@
                 android:inputType="numberPassword"
                 android:maxLength="3"
                 android:padding="16dp"
+                android:text="123"
                 android:textColor="@android:color/white"
                 android:textColorHint="#666666" />
 
@@ -368,13 +372,13 @@
                 </LinearLayout>
             </LinearLayout>
 
-            <!-- Add Card Button -->
+            <!-- Save Button -->
             <Button
-                android:id="@+id/btn_add_card"
+                android:id="@+id/btn_save"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@drawable/button_background"
-                android:text="Add Card"
+                android:text="Save"
                 android:textColor="@android:color/white"
                 android:textSize="16sp"
                 android:padding="16dp"
