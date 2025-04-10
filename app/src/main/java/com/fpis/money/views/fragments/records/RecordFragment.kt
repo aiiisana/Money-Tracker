@@ -41,7 +41,8 @@ class RecordFragment : Fragment() {
 
         searchInput = view.findViewById(R.id.search_input)
 
-        adapter = RecordRecyclerViewAdapter(emptyList()) { transaction ->
+        // Передаем FragmentManager в адаптер
+        adapter = RecordRecyclerViewAdapter(emptyList(), requireActivity().supportFragmentManager) { transaction ->
             recordViewModel.deleteTransaction(transaction)
         }
         recyclerView.adapter = adapter
@@ -53,8 +54,10 @@ class RecordFragment : Fragment() {
 
             override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
                 val position = viewHolder.adapterPosition
-                val transactionToDelete = allTransactionsList[position]
-                recordViewModel.deleteTransaction(transactionToDelete)
+                val transactionToDelete = allTransactionsList.getOrNull(position)
+                if (transactionToDelete != null) {
+                    recordViewModel.deleteTransaction(transactionToDelete)
+                }
             }
 
             override fun onChildDraw(
@@ -91,7 +94,6 @@ class RecordFragment : Fragment() {
                 adapter.filter(query)
             }
         }
-
 
         return view
     }

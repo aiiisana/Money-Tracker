@@ -1,0 +1,545 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:background="#FFFFFF"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <ScrollView
+            android:id="@+id/record_detail_scroll_view"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:background="#121418">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:id="@+id/record_detail_top_bar_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_horizontal"
+                    android:layout_marginTop="15dp"
+                    android:orientation="vertical">
+
+                    <LinearLayout
+                        android:id="@+id/top_bar_indicator"
+                        android:layout_width="100dp"
+                        android:layout_height="4dp"
+                        android:orientation="vertical">
+                    </LinearLayout>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/record_detail_header_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:padding="10dp"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/record_detail_title_text"
+                        android:textColor="#FFFFFF"
+                        android:textSize="18sp"
+                        android:textStyle="bold"
+                        android:layout_height="wrap_content"
+                        android:layout_width="match_parent"
+                        android:layout_weight="1"
+                        android:text="Record details"
+                        />
+
+                    <ImageView
+                        android:id="@+id/close_record_detail_button"
+                        android:layout_width="38dp"
+                        android:layout_height="38dp"
+                        android:src="@drawable/ic_close"
+                        android:scaleType="fitXY"
+                        />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/type_selection_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingTop="15dp"
+                    android:paddingBottom="20dp"
+                    android:orientation="vertical">
+
+                    <LinearLayout
+                        android:id="@+id/record_type_buttons_layout"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="25dp"
+                        android:layout_marginHorizontal="15dp"
+                        android:orientation="horizontal">
+
+                        <LinearLayout
+                            android:id="@+id/expense_button_layout"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:id="@+id/expense_button_text"
+                                android:textColor="#DA3C3C"
+                                android:textSize="12sp"
+                                android:textStyle="bold"
+                                android:layout_marginBottom="21dp"
+                                android:layout_marginHorizontal="36dp"
+                                android:layout_height="wrap_content"
+                                android:layout_width="wrap_content"
+                                android:text="Expense"
+                                />
+
+                            <LinearLayout
+                                android:id="@+id/expense_button_indicator"
+                                android:layout_width="match_parent"
+                                android:layout_height="2dp"
+                                android:background="#DA3C3C"
+                                android:orientation="vertical">
+                            </LinearLayout>
+                        </LinearLayout>
+                        <LinearLayout
+                            android:id="@+id/income_button_layout"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:id="@+id/income_button_text"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginHorizontal="39dp"
+                                android:layout_marginBottom="21dp"
+                                android:text="Income"
+                                android:textColor="#FFFFFF"
+                                android:textSize="12sp"
+                                android:textStyle="bold" />
+
+                            <LinearLayout
+                                android:id="@+id/income_button_indicator"
+                                android:layout_width="match_parent"
+                                android:layout_height="2dp"
+                                android:background="#0DEAECF0"
+                                android:orientation="vertical" />
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:id="@+id/transfer_button_layout"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:id="@+id/transfer_button_text"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginHorizontal="36dp"
+                                android:layout_marginBottom="21dp"
+                                android:text="Transfer"
+                                android:textColor="#FFFFFF"
+                                android:textSize="12sp"
+                                android:textStyle="bold" />
+
+                            <LinearLayout
+                                android:id="@+id/transfer_button_indicator"
+                                android:layout_width="match_parent"
+                                android:layout_height="2dp"
+                                android:background="#0DEAECF0"
+                                android:orientation="vertical" />
+                        </LinearLayout>
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/amount_display_layout"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginHorizontal="15dp"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:id="@+id/amount_label"
+                            android:textColor="#FFFFFF"
+                            android:textSize="12sp"
+                            android:textStyle="bold"
+                            android:layout_marginBottom="5dp"
+                            android:layout_height="wrap_content"
+                            android:layout_width="match_parent"
+                            android:layout_weight="1"
+                            android:gravity="center"
+                            android:text="Expense"
+                            />
+
+                        <TextView
+                            android:id="@+id/amount_value"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:gravity="center"
+                            android:text="-₸0"
+                            android:textColor="#DA3C3C"
+                            android:textSize="46sp"
+                            android:textStyle="bold" />
+                    </LinearLayout>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/separator_1"
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="#0DFFFFFF"
+                    android:orientation="vertical">
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/account_selection_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:padding="15dp"
+                    android:orientation="horizontal">
+
+                    <LinearLayout
+                        android:id="@+id/account_details_layout"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:id="@+id/account_label"
+                            android:textColor="#FFFFFF"
+                            android:textSize="12sp"
+                            android:textStyle="bold"
+                            android:layout_marginBottom="5dp"
+                            android:layout_height="wrap_content"
+                            android:layout_width="match_parent"
+                            android:layout_weight="1"
+                            android:text="Account"
+                            />
+
+                        <TextView
+                            android:id="@+id/account_name"
+                            android:textColor="#FFFFFF"
+                            android:textSize="16sp"
+                            android:textStyle="bold"
+                            android:layout_height="wrap_content"
+                            android:layout_width="match_parent"
+                            android:layout_weight="1"
+                            android:text="Credit Card"
+                            />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/change_account_button"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/cr9bffffff0d"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:orientation="vertical"
+                        android:padding="10dp"
+                        tools:ignore="SpeakableTextPresentCheck, TouchTargetSizeCheck">
+
+                        <ImageView
+                            android:id="@+id/change_account_icon"
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"
+                            android:scaleType="fitXY"
+                            android:src="@drawable/ic_credit_card" />
+                    </LinearLayout>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/separator_2"
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="#0DFFFFFF"
+                    android:orientation="vertical">
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/category_selection_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:padding="15dp"
+                    android:orientation="horizontal">
+
+                    <LinearLayout
+                        android:id="@+id/category_details_layout"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:id="@+id/category_label"
+                            android:textColor="#FFFFFF"
+                            android:textSize="12sp"
+                            android:textStyle="bold"
+                            android:layout_marginBottom="5dp"
+                            android:layout_height="wrap_content"
+                            android:layout_width="match_parent"
+                            android:layout_weight="1"
+                            android:text="Category"
+                            />
+
+                        <TextView
+                            android:id="@+id/category_text"
+                            android:textColor="#66FFA3"
+                            android:textSize="16sp"
+                            android:textStyle="bold"
+                            android:layout_height="wrap_content"
+                            android:layout_width="match_parent"
+                            android:layout_weight="1"
+                            android:text="Select Category"
+                            />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/category_button"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/cr9bffffff0d"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:orientation="vertical"
+                        android:padding="10dp"
+                        tools:ignore="SpeakableTextPresentCheck, TouchTargetSizeCheck">
+
+                        <ImageView
+                            android:id="@+id/category_icon"
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"
+                            android:scaleType="fitXY"
+                            android:src="@drawable/ic_bus" />
+                    </LinearLayout>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/separator_3"
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="#0DFFFFFF"
+                    android:layout_marginBottom="15dp"
+                    android:orientation="vertical">
+                </LinearLayout>
+
+                <TextView
+                    android:id="@+id/subcategory_label"
+                    android:textColor="#FFFFFF"
+                    android:textSize="12sp"
+                    android:textStyle="bold"
+                    android:layout_marginBottom="5dp"
+                    android:layout_height="wrap_content"
+                    android:layout_width="match_parent"
+                    android:layout_weight="1"
+                    android:text="Subcategory"
+                    android:paddingStart="15dp"
+                    android:paddingEnd="15dp"
+                    />
+
+                <androidx.core.widget.NestedScrollView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content">
+
+                    <HorizontalScrollView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:scrollbars="horizontal">
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:gravity="center_vertical"
+                            android:layout_marginStart="8dp"
+                            android:layout_marginBottom="8dp">
+
+                            <LinearLayout
+                                android:id="@+id/subcategory"
+                                style="@style/SubcategoryItem"
+                                android:background="@drawable/bg_subcategory"
+                                tools:ignore="TouchTargetSizeCheck">
+
+                                <com.google.android.material.imageview.ShapeableImageView
+                                    android:id="@+id/subcategory_icon"
+                                    style="@style/SubcategoryIcon"
+                                    android:src="@drawable/ic_car" />
+
+                                <TextView
+                                    android:id="@+id/subcategory_name"
+                                    style="@style/SubcategoryText"
+                                    android:text="Rent" />
+                            </LinearLayout>
+
+                            <LinearLayout
+                                android:id="@+id/add_subcategory_button"
+                                style="@style/SubcategoryItem"
+                                android:background="@drawable/bg_subcategory"
+                                tools:ignore="TouchTargetSizeCheck">
+                                <com.google.android.material.imageview.ShapeableImageView
+                                    android:id="@+id/add_subcategory_icon"
+                                    style="@style/SubcategoryIcon"
+                                    android:src="@drawable/ic_add"/>
+                                <TextView
+                                    android:id="@+id/add_subcategory_label"
+                                    style="@style/SubcategoryText"
+                                    android:text="Add"/>
+                            </LinearLayout>
+
+                        </LinearLayout>
+                    </HorizontalScrollView>
+
+                </androidx.core.widget.NestedScrollView>
+
+                <LinearLayout
+                    android:id="@+id/separator_4"
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="#0DFFFFFF"
+                    android:orientation="vertical">
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/date_time_selection_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:padding="15dp"
+                    android:orientation="horizontal">
+
+                    <LinearLayout
+                        android:id="@+id/date_time_details_layout"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:id="@+id/date_time_label"
+                            android:textColor="#FFFFFF"
+                            android:textSize="12sp"
+                            android:textStyle="bold"
+                            android:layout_marginBottom="5dp"
+                            android:layout_height="wrap_content"
+                            android:layout_width="match_parent"
+                            android:layout_weight="1"
+                            android:text="Date &amp; Time"
+                            />
+
+                        <TextView
+                            android:id="@+id/date_time_value"
+                            android:textColor="#FFFFFF"
+                            android:textSize="16sp"
+                            android:textStyle="bold"
+                            android:layout_height="wrap_content"
+                            android:layout_width="match_parent"
+                            android:layout_weight="1"
+                            android:text="Select Date &amp; Time"
+                            />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/date_button"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/cr9bffffff0d"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:orientation="vertical"
+                        android:padding="10dp"
+                        tools:ignore="SpeakableTextPresentCheck,TouchTargetSizeCheck">
+
+                        <ImageView
+                            android:id="@+id/date_time_icon"
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"
+                            android:scaleType="fitXY"
+                            android:src="@drawable/ic_calendar" />
+
+                    </LinearLayout>
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/separator_5"
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="#0DFFFFFF"
+                    android:orientation="vertical">
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/notes_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="15dp">
+
+                    <TextView
+                        android:id="@+id/notes_label"
+                        android:textColor="#FFFFFF"
+                        android:textSize="12sp"
+                        android:textStyle="bold"
+                        android:layout_marginBottom="5dp"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Notes" />
+
+                    <EditText
+                        android:id="@+id/notes_input"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@null"
+                        android:hint="Type your notes"
+                        android:padding="10dp"
+                        android:textColor="#FFFFFF"
+                        android:textColorHint="#80FFFFFF"
+                        android:textSize="16sp"
+                        tools:ignore="TouchTargetSizeCheck" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/separator_6"
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="#0DFFFFFF"
+                    android:orientation="vertical">
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/record_detail_button_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentBottom="true"
+                    android:background="#121418"
+                    android:padding="10dp">
+
+                    <Button
+                        android:id="@+id/record_save_button"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Save Record"
+                        android:textColor="#FFFFFF"
+                        android:textStyle="bold"
+                        android:background="@drawable/button_background" />
+                </LinearLayout>
+
+            </LinearLayout>
+        </ScrollView>
+    </LinearLayout>
+</FrameLayout>

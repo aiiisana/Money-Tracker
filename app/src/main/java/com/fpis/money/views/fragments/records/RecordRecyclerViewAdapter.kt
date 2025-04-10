@@ -3,6 +3,7 @@ package com.fpis.money.views.fragments.records
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.RecyclerView
 import com.fpis.money.R
 import com.fpis.money.databinding.FragmentRecordBinding
@@ -12,6 +13,7 @@ import java.util.*
 
 class RecordRecyclerViewAdapter(
     private var values: List<Transaction>,
+    private val fragmentManager: FragmentManager,
     private val onDelete: (Transaction) -> Unit
 ) : RecyclerView.Adapter<RecordRecyclerViewAdapter.ViewHolder>() {
 
@@ -66,7 +68,8 @@ class RecordRecyclerViewAdapter(
         init {
             itemView.setOnClickListener {
                 val transaction = values[adapterPosition]
-                onDelete(transaction)
+                val bottomSheet = RecordDetailBottomSheet(transaction)
+                bottomSheet.show(fragmentManager, bottomSheet.tag)
             }
         }
     }

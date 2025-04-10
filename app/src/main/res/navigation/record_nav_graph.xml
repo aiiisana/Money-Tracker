@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    app:startDestination="@id/recordFragment">
+
+    <fragment
+        android:id="@+id/recordFragment"
+        android:name="com.fpis.money.views.fragments.records.RecordFragment"
+        android:label="Records">
+        <action
+            android:id="@+id/action_recordFragment_to_transactionDetailFragment"
+            app:destination="@id/transactionDetailFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/transactionDetailFragment"
+        android:name="com.fpis.money.views.fragments.records.TransactionDetailFragment"
+        android:label="Transaction Details">
+        <argument android:name="category" app:argType="string" />
+        <argument android:name="subCategory" app:argType="string" />
+        <argument android:name="amount" app:argType="float" />
+        <argument android:name="date" app:argType="long" />
+        <argument android:name="type" app:argType="string" />
+        <argument android:name="notes" app:argType="string" />
+    </fragment>
+</navigation>
