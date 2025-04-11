@@ -11,10 +11,11 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.fragment.app.viewModels
 import com.fpis.money.R
+import com.fpis.money.views.fragments.home.stats.ExpenseChartView
 import com.fpis.money.databinding.FragmentHomeBinding
 import com.fpis.money.views.fragments.cards.AddCardFragment
-import com.fpis.money.views.fragments.home.ExpenseChartView
 import com.fpis.money.views.fragments.home.budgets.BudgetFragment
+import com.fpis.money.views.fragments.home.stats.StatisticsFragment
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Date
@@ -167,27 +168,28 @@ class HomeFragment : Fragment() {
         // Set up "Statistics" button
         binding.ryndljmqcc9.setOnClickListener {
             // Navigate to statistics screen
+            showStatisticsFragment()
+        }
+        binding.rxafjah9m8vq.setOnClickListener {
+            showStatisticsFragment()
         }
     }
 
     private fun setupExpenseChart() {
-        // Set the text
-        binding.rrrdy9mslim.text = "Expense"
-        binding.rk44edj4rkt.text = "₸270,000"
-
         // Set up the chart data with the correct colors matching the UI
         val categories = listOf(
-            ExpenseChartView.ExpenseCategory("Entertainment", 156500f, "#66FFA3"),  // Green
-            ExpenseChartView.ExpenseCategory("Food", 80000f, "#FF9366"),            // Orange
-            ExpenseChartView.ExpenseCategory("Transportation", 25000f, "#3DB9FF"),  // Blue
-            ExpenseChartView.ExpenseCategory("Shopping", 15500f, "#FFD966"),        // Yellow
-            ExpenseChartView.ExpenseCategory("Other", 10000f, "#FF66D4")            // Pink
+            ExpenseChartView.ExpenseCategoryInput("Entertainment", 156500f, "#66FFA3"),  // Green
+            ExpenseChartView.ExpenseCategoryInput("Food", 80000f, "#FF9366"),            // Orange
+            ExpenseChartView.ExpenseCategoryInput("Transportation", 25000f, "#3DB9FF"),  // Blue
+            ExpenseChartView.ExpenseCategoryInput("Shopping", 15500f, "#FFD966"),        // Yellow
+            ExpenseChartView.ExpenseCategoryInput("Other", 10000f, "#FF66D4")            // Pink
         )
 
         // Update the chart with data
         if (::expenseChartView.isInitialized) {
             try {
                 expenseChartView.setData(categories)
+                expenseChartView.setCenterText("Expense", "₸270,000")
                 println("Chart data set successfully")
             } catch (e: Exception) {
                 println("Error setting chart data: ${e.message}")
@@ -240,19 +242,20 @@ class HomeFragment : Fragment() {
                 val totalExpense = categories.sumOf {
                     it.spent.replace(",", "").toDouble()
                 }
-                binding.rk44edj4rkt.text = "₸${totalExpense.toInt()}"
+                val totalExpenseFormatted = "₸${totalExpense.toInt()}"
 
-                // Update chart data
+                // Update chart data and center text
                 if (::expenseChartView.isInitialized) {
                     try {
                         val chartCategories = categories.map {
-                            ExpenseChartView.ExpenseCategory(
+                            ExpenseChartView.ExpenseCategoryInput(
                                 it.name,
                                 it.spent.replace(",", "").toFloat(),
                                 it.color
                             )
                         }
                         expenseChartView.setData(chartCategories)
+                        expenseChartView.setCenterText("Expense", totalExpenseFormatted)
                     } catch (e: Exception) {
                         println("Error updating chart data: ${e.message}")
                         e.printStackTrace()
@@ -282,6 +285,17 @@ class HomeFragment : Fragment() {
             .add(R.id.fragment_container, budgetFragment)
             .hide(this)
             .addToBackStack("budget")
+            .commit()
+    }
+    private fun showStatisticsFragment() {
+        val statisticsFragment = StatisticsFragment.newInstance()
+
+        val fragmentManager = parentFragmentManager
+
+        fragmentManager.beginTransaction()
+            .add(R.id.fragment_container, statisticsFragment)
+            .hide(this)
+            .addToBackStack("statistics")
             .commit()
     }
 

@@ -1,70 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:background="#FFFFFF">
+    android:background="#08090C">
 
     <ScrollView
         android:id="@+id/scrollView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:fillViewport="true"
-        android:background="#242424">
+        android:fillViewport="true">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:paddingBottom="32dp">
 
             <ImageView
                 android:id="@+id/logoImage"
-                android:layout_width="67dp"
-                android:layout_height="74dp"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:layout_marginTop="48dp"
                 android:src="@drawable/logo"
-                android:scaleType="fitXY"
+                android:scaleType="fitCenter"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                android:layout_marginTop="36dp"/>
+                app:layout_constraintEnd_toEndOf="parent"/>
 
             <TextView
                 android:id="@+id/titleText"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Create an account"
-                android:textSize="25sp"
+                android:textSize="28sp"
                 android:textStyle="bold"
                 android:textColor="#FFFFFF"
                 app:layout_constraintTop_toBottomOf="@id/logoImage"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                android:layout_marginTop="16dp"/>
+                android:layout_marginTop="24dp"/>
 
             <TextView
                 android:id="@+id/nameLabel"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Name"
-                android:textSize="24sp"
+                android:textSize="18sp"
                 android:textColor="#FFFFFF"
                 app:layout_constraintTop_toBottomOf="@id/titleText"
                 app:layout_constraintStart_toStartOf="parent"
-                android:layout_marginTop="16dp"
-                android:layout_marginStart="22dp"/>
+                android:layout_marginTop="40dp"
+                android:layout_marginStart="32dp"/>
 
             <EditText
                 android:id="@+id/nameInput"
                 android:layout_width="0dp"
-                android:layout_height="49dp"
+                android:layout_height="56dp"
                 android:hint="Enter your name"
-                android:textColorHint="#B0B0B0"
-                android:paddingStart="12dp"
+                android:textColorHint="#9E9E9E"
+                android:paddingStart="16dp"
+                android:paddingEnd="16dp"
                 android:textColor="#FFFFFF"
                 android:background="@drawable/input_background"
                 app:layout_constraintTop_toBottomOf="@id/nameLabel"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                android:layout_marginHorizontal="22dp"
+                android:layout_marginHorizontal="32dp"
                 android:layout_marginTop="8dp"/>
 
             <TextView
@@ -72,26 +74,28 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="E-mail"
-                android:textSize="24sp"
+                android:textSize="18sp"
                 android:textColor="#FFFFFF"
                 app:layout_constraintTop_toBottomOf="@id/nameInput"
                 app:layout_constraintStart_toStartOf="parent"
-                android:layout_marginTop="16dp"
-                android:layout_marginStart="22dp"/>
+                android:layout_marginTop="24dp"
+                android:layout_marginStart="32dp"/>
 
             <EditText
                 android:id="@+id/emailInput"
                 android:layout_width="0dp"
-                android:layout_height="49dp"
+                android:layout_height="56dp"
                 android:hint="Enter your email"
-                android:textColorHint="#B0B0B0"
-                android:paddingStart="12dp"
+                android:inputType="textEmailAddress"
+                android:textColorHint="#9E9E9E"
+                android:paddingStart="16dp"
+                android:paddingEnd="16dp"
                 android:textColor="#FFFFFF"
                 android:background="@drawable/input_background"
                 app:layout_constraintTop_toBottomOf="@id/emailLabel"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                android:layout_marginHorizontal="22dp"
+                android:layout_marginHorizontal="32dp"
                 android:layout_marginTop="8dp"/>
 
             <TextView
@@ -99,57 +103,85 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Password"
-                android:textSize="24sp"
+                android:textSize="18sp"
                 android:textColor="#FFFFFF"
                 app:layout_constraintTop_toBottomOf="@id/emailInput"
                 app:layout_constraintStart_toStartOf="parent"
-                android:layout_marginTop="16dp"
-                android:layout_marginStart="22dp"/>
+                android:layout_marginTop="24dp"
+                android:layout_marginStart="32dp"/>
 
             <EditText
                 android:id="@+id/passwordInput"
                 android:layout_width="0dp"
-                android:layout_height="49dp"
+                android:layout_height="56dp"
                 android:hint="Enter your password"
-                android:textColorHint="#B0B0B0"
-                android:paddingStart="12dp"
+                android:inputType="textPassword"
+                android:textColorHint="#9E9E9E"
+                android:paddingStart="16dp"
+                android:paddingEnd="16dp"
                 android:textColor="#FFFFFF"
                 android:background="@drawable/input_background"
                 app:layout_constraintTop_toBottomOf="@id/passwordLabel"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                android:layout_marginHorizontal="22dp"
+                android:layout_marginHorizontal="32dp"
                 android:layout_marginTop="8dp"/>
 
             <TextView
                 android:id="@+id/termsText"
-                android:layout_width="match_parent"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:text="By signing up, you agree to our Terms, Data Policy and Cookies Policy."
-                android:textSize="12sp"
-                android:textStyle="bold"
-                android:textColor="#5F5F5F"
+                android:textSize="14sp"
+                android:textColor="#9E9E9E"
                 android:gravity="center"
                 app:layout_constraintTop_toBottomOf="@id/passwordInput"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                android:layout_marginTop="16dp"/>
+                android:layout_marginHorizontal="32dp"
+                android:layout_marginTop="24dp"/>
 
             <Button
                 android:id="@+id/signUpButton"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                android:layout_height="60dp"
                 android:text="Sign up"
                 android:textSize="18sp"
+                android:textAllCaps="false"
                 android:textColor="#FFFFFF"
                 android:background="@drawable/button_background"
                 app:layout_constraintTop_toBottomOf="@id/termsText"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                android:layout_marginHorizontal="22dp"
-                android:layout_marginTop="16dp"
-                android:paddingVertical="12dp"
-                app:layout_constraintBottom_toBottomOf="parent"/>
+                android:layout_marginHorizontal="32dp"
+                android:layout_marginTop="32dp"/>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                app:layout_constraintTop_toBottomOf="@id/signUpButton"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:layout_marginTop="24dp">
+
+                <TextView
+                    android:id="@+id/haveAccount"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Already have an account? "
+                    android:textColor="#9E9E9E"
+                    android:textSize="16sp"/>
+
+                <TextView
+                    android:id="@+id/loginRedirect"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Sign in"
+                    android:textColor="#6C63FF"
+                    android:textSize="16sp"
+                    android:textStyle="bold"/>
+            </LinearLayout>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>

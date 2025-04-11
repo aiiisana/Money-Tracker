@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:background="@android:color/transparent">
 
-    <com.fpis.money.views.fragments.home.ExpenseChartView
+    <com.fpis.money.views.fragments.home.stats.ExpenseChartView
         android:id="@+id/expense_chart"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

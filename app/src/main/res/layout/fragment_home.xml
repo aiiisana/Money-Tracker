@@ -276,8 +276,8 @@
                                         android:layout_height="wrap_content"
                                         android:background="@drawable/cr35b66ffa30d"
                                         android:paddingVertical="10dp"
-                                        android:paddingHorizontal="15dp"
                                         android:layout_marginEnd="10dp"
+                                        android:paddingHorizontal="15dp"
                                         android:gravity="center_vertical"
                                         android:orientation="horizontal">
 
@@ -475,36 +475,17 @@
                         </LinearLayout>
 
                         <!-- Replace the existing chart placeholder with our custom chart view -->
-                        <com.fpis.money.views.fragments.home.ExpenseChartView
-                            android:id="@+id/expense_chart_view"
+                        <FrameLayout
                             android:layout_width="200dp"
                             android:layout_height="200dp"
                             android:layout_gravity="center_horizontal"
-                            android:layout_marginBottom="20dp" />
+                            android:layout_marginBottom="20dp">
 
-                        <TextView
-                            android:id="@+id/rrrdy9mslim"
-                            android:textColor="#FFFFFF"
-                            android:textSize="14sp"
-                            android:textStyle="bold"
-                            android:layout_height="wrap_content"
-                            android:layout_width="wrap_content"
-                            android:layout_gravity="center_horizontal"
-                            android:text="Expense"
-                            />
-
-                        <TextView
-                            android:id="@+id/rk44edj4rkt"
-                            android:textColor="#FFFFFF"
-                            android:textSize="24sp"
-                            android:textStyle="bold"
-                            android:layout_gravity="center_horizontal"
-                            android:layout_marginTop="8dp"
-                            android:layout_height="wrap_content"
-                            android:layout_width="wrap_content"
-                            android:text="₸270,000"
-                            />
-
+                            <com.fpis.money.views.fragments.home.stats.ExpenseChartView
+                                android:id="@+id/expense_chart_view"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent" />
+                        </FrameLayout>
                         <LinearLayout
                             android:id="@+id/rjthc0n5kdv"
                             android:layout_width="wrap_content"
