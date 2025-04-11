@@ -1,5 +1,6 @@
 package com.fpis.money.views.fragments.records
 
+import android.app.DatePickerDialog
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
@@ -7,20 +8,15 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.AdapterView
-import android.widget.ArrayAdapter
+import android.widget.*
+import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.fpis.money.R
-import android.widget.EditText
-import android.widget.Spinner
-import android.widget.Toast
-import androidx.core.widget.addTextChangedListener
 import com.fpis.money.models.Transaction
-import android.app.DatePickerDialog
 import java.util.*
 
 class RecordFragment : Fragment() {
@@ -32,7 +28,9 @@ class RecordFragment : Fragment() {
     private var allTransactionsList: List<Transaction> = emptyList()
     private lateinit var sortSpinner: Spinner
     private val sortOptions = arrayListOf("Newest first", "Oldest first", "Pick a date")
-    private lateinit var spinnerAdapter: ArrayAdapter<String>
+    private lateinit var spinnerAdapter: DateSpinnerAdapter
+
+    private var isSpinnerTouched = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -52,16 +50,23 @@ class RecordFragment : Fragment() {
 
         sortSpinner = view.findViewById(R.id.sort_spinner)
 
-        val sortOptions = arrayListOf("Newest first", "Oldest first", "Pick a date")
-        val spinnerAdapter = ArrayAdapter(requireContext(), R.layout.spinner_item, sortOptions)
+        spinnerAdapter = DateSpinnerAdapter(requireContext(), sortOptions)
         spinnerAdapter.setDropDownViewResource(R.layout.spinner_item)
         sortSpinner.adapter = spinnerAdapter
+        sortSpinner.setSelection(0)
 
         sortSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(parent: AdapterView<*>, view: View?, position: Int, id: Long) {
                 val selected = parent.getItemAtPosition(position).toString()
+
                 if (selected == "Pick a date") {
                     showDatePickerDialog()
+                } else if (Regex("\\d{2}/\\d{2}/\\d{4}").matches(selected)) {
+                    val parts = selected.split("/")
+                    val day = parts[0].toInt()
+                    val month = parts[1].toInt() - 1 // Calendar.MONTH is 0-based
+                    val year = parts[2].toInt()
+                    filterTransactionsByDate(year, month, day)
                 } else {
                     sortAndUpdateTransactions(selected)
                 }
@@ -70,8 +75,8 @@ class RecordFragment : Fragment() {
             override fun onNothingSelected(parent: AdapterView<*>) {}
         }
 
-        adapter = RecordRecyclerViewAdapter(emptyList(), requireActivity().supportFragmentManager) { transaction ->
-            recordViewModel.deleteTransaction(transaction)
+        adapter = RecordRecyclerViewAdapter(emptyList(), requireActivity().supportFragmentManager) {
+                transaction -> recordViewModel.deleteTransaction(transaction)
         }
         recyclerView.adapter = adapter
 
@@ -95,9 +100,7 @@ class RecordFragment : Fragment() {
                 super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive)
                 if (dX < 0) {
                     val itemView = viewHolder.itemView
-                    val paint = Paint().apply {
-                        color = Color.RED
-                    }
+                    val paint = Paint().apply { color = Color.RED }
                     c.drawRect(
                         itemView.right.toFloat() + dX, itemView.top.toFloat(),
                         itemView.right.toFloat(), itemView.bottom.toFloat(), paint
@@ -136,8 +139,12 @@ class RecordFragment : Fragment() {
         val datePickerDialog = DatePickerDialog(
             requireContext(),
             { _, selectedYear, selectedMonth, selectedDay ->
-                val selectedDate = "$selectedDay/${selectedMonth + 1}/$selectedYear"
-                Toast.makeText(requireContext(), "Selected date: $selectedDate", Toast.LENGTH_SHORT).show()
+                val formattedDate = String.format("%02d/%02d/%04d", selectedDay, selectedMonth + 1, selectedYear)
+
+                spinnerAdapter.selectedDate = formattedDate
+                spinnerAdapter.notifyDataSetChanged()
+
+                sortSpinner.setSelection(2)
 
                 filterTransactionsByDate(selectedYear, selectedMonth, selectedDay)
             },
@@ -169,6 +176,11 @@ class RecordFragment : Fragment() {
     }
 
     private fun sortAndUpdateTransactions(option: String) {
+        if (option == "Newest first" || option == "Oldest first") {
+            spinnerAdapter.selectedDate = null
+            spinnerAdapter.notifyDataSetChanged()
+        }
+
         val sortedList = when (option) {
             "Newest first" -> allTransactionsList.sortedByDescending { it.date }
             "Oldest first" -> allTransactionsList.sortedBy { it.date }
