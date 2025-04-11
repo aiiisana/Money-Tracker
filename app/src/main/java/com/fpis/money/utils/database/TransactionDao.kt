@@ -1,12 +1,12 @@
 package com.fpis.money.utils.database
 
-import androidx.lifecycle.LiveData
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.Query
 import androidx.room.Update
 import androidx.room.Delete
 import com.fpis.money.models.Transaction
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface TransactionDao {
@@ -15,7 +15,7 @@ interface TransactionDao {
     suspend fun insert(transaction: Transaction)
 
     @Query("SELECT * FROM transactions ORDER BY date DESC")
-    fun getAllTransactions(): LiveData<List<Transaction>>
+    fun getAllTransactions(): Flow<List<Transaction>>
 
     @Update
     suspend fun update(transaction: Transaction)

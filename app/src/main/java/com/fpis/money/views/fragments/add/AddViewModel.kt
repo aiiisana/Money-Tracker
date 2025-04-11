@@ -39,6 +39,33 @@ class AddViewModel(application: Application) : AndroidViewModel(application as A
 
         return result
     }
+
+    fun saveTransfer(fromAccount: String, toAccount: String, amount: Float, date: Long, notes: String) {
+        val outTransaction = Transaction(
+            type = "transfer_out",
+            paymentMethod = fromAccount,
+            date = date,
+            amount = -amount,
+            category = "Transfer",
+            subCategory = toAccount,
+            notes = notes
+        )
+
+        val inTransaction = Transaction(
+            type = "transfer_in",
+            paymentMethod = toAccount,
+            date = date,
+            amount = amount,
+            category = "Transfer",
+            subCategory = fromAccount,
+            notes = notes
+        )
+
+        viewModelScope.launch {
+            transactionDao.insert(outTransaction)
+            transactionDao.insert(inTransaction)
+        }
+    }
 }
 
 class AddViewModelFactory(private val application: Application) : ViewModelProvider.Factory {

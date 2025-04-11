@@ -1,5 +1,6 @@
 package com.fpis.money.views.fragments.records
 
+import android.annotation.SuppressLint
 import android.app.DatePickerDialog
 import android.graphics.Canvas
 import android.graphics.Color
@@ -16,7 +17,7 @@ import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.fpis.money.R
-import com.fpis.money.models.Transaction
+import com.fpis.money.models.TransactionItem
 import java.util.*
 
 class RecordFragment : Fragment() {
@@ -25,12 +26,10 @@ class RecordFragment : Fragment() {
     private lateinit var recyclerView: RecyclerView
     private lateinit var adapter: RecordRecyclerViewAdapter
     private lateinit var searchInput: EditText
-    private var allTransactionsList: List<Transaction> = emptyList()
+    private var allTransactionsList: List<TransactionItem> = emptyList()
     private lateinit var sortSpinner: Spinner
     private val sortOptions = arrayListOf("Newest first", "Oldest first", "Pick a date")
     private lateinit var spinnerAdapter: DateSpinnerAdapter
-
-    private var isSpinnerTouched = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -73,10 +72,14 @@ class RecordFragment : Fragment() {
             }
 
             override fun onNothingSelected(parent: AdapterView<*>) {}
+
         }
 
-        adapter = RecordRecyclerViewAdapter(emptyList(), requireActivity().supportFragmentManager) {
-                transaction -> recordViewModel.deleteTransaction(transaction)
+        adapter = RecordRecyclerViewAdapter(emptyList(), requireActivity().supportFragmentManager) { item ->
+            when (item) {
+                is TransactionItem.RecordItem -> recordViewModel.deleteRecord(item.record)
+                is TransactionItem.TransferItem -> recordViewModel.deleteTransfer(item.transfer)
+            }
         }
         recyclerView.adapter = adapter
 
@@ -87,9 +90,11 @@ class RecordFragment : Fragment() {
 
             override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
                 val position = viewHolder.adapterPosition
-                val transactionToDelete = allTransactionsList.getOrNull(position)
-                if (transactionToDelete != null) {
-                    recordViewModel.deleteTransaction(transactionToDelete)
+                val item = allTransactionsList.getOrNull(position)
+                when (item) {
+                    is TransactionItem.RecordItem -> recordViewModel.deleteRecord(item.record)
+                    is TransactionItem.TransferItem -> recordViewModel.deleteTransfer(item.transfer)
+                    null -> TODO()
                 }
             }
 
@@ -110,12 +115,10 @@ class RecordFragment : Fragment() {
         }
         ItemTouchHelper(itemTouchHelperCallback).attachToRecyclerView(recyclerView)
 
-        recordViewModel.allTransactions.observe(viewLifecycleOwner) { transactions ->
-            allTransactionsList = transactions
+        recordViewModel.allTransactions.observe(viewLifecycleOwner) { items: List<TransactionItem> ->
+            allTransactionsList = items
             sortAndUpdateTransactions(sortSpinner.selectedItem.toString())
-            if (transactions.isNotEmpty()) {
-                adapter.updateData(transactions)
-            }
+            adapter.updateData(items)
         }
 
         searchInput.addTextChangedListener {
@@ -169,32 +172,49 @@ class RecordFragment : Fragment() {
         val startOfNextDay = calendar.timeInMillis
 
         val filteredTransactions = allTransactionsList.filter {
-            it.date in startOfDay until startOfNextDay
+            val date = when (it) {
+                is TransactionItem.RecordItem -> it.record.date
+                is TransactionItem.TransferItem -> it.transfer.date
+            }
+            date in startOfDay until startOfNextDay
         }
-
         adapter.updateData(filteredTransactions)
     }
 
     private fun sortAndUpdateTransactions(option: String) {
-        if (option == "Newest first" || option == "Oldest first") {
-            spinnerAdapter.selectedDate = null
-            spinnerAdapter.notifyDataSetChanged()
-        }
-
         val sortedList = when (option) {
-            "Newest first" -> allTransactionsList.sortedByDescending { it.date }
-            "Oldest first" -> allTransactionsList.sortedBy { it.date }
+            "Newest first" -> allTransactionsList.sortedByDescending {
+                when (it) {
+                    is TransactionItem.RecordItem -> it.record.date
+                    is TransactionItem.TransferItem -> it.transfer.date
+                }
+            }
+            "Oldest first" -> allTransactionsList.sortedBy {
+                when (it) {
+                    is TransactionItem.RecordItem -> it.record.date
+                    is TransactionItem.TransferItem -> it.transfer.date
+                }
+            }
             else -> allTransactionsList
         }
 
         val query = searchInput.text.toString()
         val filtered = if (query.isEmpty()) sortedList
         else sortedList.filter {
-            it.category.contains(query, ignoreCase = true) ||
-                    it.subCategory.contains(query, ignoreCase = true) ||
-                    it.notes.contains(query, ignoreCase = true)
+            when (it) {
+                is TransactionItem.RecordItem -> {
+                    it.record.category.contains(query, true) ||
+                            it.record.subCategory.contains(query, true) ||
+                            it.record.notes.contains(query, true)
+                }
+                is TransactionItem.TransferItem -> {
+                    it.transfer.fromAccount.contains(query, true) ||
+                            it.transfer.toAccount.contains(query, true) ||
+                            it.transfer.notes?.contains(query, true) == true
+                }
+            }
         }
-
         adapter.updateData(filtered)
+
     }
 }

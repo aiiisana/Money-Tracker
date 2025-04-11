@@ -12,7 +12,7 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
-        android:background="#FA121418">
+        android:background="#121418">
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -166,15 +166,14 @@
                             />
                         <TextView
                             android:id="@+id/amountText"
-                            android:textColor="#FFFFFF"
-                            android:textSize="46sp"
-                            android:textStyle="bold"
-                            android:layout_height="wrap_content"
                             android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:gravity="center"
-                            android:text="₸67000"
-                            />
+                            android:text="₸0"
+                            android:textColor="@color/white"
+                            android:textSize="46sp"
+                            android:textStyle="bold" />
                     </LinearLayout>
                 </LinearLayout>
                 <LinearLayout
@@ -222,7 +221,7 @@
                                 android:layout_height="wrap_content"
                                 android:layout_width="match_parent"
                                 android:layout_weight="1"
-                                android:text="Cash"
+                                android:text="Select an account"
                                 />
                         </LinearLayout>
                         <LinearLayout
@@ -282,7 +281,7 @@
                                 android:layout_height="wrap_content"
                                 android:layout_width="match_parent"
                                 android:layout_weight="1"
-                                android:text="Credit Card"
+                                android:text="Select an account"
                                 />
                         </LinearLayout>
                         <LinearLayout
@@ -329,16 +328,17 @@
                             android:layout_weight="1"
                             android:text="Notes"
                             />
-                        <TextView
-                            android:id="@+id/rwzfjwws6sml"
-                            android:textColor="#FFFFFF"
-                            android:textSize="14sp"
-                            android:textStyle="bold"
-                            android:layout_height="wrap_content"
+                        <EditText
+                            android:id="@+id/notes_input"
                             android:layout_width="match_parent"
-                            android:layout_weight="1"
-                            android:text="Brooklyn Apartment Rent"
-                            />
+                            android:layout_height="wrap_content"
+                            android:background="@null"
+                            android:hint="Type your notes"
+                            android:padding="10dp"
+                            android:textColor="#FFFFFF"
+                            android:textColorHint="#80FFFFFF"
+                            android:textSize="16sp"
+                            tools:ignore="TouchTargetSizeCheck" />
                     </LinearLayout>
                 </LinearLayout>
 

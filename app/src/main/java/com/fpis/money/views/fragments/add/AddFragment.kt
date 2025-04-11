@@ -31,9 +31,12 @@ class AddFragment : Fragment() {
     private lateinit var selectedCategory: String
 
     private lateinit var amountValue: TextView
-    private lateinit var tabExpense: TextView
-    private lateinit var tabIncome: TextView
-    private lateinit var tabTransfer: TextView
+    private lateinit var tabExpense: LinearLayout
+    private lateinit var tabIncome: LinearLayout
+    private lateinit var tabTransfer: LinearLayout
+    private lateinit var textExpense: TextView
+    private lateinit var textIncome: TextView
+    private lateinit var textTransfer: TextView
     private lateinit var addBtn: Button
     private lateinit var indicatorExpense: LinearLayout
     private lateinit var indicatorIncome: LinearLayout
@@ -72,9 +75,13 @@ class AddFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         amountValue = view.findViewById(R.id.amount_value)
-        tabExpense = view.findViewById(R.id.expense_button_text)
-        tabIncome = view.findViewById(R.id.income_button_text)
-        tabTransfer = view.findViewById(R.id.transfer_button_text)
+        tabExpense = view.findViewById(R.id.expense_button_layout)
+        tabIncome = view.findViewById(R.id.income_button_layout)
+        tabTransfer = view.findViewById(R.id.transfer_button_layout)
+
+        textExpense = view.findViewById(R.id.expense_button_text)
+        textIncome = view.findViewById(R.id.income_button_text)
+        textTransfer = view.findViewById(R.id.transfer_button_text)
         addBtn = view.findViewById(R.id.add_record_button)
 
         indicatorIncome = view.findViewById(R.id.income_button_indicator)
@@ -110,6 +117,11 @@ class AddFragment : Fragment() {
 
         dateTimeSelectionLayout.setOnClickListener {
             showDateTimePicker()
+        }
+
+        parentFragmentManager.setFragmentResultListener("transaction_type_result", viewLifecycleOwner) { _, bundle ->
+            val type = bundle.getString("transactionType", "expense")
+            setType(type)
         }
     }
 
@@ -196,23 +208,23 @@ class AddFragment : Fragment() {
             "expense" -> {
                 amountLabel.text = "Expense"
                 indicatorExpense.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.red))
-                tabExpense.setTextColor(ContextCompat.getColor(requireContext(), R.color.red))
+                textExpense.setTextColor(ContextCompat.getColor(requireContext(), R.color.red))
             }
             "income" -> {
                 amountLabel.text = "Income"
                 indicatorIncome.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.green))
-                tabIncome.setTextColor(ContextCompat.getColor(requireContext(), R.color.green))
+                textIncome.setTextColor(ContextCompat.getColor(requireContext(), R.color.green))
             }
             "transfer" -> {
-                tabTransfer.setTextColor(Color.WHITE)
+                textTransfer.setTextColor(Color.WHITE)
             }
         }
     }
 
     private fun resetTabStyles() {
-        tabExpense.setTextColor(Color.WHITE)
-        tabIncome.setTextColor(Color.WHITE)
-        tabTransfer.setTextColor(Color.WHITE)
+        textExpense.setTextColor(Color.WHITE)
+        textIncome.setTextColor(Color.WHITE)
+        textTransfer.setTextColor(Color.WHITE)
         indicatorIncome.setBackgroundColor(Color.parseColor("#0DEAECF0"))
         indicatorExpense.setBackgroundColor(Color.parseColor("#0DEAECF0"))
     }
@@ -221,7 +233,8 @@ class AddFragment : Fragment() {
         val transferFragment = TransferFragment()
         parentFragmentManager.beginTransaction()
             .replace(R.id.fragment_container, transferFragment)
-            .commit()  // без addToBackStack
+            .addToBackStack(null)
+            .commit()
     }
 
     private fun showCategoryBottomSheet() {
@@ -302,9 +315,8 @@ class AddFragment : Fragment() {
         cardsRef.get()
             .addOnSuccessListener { documents ->
                 val accounts = mutableListOf<String>()
-                val cardMap = mutableMapOf<String, Card>() // Чтобы потом знать, какую карту выбрал пользователь
+                val cardMap = mutableMapOf<String, Card>()
 
-                // Добавляем опцию "Cash"
                 accounts.add("Cash")
 
                 for (document in documents) {
@@ -324,9 +336,7 @@ class AddFragment : Fragment() {
                         selectedPaymentMethod = accounts[which]
                         accountNameTextView.text = selectedPaymentMethod
 
-                        // Если хочешь — можешь тут достать саму карту:
                         val selectedCard = cardMap[selectedPaymentMethod]
-                        // Делай что угодно с selectedCard
                     }
                     .setNegativeButton("Cancel", null)
                     .create()

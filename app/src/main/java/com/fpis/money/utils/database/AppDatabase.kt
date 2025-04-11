@@ -8,11 +8,13 @@ import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import com.fpis.money.models.Converters
 import com.fpis.money.models.Transaction
+import com.fpis.money.models.Transfer
 
-@Database(entities = [Transaction::class], version = 2)
+@Database(entities = [Transaction::class, Transfer::class], version = 3)
 @TypeConverters(Converters::class)
 abstract class AppDatabase : RoomDatabase() {
     abstract fun transactionDao(): TransactionDao
+    abstract fun transferDao(): TransferDao
 
     companion object {
         @Volatile
@@ -20,6 +22,7 @@ abstract class AppDatabase : RoomDatabase() {
 
         fun getDatabase(context: Context): AppDatabase {
 
+//            context.deleteDatabase("money_tracker_database")
             return INSTANCE ?: synchronized(this) {
                 val instance = Room.databaseBuilder(
                     context.applicationContext,
