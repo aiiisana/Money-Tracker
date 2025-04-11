@@ -1,4 +1,4 @@
-package com.fpis.money.views.fragments.cards
+package com.fpis.money.models
 
 
 data class Card(

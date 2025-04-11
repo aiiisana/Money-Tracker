@@ -3,7 +3,6 @@ package com.fpis.money.views.fragments.cards
 import android.app.Activity
 import android.app.DatePickerDialog
 import android.content.Intent
-import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Color
 import android.net.Uri
@@ -20,8 +19,7 @@ import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import com.fpis.money.R
 import com.fpis.money.databinding.FragmentEditCardBinding
-import com.fpis.money.views.fragments.cards.ToastType
-import com.fpis.money.views.fragments.cards.showCustomToast
+import com.fpis.money.models.Card
 import com.larswerkman.holocolorpicker.ColorPicker
 import com.larswerkman.holocolorpicker.SaturationBar
 import java.io.FileNotFoundException

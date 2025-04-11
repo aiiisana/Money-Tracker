@@ -1,62 +1,71 @@
-package com.fpis.money.views.fragments.cards
-
 import android.os.Bundle
-import androidx.fragment.app.Fragment
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.util.Log
+import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.fpis.money.R
-import com.fpis.money.views.activities.MainActivity
-import com.fpis.money.views.fragments.cards.placeholder.PlaceholderContent
-import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.fpis.money.models.Card
+import com.fpis.money.views.fragments.cards.AddCardFragment
+import com.fpis.money.views.fragments.cards.EditCardFragment
+import com.fpis.money.views.fragments.cards.MyCardRecyclerViewAdapter
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
 
 class CardFragment : Fragment() {
+
+    private lateinit var recyclerView: RecyclerView
+    private lateinit var adapter: MyCardRecyclerViewAdapter
+    private val cardList = mutableListOf<Card>()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(R.layout.fragment_card_list, container, false)
-
-        // Set up RecyclerView
-        val recyclerView = view.findViewById<RecyclerView>(R.id.list)
+        recyclerView = view.findViewById(R.id.list)
         recyclerView.layoutManager = LinearLayoutManager(context)
 
-        // Create a smaller sample list (just 3 items for testing)
-        val sampleItems = PlaceholderContent.ITEMS.take(5)
-
-        // Set up adapter with edit card callback
-        recyclerView.adapter = MyCardRecyclerViewAdapter(sampleItems) { position ->
-            // Handle edit card action
+        adapter = MyCardRecyclerViewAdapter(cardList) { position ->
             showEditCardFragment(position)
         }
+        recyclerView.adapter = adapter
 
-        // Set up the add button to show AddCardFragment
-        val addButton = view.findViewById<View>(R.id.button_add)
-        addButton?.setOnClickListener {
-            try {
-                showAddCardFragment()
-            } catch (e: Exception) {
-                Log.e("CardFragment", "Error showing AddCardFragment: ${e.message}")
-                e.printStackTrace()
-            }
+        view.findViewById<View>(R.id.button_add)?.setOnClickListener {
+            showAddCardFragment()
         }
+
+        loadUserCardsFromFirestore()
 
         return view
     }
 
+    private fun loadUserCardsFromFirestore() {
+        val currentUser = FirebaseAuth.getInstance().currentUser
+        val db = FirebaseFirestore.getInstance()
+
+        if (currentUser != null) {
+            db.collection("users")
+                .document(currentUser.uid)
+                .collection("cards")
+                .get()
+                .addOnSuccessListener { result ->
+                    val cards = result.mapNotNull { it.toObject(Card::class.java) }
+                    adapter.updateCards(cards)
+                }
+                .addOnFailureListener { exception ->
+                    Log.e("CardFragment", "Error loading cards: ${exception.message}")
+                }
+        } else {
+            Log.e("CardFragment", "User not authenticated")
+        }
+    }
+
     private fun showAddCardFragment() {
-        // Create a new instance of AddCardFragment
         val addCardFragment = AddCardFragment.newInstance()
-
-        // Get the fragment manager from the activity
-        val fragmentManager = parentFragmentManager
-
-        // Add the AddCardFragment to the container and hide the current fragment
-        fragmentManager.beginTransaction()
+        parentFragmentManager.beginTransaction()
             .add(R.id.fragment_container, addCardFragment)
             .hide(this)
             .addToBackStack("addCard")
@@ -64,16 +73,9 @@ class CardFragment : Fragment() {
     }
 
     private fun showEditCardFragment(position: Int) {
-        // Create a new instance of EditCardFragment with the card ID
-        // In a real app, you would get the actual card ID from your data source
-        val cardId = "card_id_$position"
+        val cardId = cardList.getOrNull(position)?.id ?: return
         val editCardFragment = EditCardFragment.newInstance(cardId)
-
-        // Get the fragment manager from the activity
-        val fragmentManager = parentFragmentManager
-
-        // Add the EditCardFragment to the container and hide the current fragment
-        fragmentManager.beginTransaction()
+        parentFragmentManager.beginTransaction()
             .add(R.id.fragment_container, editCardFragment)
             .hide(this)
             .addToBackStack("editCard")

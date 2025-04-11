@@ -1,5 +1,6 @@
 package com.fpis.money.views.activities
 
+import CardFragment
 import com.fpis.money.databinding.ActivityMainBinding
 import android.annotation.SuppressLint
 import androidx.appcompat.app.AppCompatActivity
@@ -8,7 +9,6 @@ import androidx.fragment.app.Fragment
 import com.fpis.money.R
 import com.fpis.money.utils.database.AppDatabase
 import com.fpis.money.views.fragments.add.AddFragment
-import com.fpis.money.views.fragments.cards.CardFragment
 import com.fpis.money.views.fragments.home.HomeFragment
 import com.fpis.money.views.fragments.menu.MenuFragment
 import com.fpis.money.views.fragments.records.RecordFragment

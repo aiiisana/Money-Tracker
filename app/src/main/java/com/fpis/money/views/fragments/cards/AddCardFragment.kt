@@ -3,7 +3,6 @@ package com.fpis.money.views.fragments.cards
 import android.app.Activity
 import android.app.DatePickerDialog
 import android.content.Intent
-import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Color
 import android.net.Uri
@@ -16,12 +15,14 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import com.fpis.money.R
 import com.fpis.money.databinding.FragmentAddCardBinding
-import com.fpis.money.views.fragments.cards.showCustomToast
-import com.fpis.money.views.fragments.cards.ToastType
+import com.fpis.money.models.Card
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
 import com.larswerkman.holocolorpicker.ColorPicker
 import com.larswerkman.holocolorpicker.SaturationBar
 import java.io.FileNotFoundException
@@ -427,20 +428,28 @@ class AddCardFragment : Fragment() {
             expiryDate = binding.etExpiryDate.text.toString().trim(),
             cvv = binding.etCvv.text.toString().trim(),
             cardColor = selectedColor,
-            cardType = "Credit", // Default type
-            bankName = "Kaspi Bank" // Default bank
+            cardType = "Credit",
+            bankName = "Kaspi Bank"
         )
 
-        // Save custom image if selected
-        if (customImageUri != null) {
-            // In a real app, you would save the image to storage and store the path
-            // For this example, we'll just show a message
-            showCustomToast(requireContext(), "Card added with custom image", ToastType.SUCCESS)
+        val currentUser = FirebaseAuth.getInstance().currentUser
+        if (currentUser != null) {
+            val db = FirebaseFirestore.getInstance()
+            db.collection("users")
+                .document(currentUser.uid)
+                .collection("cards")
+                .document(card.id)
+                .set(card)
+                .addOnSuccessListener {
+                    Toast.makeText(requireContext(), "Card added successfully", Toast.LENGTH_SHORT).show()
+                    parentFragmentManager.popBackStack()
+                }
+                .addOnFailureListener { e ->
+                    Toast.makeText(requireContext(), "Error saving card: ${e.message}", Toast.LENGTH_SHORT).show()
+                }
         } else {
-            // Here you would save the card to your database
-            showCustomToast(requireContext(), "Card added successfully", ToastType.SUCCESS)
+            Toast.makeText(requireContext(), "User not authenticated", Toast.LENGTH_SHORT).show()
         }
-
         parentFragmentManager.popBackStack()
     }
 

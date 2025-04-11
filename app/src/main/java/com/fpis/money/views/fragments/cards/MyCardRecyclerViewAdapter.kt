@@ -1,8 +1,8 @@
 package com.fpis.money.views.fragments.cards
 
 import android.annotation.SuppressLint
-import android.app.AlertDialog
 import android.app.Dialog
+import android.graphics.Color
 import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
@@ -12,17 +12,15 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.cardview.widget.CardView
 import com.fpis.money.R
-import com.fpis.money.views.fragments.cards.showCustomToast
+import com.fpis.money.models.Card
 import com.fpis.money.views.fragments.cards.placeholder.PlaceholderContent.PlaceholderItem
 
 class MyCardRecyclerViewAdapter(
-    private val values: List<PlaceholderItem>,
+    private var cardsList: MutableList<Card>,
     private val onEditCard: (Int) -> Unit
 ) : RecyclerView.Adapter<MyCardRecyclerViewAdapter.ViewHolder>() {
 
-    // Map to store visibility state for each card position
     private val visibilityMap = mutableMapOf<Int, Boolean>()
-    private var cardsList = values.toMutableList()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = LayoutInflater.from(parent.context)
@@ -32,47 +30,40 @@ class MyCardRecyclerViewAdapter(
 
     @SuppressLint("ResourceType")
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val item = values[position]
-
-        // Get current visibility state (default to false/hidden)
+        val card = cardsList[position]
         val isVisible = visibilityMap[position] ?: false
 
-        // Set card title based on position
-        if (position % 2 == 0) {
-            holder.cardTitle.text = "My Credit Card"
-            holder.cardContent.setCardBackgroundColor(holder.itemView.context.getColor(R.color.credit_card_blue))
-        } else {
-            holder.cardTitle.text = "My Debit Card"
-            holder.cardContent.setCardBackgroundColor(holder.itemView.context.getColor(R.color.debit_card_orange))
-        }
+        holder.cardTitle.text = if (card.cardType == "Credit") "My Credit Card" else "My Debit Card"
+        val colorInt = Color.parseColor(card.cardColor)
+        holder.cardContent.setCardBackgroundColor(colorInt)
 
-        // Set card details based on visibility
-        holder.cardNumber1.text = if (isVisible) "1234" else "* * * *"
-        holder.cardNumber2.text = if (isVisible) "5678" else "* * * *"
-        holder.cardNumber3.text = if (isVisible) "9012" else "* * * *"
-        holder.cardNumber4.text = "1234" // Last 4 digits always visible
+        val cleanNumber = card.cardNumber.padEnd(16, '*')  // just in case
+        holder.cardNumber1.text = if (isVisible) cleanNumber.substring(0, 4) else "* * * *"
+        holder.cardNumber2.text = if (isVisible) cleanNumber.substring(4, 8) else "* * * *"
+        holder.cardNumber3.text = if (isVisible) cleanNumber.substring(8, 12) else "* * * *"
+        holder.cardNumber4.text = cleanNumber.substring(12, 16)
 
-        holder.cardHolder.text = "John Doe"
-        holder.expireDate.text = if (isVisible) "11/25" else "**/**"
-        holder.cvv.text = "CVV: ${if (isVisible) "123" else "***"}"
+        holder.cardHolder.text = card.cardHolder
+        holder.expireDate.text = if (isVisible) card.expiryDate else "**/**"
+        holder.cvv.text = "CVV: ${if (isVisible) card.cvv else "***"}"
 
-        // Set visibility icon based on current state
         holder.visibilityIcon.setImageResource(
             if (isVisible) R.drawable.ic_eye else R.drawable.ic_eye_off
         )
 
-        // Set click listeners
         holder.visibilityIcon.setOnClickListener {
-            // Toggle card number visibility
-            val newVisibility = !(visibilityMap[position] ?: false)
-            visibilityMap[position] = newVisibility
+            visibilityMap[position] = !(visibilityMap[position] ?: false)
             notifyItemChanged(position)
         }
 
-        holder.moreIcon.setOnClickListener { view ->
-            // Show options dialog
-            showCardOptionsDialog(view, position)
+        holder.moreIcon.setOnClickListener {
+            showCardOptionsDialog(holder.itemView, position)
         }
+    }
+
+    fun updateCards(newCards: List<Card>) {
+        cardsList = newCards.toMutableList()
+        notifyDataSetChanged()
     }
 
     private fun showCardOptionsDialog(view: View, position: Int) {

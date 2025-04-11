@@ -133,6 +133,7 @@ class AddFragment : Fragment() {
         categoryText.text = "Select Category"
         categoryIcon.setImageResource(R.drawable.ic_launcher_foreground)
         dateTimeValue.text = "Select Date & Time"
+        notes.setText("")
         updateAmountValue()
         updateTabSelection()
     }
