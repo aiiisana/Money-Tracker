@@ -34,7 +34,7 @@ class RecordDetailBottomSheet(private val transaction: Transaction) : BottomShee
         val view = inflater.inflate(R.layout.fragment_record_detail, container, false)
 
         val accountName = view.findViewById<TextView>(R.id.account_name)
-        categoryText = view.findViewById(R.id.category_text) // Инициализация categoryText
+        categoryText = view.findViewById(R.id.category_text)
         val subCategory = view.findViewById<TextView>(R.id.subcategory_label)
         amountValue = view.findViewById(R.id.amount_value)
         val date = view.findViewById<TextView>(R.id.date_time_value)
@@ -48,18 +48,18 @@ class RecordDetailBottomSheet(private val transaction: Transaction) : BottomShee
         tabIncome = view.findViewById(R.id.income_button_text)
         tabTransfer = view.findViewById(R.id.transfer_button_text)
 
-        val dateFormat = SimpleDateFormat("dd MMM yyyy", Locale.getDefault())
+        val dateFormat = SimpleDateFormat("dd MMM yyyy, hh:mm a", Locale.getDefault())
         val formattedDate = dateFormat.format(transaction.date)
 
         accountName.text = transaction.paymentMethod
-        categoryText.text = transaction.category // Отображение категории
+        categoryText.text = transaction.category
         subCategory.text = transaction.subCategory
         amountValue.text = formatAmount(transaction.amount, transaction.type)
         date.text = formattedDate
         notes.text = transaction.notes
 
-        setType(transaction.type)  // Set the type for initial display
-        setTabClickListeners()     // Set listeners to change type
+        setType(transaction.type)
+        setTabClickListeners()
 
         return view
     }

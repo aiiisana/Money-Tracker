@@ -121,8 +121,7 @@ class AddFragment : Fragment() {
             navController.navigate(R.id.action_addFragment_to_recordFragment)
 
         } catch (e: Exception) {
-            Log.e("AddFragment", "Error parsing date: ${e.message}")
-            Toast.makeText(context, "Invalid format", Toast.LENGTH_LONG).show()
+            Log.e("AddFragment", "Error parsing data: ${e.message}")
         }
     }
 

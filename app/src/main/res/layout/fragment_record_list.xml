@@ -20,6 +20,22 @@
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginTop="48dp" />
 
+    <Spinner
+        android:id="@+id/sort_spinner"
+        android:layout_width="0dp"
+        android:layout_height="48dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:background="@drawable/spinner_background"
+        android:paddingStart="12dp"
+        android:paddingEnd="12dp"
+        android:textAlignment="center"
+        android:popupBackground="#FF121418"
+        app:layout_constraintTop_toBottomOf="@id/header_title"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
     <EditText
         android:id="@+id/search_input"
         android:layout_width="0dp"
@@ -32,7 +48,7 @@
         android:drawableStart="@android:drawable/ic_menu_search"
         android:drawablePadding="8dp"
         android:inputType="text"
-        app:layout_constraintTop_toBottomOf="@id/header_title"
+        app:layout_constraintTop_toBottomOf="@id/sort_spinner"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginTop="12dp"

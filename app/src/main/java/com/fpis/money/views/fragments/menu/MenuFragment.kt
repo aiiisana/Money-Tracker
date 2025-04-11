@@ -22,7 +22,7 @@ class MenuFragment : Fragment() {
     private lateinit var rateUsLayout: LinearLayout
     private lateinit var supportLayout: LinearLayout
     private lateinit var restorePurchasesLayout: LinearLayout
-    private lateinit var logOutLayout: LinearLayout
+    private lateinit var profileLayout: LinearLayout
 
     private var selectedMenuItem: LinearLayout? = null
 
@@ -42,7 +42,7 @@ class MenuFragment : Fragment() {
         rateUsLayout = view.findViewById(R.id.rate_us_layout)
         supportLayout = view.findViewById(R.id.support_layout)
         restorePurchasesLayout = view.findViewById(R.id.restore_purchases_layout)
-        logOutLayout = view.findViewById(R.id.log_out_layout)
+        profileLayout = view.findViewById(R.id.profile_layout)
 
         // Set click listeners for all menu items
         setupMenuItemClickListeners()
@@ -58,7 +58,7 @@ class MenuFragment : Fragment() {
             rateUsLayout,
             supportLayout,
             restorePurchasesLayout,
-            logOutLayout
+            profileLayout
         )
 
         menuItems.forEach { menuItem ->
@@ -76,7 +76,7 @@ class MenuFragment : Fragment() {
             rateUsLayout,
             supportLayout,
             restorePurchasesLayout,
-            logOutLayout
+            profileLayout
         )
 
         menuItems.forEach { resetMenuItemColors(it) }
@@ -123,7 +123,7 @@ class MenuFragment : Fragment() {
             R.id.rate_us_layout -> R.id.rate_us_icon_container
             R.id.support_layout -> R.id.support_icon_container
             R.id.restore_purchases_layout -> R.id.restore_purchases_icon_container
-            R.id.log_out_layout -> R.id.log_out_icon_container
+            R.id.profile_layout -> R.id.profile_icon_container
             else -> 0
         }
     }
@@ -135,7 +135,7 @@ class MenuFragment : Fragment() {
             R.id.rate_us_layout -> R.id.rate_us_icon
             R.id.support_layout -> R.id.support_icon
             R.id.restore_purchases_layout -> R.id.restore_purchases_icon
-            R.id.log_out_layout -> R.id.log_out_icon
+            R.id.profile_layout -> R.id.log_out_icon
             else -> 0
         }
     }
@@ -147,7 +147,7 @@ class MenuFragment : Fragment() {
             R.id.rate_us_layout -> R.id.rate_us_text
             R.id.support_layout -> R.id.support_text
             R.id.restore_purchases_layout -> R.id.restore_purchases_text
-            R.id.log_out_layout -> R.id.log_out_text
+            R.id.profile_layout -> R.id.profile_text
             else -> 0
         }
     }
@@ -159,7 +159,7 @@ class MenuFragment : Fragment() {
             R.id.rate_us_layout -> R.id.rate_us_arrow
             R.id.support_layout -> R.id.support_arrow
             R.id.restore_purchases_layout -> R.id.restore_purchases_arrow
-            R.id.log_out_layout -> R.id.log_out_arrow
+            R.id.profile_layout -> R.id.profile_arrow
             else -> 0
         }
     }
@@ -181,20 +181,14 @@ class MenuFragment : Fragment() {
             R.id.restore_purchases_layout -> {
                 // Логика восстановления покупок
             }
-            R.id.log_out_layout -> {
-                logOut()
+            R.id.profile_layout -> {
+                seeProfile()
             }
         }
     }
 
-    private fun logOut() {
-        FirebaseAuth.getInstance().signOut()
-
-        val sharedPrefs = SharedPreferencesManager(requireContext())
-        sharedPrefs.setUserLoggedIn(false)
-
-        val intent = Intent(activity, LoginActivity::class.java)
-        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+    private fun seeProfile() {
+        val intent = Intent(requireContext(), com.fpis.money.views.activities.profile.ProfileActivity::class.java)
         startActivity(intent)
     }
 }
