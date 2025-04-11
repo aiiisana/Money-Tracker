@@ -9,7 +9,7 @@ import androidx.room.TypeConverters
 import com.fpis.money.models.Converters
 import com.fpis.money.models.Transaction
 
-@Database(entities = [Transaction::class], version = 1)
+@Database(entities = [Transaction::class], version = 2)
 @TypeConverters(Converters::class)
 abstract class AppDatabase : RoomDatabase() {
     abstract fun transactionDao(): TransactionDao

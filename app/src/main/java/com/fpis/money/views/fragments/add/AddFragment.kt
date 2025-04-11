@@ -1,5 +1,6 @@
 package com.fpis.money.views.fragments.add
 
+import android.app.AlertDialog
 import android.app.DatePickerDialog
 import android.app.TimePickerDialog
 import android.content.Context
@@ -16,7 +17,10 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.fpis.money.R
+import com.fpis.money.models.Card
 import com.fpis.money.views.fragments.records.RecordFragment
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -39,6 +43,9 @@ class AddFragment : Fragment() {
     private lateinit var categoryIcon: ImageView
     private lateinit var dateTimeValue: TextView
     private lateinit var notes: EditText
+    private lateinit var accountNameTextView: TextView
+    private lateinit var accountSelectionLayout: LinearLayout
+    private var selectedPaymentMethod: String = "Select account"
 
     private val iconMap = mapOf(
         "Food & Drink" to R.drawable.ic_food_drink,
@@ -84,6 +91,13 @@ class AddFragment : Fragment() {
 
         notes = view.findViewById(R.id.notes_input)
 
+        accountNameTextView = view.findViewById(R.id.account_name)
+        accountSelectionLayout = view.findViewById(R.id.account_selection_layout)
+
+        accountSelectionLayout.setOnClickListener {
+            showAccountSelectionDialog()
+        }
+
         updateAmountValue()
         updateTabSelection()
 
@@ -114,7 +128,7 @@ class AddFragment : Fragment() {
                 throw Exception("Invalid date")
             }
 
-            addViewModel.saveTransaction(currentType, amount, selectedCategory, timestamp, notes.text.toString())
+            addViewModel.saveTransaction(currentType, amount, selectedCategory, timestamp, notes.text.toString(), selectedPaymentMethod)
             resetFields()
 
             val navController = findNavController()
@@ -278,5 +292,49 @@ class AddFragment : Fragment() {
             "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
         )
         return months[month]
+    }
+
+    private fun showAccountSelectionDialog() {
+        val userId = FirebaseAuth.getInstance().currentUser?.uid ?: return
+        val db = FirebaseFirestore.getInstance()
+        val cardsRef = db.collection("users").document(userId).collection("cards")
+
+        cardsRef.get()
+            .addOnSuccessListener { documents ->
+                val accounts = mutableListOf<String>()
+                val cardMap = mutableMapOf<String, Card>() // Чтобы потом знать, какую карту выбрал пользователь
+
+                // Добавляем опцию "Cash"
+                accounts.add("Cash")
+
+                for (document in documents) {
+                    val card = document.toObject(Card::class.java)
+                    val lastFourDigits = if (card.cardNumber.length >= 4)
+                        card.cardNumber.takeLast(4)
+                    else
+                        card.cardNumber
+                    val displayName = "${card.bankName} •••• $lastFourDigits"
+                    accounts.add(displayName)
+                    cardMap[displayName] = card
+                }
+
+                AlertDialog.Builder(requireContext())
+                    .setTitle("Select Account")
+                    .setItems(accounts.toTypedArray()) { _, which ->
+                        selectedPaymentMethod = accounts[which]
+                        accountNameTextView.text = selectedPaymentMethod
+
+                        // Если хочешь — можешь тут достать саму карту:
+                        val selectedCard = cardMap[selectedPaymentMethod]
+                        // Делай что угодно с selectedCard
+                    }
+                    .setNegativeButton("Cancel", null)
+                    .create()
+                    .show()
+            }
+            .addOnFailureListener { e ->
+                Log.e("Firebase", "Error fetching cards: ${e.message}")
+                Toast.makeText(requireContext(), "Failed to load accounts", Toast.LENGTH_SHORT).show()
+            }
     }
 }

@@ -53,6 +53,10 @@ class CardFragment : Fragment() {
                 .get()
                 .addOnSuccessListener { result ->
                     val cards = result.mapNotNull { it.toObject(Card::class.java) }
+
+                    cardList.clear()
+                    cardList.addAll(cards)
+
                     adapter.updateCards(cards)
                 }
                 .addOnFailureListener { exception ->

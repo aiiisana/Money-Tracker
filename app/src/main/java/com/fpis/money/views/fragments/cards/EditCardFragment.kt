@@ -10,6 +10,7 @@ import android.os.Bundle
 import android.provider.MediaStore
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -20,6 +21,8 @@ import androidx.fragment.app.Fragment
 import com.fpis.money.R
 import com.fpis.money.databinding.FragmentEditCardBinding
 import com.fpis.money.models.Card
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
 import com.larswerkman.holocolorpicker.ColorPicker
 import com.larswerkman.holocolorpicker.SaturationBar
 import java.io.FileNotFoundException
@@ -34,6 +37,8 @@ class EditCardFragment : Fragment() {
     private var cardId: String = ""
     private var customImageUri: Uri? = null
     private val PICK_IMAGE_REQUEST = 1
+    private val db = FirebaseFirestore.getInstance()
+    private val auth = FirebaseAuth.getInstance()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -49,6 +54,7 @@ class EditCardFragment : Fragment() {
 
         // Get card data from arguments
         arguments?.let {
+            Log.e("CARD_DEBUG", "Loaded card: $cardId")
             cardId = it.getString(ARG_CARD_ID, "")
             // Load card data if ID is provided
             if (cardId.isNotEmpty()) {
@@ -65,13 +71,22 @@ class EditCardFragment : Fragment() {
     }
 
     private fun loadCardData(cardId: String) {
-        // In a real app, you would fetch the card data from your database
-        // For this example, we'll use dummy data
-        binding.etCardHolder.setText("Batyr Khan")
-        binding.etCardNumber.setText("1234567890125644")
-        binding.etExpiryDate.setText("12/25")
-        binding.etCvv.setText("123")
-        selectedColor = "#4CAF50" // Green color
+        val cardRef = db.collection("cards").document(cardId)
+        cardRef.get().addOnSuccessListener { document ->
+            if (document.exists()) {
+                val card = document.toObject(Card::class.java)
+                if (card != null) {
+                    binding.etCardHolder.setText(card.cardHolder)
+                    binding.etCardNumber.setText(card.cardNumber)
+                    binding.etExpiryDate.setText(card.expiryDate)
+                    binding.etCvv.setText(card.cvv)
+                    selectedColor = card.cardColor
+                    updateCardPreview()
+                    updateColorCircle()
+                }
+                Log.d("CARD_DEBUG", "Loaded card: $card")
+            }
+        }
     }
 
     private fun setupUI() {
@@ -449,17 +464,15 @@ class EditCardFragment : Fragment() {
             bankName = "Kaspi Bank" // Default bank
         )
 
-        // Save custom image if selected
-        if (customImageUri != null) {
-            // In a real app, you would save the image to storage and store the path
-            // For this example, we'll just show a message
-            showCustomToast(requireContext(), "Card updated with custom image", ToastType.SUCCESS)
-        } else {
-            // Here you would update the card in your database
-            showCustomToast(requireContext(), "Card updated", ToastType.SUCCESS)
-        }
-
-        parentFragmentManager.popBackStack()
+        // Save card to Firebase Firestore
+        db.collection("cards").document(card.id).set(card)
+            .addOnSuccessListener {
+                showCustomToast(requireContext(), "Card updated successfully!", ToastType.SUCCESS)
+                parentFragmentManager.popBackStack()
+            }
+            .addOnFailureListener { e ->
+                showCustomToast(requireContext(), "Error: ${e.message}", ToastType.ERROR)
+            }
     }
 
     private fun formatCardNumber(cardNumber: String): String {

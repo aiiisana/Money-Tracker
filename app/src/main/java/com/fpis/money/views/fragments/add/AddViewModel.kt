@@ -18,12 +18,12 @@ class AddViewModel(application: Application) : AndroidViewModel(application as A
 
     private val transactionDao = AppDatabase.getDatabase(application).transactionDao()
 
-    fun saveTransaction(type: String, amount: String, category: String, date: Long, notes: String): LiveData<Boolean> {
+    fun saveTransaction(type: String, amount: String, category: String, date: Long, notes: String, paymentMethod: String): LiveData<Boolean> {
         val result = MutableLiveData<Boolean>()
 
         val newTransaction = Transaction(
             type = type,
-            paymentMethod = "Cash",
+            paymentMethod = paymentMethod,
             date = date,
             amount = amount.toFloat(),
             category = category,
