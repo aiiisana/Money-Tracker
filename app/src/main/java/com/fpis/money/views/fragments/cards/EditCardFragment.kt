@@ -33,12 +33,13 @@ class EditCardFragment : Fragment() {
 
     private var _binding: FragmentEditCardBinding? = null
     private val binding get() = _binding!!
-    private var selectedColor = "#4285F4" // Default blue color
+    private val db = FirebaseFirestore.getInstance()
+    private val auth = FirebaseAuth.getInstance()
+
+    private var selectedColor: String = "#4285F4" // Default blue
     private var cardId: String = ""
     private var customImageUri: Uri? = null
     private val PICK_IMAGE_REQUEST = 1
-    private val db = FirebaseFirestore.getInstance()
-    private val auth = FirebaseAuth.getInstance()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -52,13 +53,12 @@ class EditCardFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        // Get card data from arguments
         arguments?.let {
-            Log.e("CARD_DEBUG", "Loaded card: $cardId")
             cardId = it.getString(ARG_CARD_ID, "")
-            // Load card data if ID is provided
+            Log.d("CARD_DEBUG", "Received cardId: $cardId")
+
             if (cardId.isNotEmpty()) {
-                loadCardData(cardId)
+                loadCardData()
             }
         }
 
@@ -70,23 +70,47 @@ class EditCardFragment : Fragment() {
         updateColorCircle()
     }
 
-    private fun loadCardData(cardId: String) {
-        val cardRef = db.collection("cards").document(cardId)
-        cardRef.get().addOnSuccessListener { document ->
-            if (document.exists()) {
-                val card = document.toObject(Card::class.java)
-                if (card != null) {
-                    binding.etCardHolder.setText(card.cardHolder)
-                    binding.etCardNumber.setText(card.cardNumber)
-                    binding.etExpiryDate.setText(card.expiryDate)
-                    binding.etCvv.setText(card.cvv)
-                    selectedColor = card.cardColor
-                    updateCardPreview()
-                    updateColorCircle()
-                }
-                Log.d("CARD_DEBUG", "Loaded card: $card")
-            }
+    private fun loadCardData() {
+        val userId = auth.currentUser?.uid
+
+        if (userId == null) {
+            Log.e("CARD_DEBUG", "User is not authenticated")
+            return
         }
+
+        Log.d("CARD_DEBUG", "Loading card for user: $userId, cardId: $cardId")
+
+        val cardRef = db
+            .collection("users")
+            .document(userId)
+            .collection("cards")
+            .document(cardId)
+
+        cardRef.get()
+            .addOnSuccessListener { document ->
+                if (document.exists()) {
+                    val card = document.toObject(Card::class.java)
+                    if (card != null) {
+                        Log.d("CARD_DEBUG", "Card loaded successfully: $card")
+
+                        binding.etCardHolder.setText(card.cardHolder)
+                        binding.etCardNumber.setText(card.cardNumber)
+                        binding.etExpiryDate.setText(card.expiryDate)
+                        binding.etCvv.setText(card.cvv)
+
+                        selectedColor = card.cardColor
+                        updateCardPreview()
+                        updateColorCircle()
+                    } else {
+                        Log.w("CARD_DEBUG", "Card object is null")
+                    }
+                } else {
+                    Log.w("CARD_DEBUG", "Card document does not exist")
+                }
+            }
+            .addOnFailureListener { exception ->
+                Log.e("CARD_DEBUG", "Error loading card: ${exception.message}", exception)
+            }
     }
 
     private fun setupUI() {
