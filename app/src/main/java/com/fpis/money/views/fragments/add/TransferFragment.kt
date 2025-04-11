@@ -1,6 +1,8 @@
 package com.fpis.money.views.fragments.add
 
 import android.app.AlertDialog
+import android.app.DatePickerDialog
+import android.app.TimePickerDialog
 import android.graphics.Color
 import android.os.Bundle
 import android.view.*
@@ -11,6 +13,7 @@ import com.fpis.money.R
 import com.fpis.money.models.Card
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
+import java.util.Calendar
 
 class TransferFragment : Fragment() {
 
@@ -25,6 +28,8 @@ class TransferFragment : Fragment() {
     private lateinit var fromAccountTextView: TextView
     private lateinit var toAccountTextView: TextView
     private lateinit var saveTransferButton: Button
+    private lateinit var dateTimeTextView: TextView
+    private var selectedTimestamp: Long = System.currentTimeMillis()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -47,6 +52,13 @@ class TransferFragment : Fragment() {
         amountTextView = view.findViewById(R.id.amountText)
         noteEditText = view.findViewById(R.id.notes_input)
         saveTransferButton = view.findViewById(R.id.add_record_button)
+
+        dateTimeTextView = view.findViewById(R.id.date_time_value)
+        updateDateTimeText(selectedTimestamp)
+
+        dateTimeTextView.setOnClickListener {
+            showDateTimePicker()
+        }
 
         expenseOption.setOnClickListener {
             navigateToAddFragment("expense")
@@ -77,7 +89,7 @@ class TransferFragment : Fragment() {
         saveTransferButton.setOnClickListener {
             val parsedAmount = amount.toFloatOrNull()
             val note = noteEditText.text.toString()
-            val timestamp = System.currentTimeMillis()
+            val timestamp = selectedTimestamp
 
             if (parsedAmount == null || parsedAmount <= 0f) {
                 Toast.makeText(requireContext(), "Enter a valid amount", Toast.LENGTH_SHORT).show()
@@ -165,6 +177,65 @@ class TransferFragment : Fragment() {
         fromAccountTextView.text = "From"
         toAccountTextView.text = "To"
         noteEditText.setText("")
+        dateTimeTextView.text = "Select Date & Time"
         updateAmountText()
+    }
+
+    private fun showDateTimePicker() {
+        val calendar = Calendar.getInstance()
+        val year = calendar.get(Calendar.YEAR)
+        val month = calendar.get(Calendar.MONTH)
+        val day = calendar.get(Calendar.DAY_OF_MONTH)
+        val hour = calendar.get(Calendar.HOUR_OF_DAY)
+        val minute = calendar.get(Calendar.MINUTE)
+
+        val datePickerDialog = DatePickerDialog(
+            requireContext(),
+            { _, selectedYear, selectedMonth, selectedDay ->
+                val timePickerDialog = TimePickerDialog(
+                    requireContext(),
+                    { _, selectedHour, selectedMinute ->
+                        val selectedCalendar = Calendar.getInstance()
+                        selectedCalendar.set(
+                            selectedYear, selectedMonth, selectedDay,
+                            selectedHour, selectedMinute
+                        )
+                        selectedTimestamp = selectedCalendar.timeInMillis
+                        updateDateTimeText(selectedTimestamp)
+                    },
+                    hour,
+                    minute,
+                    false
+                )
+                timePickerDialog.show()
+            },
+            year,
+            month,
+            day
+        )
+        datePickerDialog.show()
+    }
+
+    private fun updateDateTimeText(timestamp: Long) {
+        val calendar = Calendar.getInstance()
+        calendar.timeInMillis = timestamp
+
+        val day = calendar.get(Calendar.DAY_OF_MONTH)
+        val month = getMonthName(calendar.get(Calendar.MONTH))
+        val year = calendar.get(Calendar.YEAR)
+        val hour = calendar.get(Calendar.HOUR)
+        val minute = calendar.get(Calendar.MINUTE)
+        val amPm = if (calendar.get(Calendar.AM_PM) == Calendar.AM) "AM" else "PM"
+
+        val formatted = String.format("%02d %s %04d, %02d:%02d %s", day, month, year, hour, minute, amPm)
+        dateTimeTextView.text = formatted
+    }
+
+    private fun getMonthName(month: Int): String {
+        val months = arrayOf(
+            "Jan", "Feb", "Mar", "Apr", "May", "Jun",
+            "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
+        )
+        return months[month]
     }
 }

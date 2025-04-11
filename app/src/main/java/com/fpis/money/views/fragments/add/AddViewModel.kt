@@ -10,6 +10,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.fpis.money.models.Transaction
+import com.fpis.money.models.Transfer
 import com.fpis.money.utils.database.AppDatabase
 import com.fpis.money.utils.database.DatabaseHelper
 import kotlinx.coroutines.launch
@@ -61,9 +62,19 @@ class AddViewModel(application: Application) : AndroidViewModel(application as A
             notes = notes
         )
 
+        val transfer = Transfer(
+            fromAccount = fromAccount,
+            toAccount = toAccount,
+            amount = amount.toDouble(),
+            date = date,
+            notes = notes
+        )
+
         viewModelScope.launch {
-            transactionDao.insert(outTransaction)
-            transactionDao.insert(inTransaction)
+            val db = AppDatabase.getDatabase(getApplication())
+            db.transactionDao().insert(outTransaction)
+            db.transactionDao().insert(inTransaction)
+            db.transferDao().insertTransfer(transfer)
         }
     }
 }

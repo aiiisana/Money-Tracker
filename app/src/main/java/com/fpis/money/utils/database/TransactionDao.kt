@@ -14,7 +14,7 @@ interface TransactionDao {
     @Insert
     suspend fun insert(transaction: Transaction)
 
-    @Query("SELECT * FROM transactions ORDER BY date DESC")
+    @Query("SELECT * FROM transactions WHERE type NOT IN ('transfer_in', 'transfer_out')")
     fun getAllTransactions(): Flow<List<Transaction>>
 
     @Update
