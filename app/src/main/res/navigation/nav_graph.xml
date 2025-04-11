@@ -9,6 +9,23 @@
         android:name="com.fpis.money.views.fragments.home.HomeFragment"
         android:label="Home"
         tools:layout="@layout/fragment_home"/>
+    <action
+        android:id="@+id/action_homeFragment_to_budgetFragment"
+        app:destination="@id/budgetFragment" />
+    <fragment
+        android:id="@+id/budgetFragment"
+        android:name="com.fpis.money.views.fragments.home.budgets.BudgetFragment"
+        android:label="Budgets"
+        tools:layout="@layout/fragment_budget_list">
+    <argument
+        android:name="budget_id"
+        app:argType="string"
+        app:nullable="true"
+        android:defaultValue=""/>
+    </fragment>
+
+
+
 
     <fragment
         android:id="@+id/recordFragment"

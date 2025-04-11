@@ -40,6 +40,7 @@ android {
     }
     buildFeatures {
         viewBinding = true
+        dataBinding = true
     }
     composeOptions {
         kotlinCompilerExtensionVersion = "1.5.1"
@@ -80,6 +81,7 @@ dependencies {
     implementation("com.google.firebase:firebase-database-ktx")
     implementation("com.google.firebase:firebase-analytics-ktx")
     implementation("com.larswerkman:HoloColorPicker:1.5")
+    implementation("com.github.PhilJay:MPAndroidChart:v3.1.0")
 
     val room_version = "2.6.1"
 

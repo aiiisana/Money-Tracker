@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:background="@color/black"
+    android:padding="24dp">
+
+    <!-- Header Title -->
+    <TextView
+        android:id="@+id/tv_popup_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Budget Settings"
+        android:textSize="22sp"
+        android:textStyle="bold"
+        android:gravity="center"
+        android:textColor="@android:color/white"
+        android:paddingBottom="12dp" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#333333"
+        android:layout_marginBottom="12dp"/>
+
+    <!-- Edit Option -->
+    <TextView
+        android:id="@+id/tv_edit_budget"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Edit Budget"
+        android:textColor="@android:color/white"
+        android:textSize="18sp"
+        android:paddingVertical="12dp"
+        android:paddingHorizontal="8dp" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="12dp"
+        android:background="@android:color/transparent" />
+
+    <!-- Delete Option -->
+    <TextView
+        android:id="@+id/tv_delete_budget"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Delete Budget"
+        android:textColor="#FF5252"
+        android:textSize="18sp"
+        android:paddingVertical="12dp"
+        android:paddingHorizontal="8dp" />
+
+</LinearLayout>

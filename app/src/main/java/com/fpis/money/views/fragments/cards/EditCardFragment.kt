@@ -70,7 +70,7 @@ class EditCardFragment : Fragment() {
         // In a real app, you would fetch the card data from your database
         // For this example, we'll use dummy data
         binding.etCardHolder.setText("Batyr Khan")
-        binding.etCardNumber.setText("123456789012")
+        binding.etCardNumber.setText("1234567890125644")
         binding.etExpiryDate.setText("12/25")
         binding.etCvv.setText("123")
         selectedColor = "#4CAF50" // Green color

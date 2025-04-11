@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
@@ -255,121 +256,162 @@
                                 android:background="#0DFFFFFF"
                                 android:orientation="vertical"></LinearLayout>
 
-                            <LinearLayout
-                                android:id="@+id/r15ic2vybbrq"
+                            <HorizontalScrollView
+                                android:id="@+id/categories_scroll"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:gravity="center_vertical"
-                                android:orientation="horizontal"
+                                android:scrollbars="none"
+                                android:clipToPadding="false"
                                 android:paddingHorizontal="15dp">
 
-                                <com.google.android.material.imageview.ShapeableImageView
-                                    android:id="@+id/rxim720knfd"
-                                    android:layout_width="24dp"
-                                    android:layout_height="24dp"
-                                    android:layout_marginEnd="10dp"
-                                    android:scaleType="fitXY"
-                                    android:src="@drawable/ic_circular_progress"
-                                    app:shapeAppearanceOverlay="@style/cr35" />
-
                                 <LinearLayout
-                                    android:id="@+id/rz6h649ncek"
+                                    android:id="@+id/r15ic2vybbrq"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:layout_marginEnd="25dp"
-                                    android:orientation="vertical">
+                                    android:orientation="horizontal">
 
-                                    <TextView
-                                        android:id="@+id/rucdlzmkrjlp"
-                                        android:layout_width="wrap_content"
-                                        android:layout_height="wrap_content"
-                                        android:layout_marginBottom="2dp"
-                                        android:text="Entertainment"
-                                        android:textColor="#FFFFFF"
-                                        android:textSize="12sp"
-                                        android:textStyle="bold" />
-
-                                    <TextView
-                                        android:id="@+id/rpenb33b77xg"
-                                        android:layout_width="wrap_content"
-                                        android:layout_height="wrap_content"
-                                        android:text="₸156,500 spent"
-                                        android:textColor="#66FFA3"
-                                        android:textSize="12sp"
-                                        android:textStyle="bold" />
-                                </LinearLayout>
-
-                                <LinearLayout
-                                    android:id="@+id/rtrik66ylvzp"
-                                    android:layout_width="0dp"
-                                    android:layout_height="wrap_content"
-                                    android:layout_weight="1"
-                                    android:background="@drawable/cr35bff94661a"
-                                    android:gravity="center_vertical"
-                                    android:orientation="horizontal"
-                                    android:paddingVertical="10dp">
-
-                                    <com.google.android.material.imageview.ShapeableImageView
-                                        android:id="@+id/rzq2sb82qscq"
-                                        android:layout_width="24dp"
-                                        android:layout_height="24dp"
-                                        android:layout_marginStart="15dp"
-                                        android:layout_marginEnd="10dp"
-                                        android:scaleType="fitXY"
-                                        android:src="@drawable/ic_circular_progress"
-                                        app:shapeAppearanceOverlay="@style/cr35" />
-
+                                    <!-- Entertainment Category -->
                                     <LinearLayout
-                                        android:id="@+id/ro744g33gdwd"
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
-                                        android:layout_marginEnd="15dp"
-                                        android:orientation="vertical">
+                                        android:background="@drawable/cr35b66ffa30d"
+                                        android:paddingVertical="10dp"
+                                        android:paddingHorizontal="15dp"
+                                        android:layout_marginEnd="10dp"
+                                        android:gravity="center_vertical"
+                                        android:orientation="horizontal">
 
-                                        <TextView
-                                            android:id="@+id/rb1jkxtvtiq7"
+                                        <ImageView
+                                            android:id="@+id/rxim720knfd"
+                                            android:layout_width="24dp"
+                                            android:layout_height="24dp"
+                                            android:layout_marginEnd="10dp"
+                                            android:scaleType="fitXY"
+                                            android:src="@drawable/ic_circular_progress"
+                                            app:shapeAppearanceOverlay="@style/cr35" />
+
+                                        <LinearLayout
+                                            android:id="@+id/rz6h649ncek"
                                             android:layout_width="wrap_content"
                                             android:layout_height="wrap_content"
-                                            android:layout_marginBottom="2dp"
-                                            android:text="Food"
-                                            android:textColor="#FFFFFF"
-                                            android:textSize="12sp"
-                                            android:textStyle="bold" />
+                                            android:orientation="vertical">
 
-                                        <TextView
-                                            android:id="@+id/rn6ubd8927c"
+                                            <TextView
+                                                android:id="@+id/rucdlzmkrjlp"
+                                                android:layout_width="wrap_content"
+                                                android:layout_height="wrap_content"
+                                                android:layout_marginBottom="2dp"
+                                                android:text="Entertainment"
+                                                android:textColor="#FFFFFF"
+                                                android:textSize="12sp"
+                                                android:textStyle="bold" />
+
+                                            <TextView
+                                                android:id="@+id/rpenb33b77xg"
+                                                android:layout_width="wrap_content"
+                                                android:layout_height="wrap_content"
+                                                android:text="₸156,500 spent"
+                                                android:textColor="#66FFA3"
+                                                android:textSize="12sp"
+                                                android:textStyle="bold" />
+                                        </LinearLayout>
+                                    </LinearLayout>
+
+                                    <!-- Food Category -->
+                                    <LinearLayout
+                                        android:id="@+id/rtrik66ylvzp"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:background="@drawable/cr35bff94661a"
+                                        android:paddingVertical="10dp"
+                                        android:paddingHorizontal="15dp"
+                                        android:layout_marginEnd="10dp"
+                                        android:gravity="center_vertical"
+                                        android:orientation="horizontal">
+
+                                        <ImageView
+                                            android:id="@+id/rzq2sb82qscq"
+                                            android:layout_width="24dp"
+                                            android:layout_height="24dp"
+                                            android:layout_marginEnd="10dp"
+                                            android:scaleType="fitXY"
+                                            android:src="@drawable/circular_progress_food"
+                                            app:shapeAppearanceOverlay="@style/cr35" />
+
+                                        <LinearLayout
+                                            android:id="@+id/ro744g33gdwd"
                                             android:layout_width="wrap_content"
                                             android:layout_height="wrap_content"
-                                            android:text="₸80,000 spent"
-                                            android:textColor="#FF9366"
-                                            android:textSize="12sp"
-                                            android:textStyle="bold" />
+                                            android:orientation="vertical">
+
+                                            <TextView
+                                                android:id="@+id/rb1jkxtvtiq7"
+                                                android:layout_width="wrap_content"
+                                                android:layout_height="wrap_content"
+                                                android:layout_marginBottom="2dp"
+                                                android:text="Food"
+                                                android:textColor="#FFFFFF"
+                                                android:textSize="12sp"
+                                                android:textStyle="bold" />
+
+                                            <TextView
+                                                android:id="@+id/rn6ubd8927c"
+                                                android:layout_width="wrap_content"
+                                                android:layout_height="wrap_content"
+                                                android:text="₸80,000 spent"
+                                                android:textColor="#FF9366"
+                                                android:textSize="12sp"
+                                                android:textStyle="bold" />
+                                        </LinearLayout>
+                                    </LinearLayout>
+
+                                    <!-- Transportation Category -->
+                                    <LinearLayout
+                                        android:id="@+id/rmeoyx66i98"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:background="@drawable/cr35b3db9ff1a"
+                                        android:paddingVertical="10dp"
+                                        android:paddingHorizontal="15dp"
+                                        android:gravity="center_vertical"
+                                        android:orientation="horizontal">
+
+                                        <ImageView
+                                            android:id="@+id/r0yptratukvh"
+                                            android:layout_width="24dp"
+                                            android:layout_height="24dp"
+                                            android:layout_marginEnd="10dp"
+                                            android:scaleType="fitXY"
+                                            android:src="@drawable/ic_cirular_progress_tr"
+                                            app:shapeAppearanceOverlay="@style/cr35" />
+
+                                        <LinearLayout
+                                            android:layout_width="wrap_content"
+                                            android:layout_height="wrap_content"
+                                            android:orientation="vertical">
+
+                                            <TextView
+                                                android:layout_width="wrap_content"
+                                                android:layout_height="wrap_content"
+                                                android:layout_marginBottom="2dp"
+                                                android:text="Transportation"
+                                                android:textColor="#FFFFFF"
+                                                android:textSize="12sp"
+                                                android:textStyle="bold" />
+
+                                            <TextView
+                                                android:layout_width="wrap_content"
+                                                android:layout_height="wrap_content"
+                                                android:text="₸25,000 spent"
+                                                android:textColor="#66D9FF"
+                                                android:textSize="12sp"
+                                                android:textStyle="bold" />
+                                        </LinearLayout>
                                     </LinearLayout>
                                 </LinearLayout>
-                            </LinearLayout>
+                            </HorizontalScrollView>
                         </LinearLayout>
                     </LinearLayout>
-                </LinearLayout>
-                <LinearLayout
-                    android:id="@+id/rmeoyx66i98"
-                    android:layout_marginBottom="25dp"
-                    android:layout_marginEnd="-140dp"
-                    android:layout_alignParentBottom="true"
-                    android:layout_alignParentRight="true"
-                    android:layout_width="156dp"
-                    android:layout_height="wrap_content"
-                    android:background="@drawable/cr35b3db9ff1a"
-                    android:orientation="vertical">
-                    <com.google.android.material.imageview.ShapeableImageView
-                        android:id="@+id/r0yptratukvh"
-                        app:shapeAppearanceOverlay="@style/cr35"
-                        android:layout_width="24dp"
-                        android:layout_height="24dp"
-                        android:layout_marginVertical="14dp"
-                        android:layout_marginStart="15dp"
-                        android:src="@mipmap/ic_launcher"
-                        android:scaleType="fitXY"
-                        />
                 </LinearLayout>
             </RelativeLayout>
             <RelativeLayout
@@ -431,75 +473,44 @@
                                     />
                             </LinearLayout>
                         </LinearLayout>
-                        <RelativeLayout
-                            android:id="@+id/r7xlueer7ly4_rl"
-                            android:layout_width="wrap_content"
+
+                        <!-- Replace the existing chart placeholder with our custom chart view -->
+                        <com.fpis.money.views.fragments.home.ExpenseChartView
+                            android:id="@+id/expense_chart_view"
+                            android:layout_width="200dp"
+                            android:layout_height="200dp"
+                            android:layout_gravity="center_horizontal"
+                            android:layout_marginBottom="20dp" />
+
+                        <TextView
+                            android:id="@+id/rrrdy9mslim"
+                            android:textColor="#FFFFFF"
+                            android:textSize="14sp"
+                            android:textStyle="bold"
                             android:layout_height="wrap_content"
-                            android:layout_marginBottom="35dp"
-                            android:layout_marginHorizontal="83dp"
-                            >
-                            <ImageView
-                                android:id="@+id/r7xlueer7ly4"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:src="@mipmap/ic_launcher"
-                                android:scaleType="fitXY"
-                                />
-                            <LinearLayout
-                                android:padding="53dp"
-                                android:layout_width="match_parent"
-                                android:layout_height="match_parent"
-                                android:orientation="vertical">
-                                <RelativeLayout
-                                    android:id="@+id/r553x0sf7j2f_rl"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    >
-                                    <ImageView
-                                        android:id="@+id/r553x0sf7j2f"
-                                        android:layout_width="wrap_content"
-                                        android:layout_height="wrap_content"
-                                        android:src="@mipmap/ic_launcher"
-                                        android:scaleType="fitXY"
-                                        />
-                                    <LinearLayout
-                                        android:paddingTop="25dp"
-                                        android:paddingBottom="51dp"
-                                        android:paddingHorizontal="17dp"
-                                        android:layout_width="match_parent"
-                                        android:layout_height="match_parent"
-                                        android:orientation="vertical">
-                                        <TextView
-                                            android:id="@+id/rrrdy9mslim"
-                                            android:textColor="#FFFFFF"
-                                            android:textSize="12sp"
-                                            android:textStyle="bold"
-                                            android:layout_height="wrap_content"
-                                            android:layout_width="wrap_content"
-                                            android:text="Expense"
-                                            />
-                                    </LinearLayout>
-                                </RelativeLayout>
-                            </LinearLayout>
-                            <TextView
-                                android:id="@+id/rk44edj4rkt"
-                                android:textColor="#FFFFFF"
-                                android:textSize="20sp"
-                                android:textStyle="bold"
-                                android:layout_marginBottom="75dp"
-                                android:layout_marginEnd="47dp"
-                                android:layout_marginStart="47dp"
-                                android:layout_alignParentBottom="true"
-                                android:layout_height="wrap_content"
-                                android:layout_width="wrap_content"
-                                android:text="₸270,000"
-                                />
-                        </RelativeLayout>
+                            android:layout_width="wrap_content"
+                            android:layout_gravity="center_horizontal"
+                            android:text="Expense"
+                            />
+
+                        <TextView
+                            android:id="@+id/rk44edj4rkt"
+                            android:textColor="#FFFFFF"
+                            android:textSize="24sp"
+                            android:textStyle="bold"
+                            android:layout_gravity="center_horizontal"
+                            android:layout_marginTop="8dp"
+                            android:layout_height="wrap_content"
+                            android:layout_width="wrap_content"
+                            android:text="₸270,000"
+                            />
+
                         <LinearLayout
                             android:id="@+id/rjthc0n5kdv"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="127dp"
+                            android:layout_marginTop="20dp"
                             android:orientation="horizontal">
                             <LinearLayout
                                 android:id="@+id/rwzvf364tbg"
