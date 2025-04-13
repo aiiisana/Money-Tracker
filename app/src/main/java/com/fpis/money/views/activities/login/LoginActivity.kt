@@ -71,6 +71,13 @@ class LoginActivity : AppCompatActivity() {
                 }
             }
         })
+
+
+        val forgotPasswordText = findViewById<TextView>(R.id.forgotPassword)
+        forgotPasswordText.setOnClickListener {
+            val intent = Intent(this, ForgotPasswordActivity::class.java)
+            startActivity(intent)
+        }
     }
 
     private fun validateUsername(): Boolean {
