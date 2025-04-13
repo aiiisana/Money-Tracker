@@ -1,6 +1,5 @@
 package com.fpis.money.views.fragments.records
 
-import android.annotation.SuppressLint
 import android.app.DatePickerDialog
 import android.graphics.Canvas
 import android.graphics.Color
@@ -18,6 +17,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.fpis.money.R
 import com.fpis.money.models.TransactionItem
+import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import java.util.*
 
 class RecordFragment : Fragment() {
@@ -75,12 +75,28 @@ class RecordFragment : Fragment() {
 
         }
 
-        adapter = RecordRecyclerViewAdapter(emptyList(), requireActivity().supportFragmentManager) { item ->
-            when (item) {
-                is TransactionItem.RecordItem -> recordViewModel.deleteRecord(item.record)
-                is TransactionItem.TransferItem -> recordViewModel.deleteTransfer(item.transfer)
+        adapter = RecordRecyclerViewAdapter(
+            emptyList(),
+            requireActivity().supportFragmentManager,
+            onDelete = { item ->
+                when (item) {
+                    is TransactionItem.RecordItem -> recordViewModel.deleteRecord(item.record)
+                    is TransactionItem.TransferItem -> recordViewModel.deleteTransfer(item.transfer)
+                }
+            },
+            onItemClick = { item ->
+                when (item) {
+                    is TransactionItem.RecordItem -> {
+                        val dialog = RecordDetailBottomSheet(item.record)
+                        dialog.show(parentFragmentManager, "recordDetails")
+                    }
+                    is TransactionItem.TransferItem -> {
+                        val dialog = TransactionDetailBottomSheetFragment(item.transfer)
+                        dialog.show(parentFragmentManager, "transferDetails")
+                    }
+                }
             }
-        }
+        )
         recyclerView.adapter = adapter
 
         val itemTouchHelperCallback = object : ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT) {

@@ -14,7 +14,8 @@ import java.util.*
 class RecordRecyclerViewAdapter(
     private var values: List<TransactionItem>,
     private val fragmentManager: FragmentManager,
-    private val onDelete: (TransactionItem) -> Unit
+    private val onDelete: (TransactionItem) -> Unit,
+    private val onItemClick: (TransactionItem) -> Unit
 ) : RecyclerView.Adapter<RecordRecyclerViewAdapter.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -61,6 +62,10 @@ class RecordRecyclerViewAdapter(
         holder.itemView.setOnLongClickListener {
             onDelete(item)
             true
+        }
+
+        holder.itemView.setOnClickListener {
+            onItemClick(item)
         }
     }
 
