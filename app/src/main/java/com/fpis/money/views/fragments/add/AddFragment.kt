@@ -18,6 +18,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.fpis.money.R
 import com.fpis.money.models.Card
+import com.fpis.money.utils.ToastUtils
 import com.fpis.money.views.fragments.records.RecordFragment
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
@@ -344,7 +345,7 @@ class AddFragment : Fragment() {
             }
             .addOnFailureListener { e ->
                 Log.e("Firebase", "Error fetching cards: ${e.message}")
-                Toast.makeText(requireContext(), "Failed to load accounts", Toast.LENGTH_SHORT).show()
+                ToastUtils.showToast(requireContext(), "Failed to load accounts")
             }
     }
 }

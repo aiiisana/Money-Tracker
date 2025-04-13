@@ -10,6 +10,7 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import com.fpis.money.R
+import com.fpis.money.utils.ToastUtils
 import com.fpis.money.utils.preferences.SharedPreferencesManager
 import com.fpis.money.views.activities.MainActivity
 
@@ -41,7 +42,7 @@ class LoginActivity : AppCompatActivity() {
 
         loginButton.setOnClickListener {
             if (!validateUsername() || !validatePassword()) {
-                Toast.makeText(this, "Invalid format", Toast.LENGTH_LONG).show()
+                ToastUtils.showToast(this, "Invalid format")
             } else {
                 val username = loginUsername.text.toString().trim()
                 val password = loginPassword.text.toString().trim()
@@ -67,7 +68,7 @@ class LoginActivity : AppCompatActivity() {
                     finish()
                 }
                 is LoginResult.Error -> {
-                    Toast.makeText(this, result.message, Toast.LENGTH_SHORT).show()
+                    ToastUtils.showToast(this, result.message)
                 }
             }
         })

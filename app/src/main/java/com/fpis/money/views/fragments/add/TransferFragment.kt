@@ -11,6 +11,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import com.fpis.money.R
 import com.fpis.money.models.Card
+import com.fpis.money.utils.ToastUtils
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import java.util.Calendar
@@ -92,17 +93,17 @@ class TransferFragment : Fragment() {
             val timestamp = selectedTimestamp
 
             if (parsedAmount == null || parsedAmount <= 0f) {
-                Toast.makeText(requireContext(), "Enter a valid amount", Toast.LENGTH_SHORT).show()
+                ToastUtils.showToast(requireContext(), "Enter a valid amount")
                 return@setOnClickListener
             }
 
             if (fromAccount.isNullOrBlank() || toAccount.isNullOrBlank()) {
-                Toast.makeText(requireContext(), "Select both accounts", Toast.LENGTH_SHORT).show()
+                ToastUtils.showToast(requireContext(), "Select both accounts")
                 return@setOnClickListener
             }
 
             if (fromAccount == toAccount) {
-                Toast.makeText(requireContext(), "Cannot transfer to the same account", Toast.LENGTH_SHORT).show()
+                ToastUtils.showToast(requireContext(), "Cannot transfer to the same account")
                 return@setOnClickListener
             }
 
@@ -114,7 +115,7 @@ class TransferFragment : Fragment() {
                 notes = note
             )
 
-            Toast.makeText(requireContext(), "Transfer saved", Toast.LENGTH_SHORT).show()
+            ToastUtils.showToast(requireContext(), "Transfer saved")
             resetAllFields()
             parentFragmentManager.popBackStack()
         }
@@ -152,7 +153,7 @@ class TransferFragment : Fragment() {
                     .show()
             }
             .addOnFailureListener {
-                Toast.makeText(requireContext(), "Failed to load accounts", Toast.LENGTH_SHORT).show()
+                ToastUtils.showToast(requireContext(), "Failed to load accounts")
             }
     }
 

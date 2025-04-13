@@ -9,6 +9,7 @@ import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import com.fpis.money.R
+import com.fpis.money.utils.ToastUtils
 
 class RegisterActivity : AppCompatActivity() {
     private lateinit var nameInput: EditText
@@ -38,11 +39,11 @@ class RegisterActivity : AppCompatActivity() {
                 viewModel.register(name, email, password).observe(this) { result ->
                     if (result) {
                         val intent = Intent(this, LoginActivity::class.java)
-                        Toast.makeText(this, "Registration successful!", Toast.LENGTH_SHORT).show()
+                        ToastUtils.showToast(this, "Registration successful!")
                         startActivity(intent)
                         finish()
                     } else {
-                        Toast.makeText(this, "Registration failed!", Toast.LENGTH_SHORT).show()
+                        ToastUtils.showToast(this, "Registration failed!")
                     }
                 }
             }

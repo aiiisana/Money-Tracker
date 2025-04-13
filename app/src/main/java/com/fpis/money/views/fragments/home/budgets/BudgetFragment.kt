@@ -9,16 +9,10 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
 import androidx.fragment.app.viewModels
-import androidx.navigation.fragment.findNavController
 import com.fpis.money.R
 import com.fpis.money.databinding.FragmentBudgetListBinding
-import com.fpis.money.views.fragments.home.budgets.BudgetAdapter
-import com.fpis.money.views.fragments.home.budgets.BudgetViewModel
-import com.fpis.money.views.fragments.home.budgets.Budget
-import com.fpis.money.databinding.FragmentHomeBinding
 import com.fpis.money.views.fragments.cards.showCustomToast
 import com.fpis.money.views.fragments.cards.ToastType
-import com.fpis.money.views.fragments.cards.placeholder.PlaceholderContent
 
 class BudgetFragment : Fragment() {
 

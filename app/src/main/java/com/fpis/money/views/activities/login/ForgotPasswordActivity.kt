@@ -10,6 +10,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.fpis.money.R
+import com.fpis.money.utils.ToastUtils
 import com.google.firebase.auth.FirebaseAuth
 
 class ForgotPasswordActivity : AppCompatActivity() {
@@ -56,6 +57,6 @@ class ForgotPasswordActivity : AppCompatActivity() {
     }
 
     private fun showToast(message: String) {
-        Toast.makeText(this@ForgotPasswordActivity, message, Toast.LENGTH_SHORT).show()
+        ToastUtils.showToast(this@ForgotPasswordActivity, message)
     }
 }

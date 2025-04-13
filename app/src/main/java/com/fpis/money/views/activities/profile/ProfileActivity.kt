@@ -22,7 +22,7 @@ import android.app.Activity
 import android.net.Uri
 import android.provider.MediaStore
 import androidx.activity.result.contract.ActivityResultContracts
-
+import com.fpis.money.utils.ToastUtils
 
 
 class ProfileActivity : AppCompatActivity() {
@@ -104,7 +104,7 @@ class ProfileActivity : AppCompatActivity() {
         }
 
         editProfileOption.setOnClickListener {
-            Toast.makeText(this, "Edit profile feature coming soon", Toast.LENGTH_SHORT).show()
+            ToastUtils.showToast(this, "Edit profile feature coming soon")
         }
 
         changePasswordOption.setOnClickListener {
@@ -112,7 +112,7 @@ class ProfileActivity : AppCompatActivity() {
         }
 
         notificationOption.setOnClickListener {
-            Toast.makeText(this, "Notification settings coming soon", Toast.LENGTH_SHORT).show()
+            ToastUtils.showToast(this, "Notification settings coming soon")
         }
 
         val logoutAction = {
@@ -166,7 +166,7 @@ class ProfileActivity : AppCompatActivity() {
 //                }
 //            }
 //            .addOnFailureListener {
-//                Toast.makeText(this, "Failed to upload image", Toast.LENGTH_SHORT).show()
+//                ToastUtils.showToast(this, "Failed to upload image")
 //            }
 //    }
 
