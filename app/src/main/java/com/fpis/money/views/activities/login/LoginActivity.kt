@@ -5,13 +5,13 @@ import android.os.Bundle
 import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
-import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import com.fpis.money.R
-import com.fpis.money.utils.ToastUtils
+import com.fpis.money.utils.ToastType
 import com.fpis.money.utils.preferences.SharedPreferencesManager
+import com.fpis.money.utils.showCustomToast
 import com.fpis.money.views.activities.MainActivity
 
 class LoginActivity : AppCompatActivity() {
@@ -42,7 +42,7 @@ class LoginActivity : AppCompatActivity() {
 
         loginButton.setOnClickListener {
             if (!validateUsername() || !validatePassword()) {
-                ToastUtils.showToast(this, "Invalid format")
+                showCustomToast(this, "Invalid format", ToastType.ERROR)
             } else {
                 val username = loginUsername.text.toString().trim()
                 val password = loginPassword.text.toString().trim()
@@ -68,7 +68,7 @@ class LoginActivity : AppCompatActivity() {
                     finish()
                 }
                 is LoginResult.Error -> {
-                    ToastUtils.showToast(this, result.message)
+                    showCustomToast(this, result.message, ToastType.ERROR)
                 }
             }
         })

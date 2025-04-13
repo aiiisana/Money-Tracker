@@ -1,4 +1,4 @@
-package com.fpis.money.views.fragments.cards
+package com.fpis.money.utils
 
 
 import android.content.Context

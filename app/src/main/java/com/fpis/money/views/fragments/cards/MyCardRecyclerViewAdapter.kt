@@ -13,7 +13,8 @@ import android.widget.TextView
 import androidx.cardview.widget.CardView
 import com.fpis.money.R
 import com.fpis.money.models.Card
-import com.fpis.money.views.fragments.cards.placeholder.PlaceholderContent.PlaceholderItem
+import com.fpis.money.utils.ToastType
+import com.fpis.money.utils.showCustomToast
 
 class MyCardRecyclerViewAdapter(
     private var cardsList: MutableList<Card>,

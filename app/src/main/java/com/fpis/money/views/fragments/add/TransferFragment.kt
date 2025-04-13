@@ -11,7 +11,8 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import com.fpis.money.R
 import com.fpis.money.models.Card
-import com.fpis.money.utils.ToastUtils
+import com.fpis.money.utils.ToastType
+import com.fpis.money.utils.showCustomToast
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import java.util.Calendar
@@ -93,17 +94,17 @@ class TransferFragment : Fragment() {
             val timestamp = selectedTimestamp
 
             if (parsedAmount == null || parsedAmount <= 0f) {
-                ToastUtils.showToast(requireContext(), "Enter a valid amount")
+                showCustomToast(requireContext(), "Enter a valid amount", ToastType.INFO)
                 return@setOnClickListener
             }
 
             if (fromAccount.isNullOrBlank() || toAccount.isNullOrBlank()) {
-                ToastUtils.showToast(requireContext(), "Select both accounts")
+                showCustomToast(requireContext(), "Select both accounts", ToastType.INFO)
                 return@setOnClickListener
             }
 
             if (fromAccount == toAccount) {
-                ToastUtils.showToast(requireContext(), "Cannot transfer to the same account")
+                showCustomToast(requireContext(), "Cannot transfer to the same account", ToastType.INFO)
                 return@setOnClickListener
             }
 
@@ -115,7 +116,7 @@ class TransferFragment : Fragment() {
                 notes = note
             )
 
-            ToastUtils.showToast(requireContext(), "Transfer saved")
+            showCustomToast(requireContext(), "Transfer saved", ToastType.SUCCESS)
             resetAllFields()
             parentFragmentManager.popBackStack()
         }
@@ -153,7 +154,7 @@ class TransferFragment : Fragment() {
                     .show()
             }
             .addOnFailureListener {
-                ToastUtils.showToast(requireContext(), "Failed to load accounts")
+                showCustomToast(requireContext(), "Failed to load accounts", ToastType.ERROR)
             }
     }
 

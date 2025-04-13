@@ -8,11 +8,10 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageView
-import android.widget.TextView
 import androidx.fragment.app.viewModels
 import com.fpis.money.R
-import com.fpis.money.views.fragments.cards.ToastType
-import com.fpis.money.views.fragments.cards.showCustomToast
+import com.fpis.money.utils.ToastType
+import com.fpis.money.utils.showCustomToast
 
 class AddBudgetFragment : Fragment() {
 

@@ -6,23 +6,19 @@ import android.widget.Button
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.fpis.money.R
 import com.bumptech.glide.Glide
 import com.fpis.money.utils.preferences.SharedPreferencesManager
-import com.fpis.money.views.activities.MainActivity
 import com.fpis.money.views.activities.login.LoginActivity
 import com.google.firebase.auth.FirebaseAuth
-import com.fpis.money.views.fragments.cards.showCustomToast
-import com.fpis.money.views.fragments.cards.ToastType
+import com.fpis.money.utils.showCustomToast
+import com.fpis.money.utils.ToastType
 import de.hdodenhof.circleimageview.CircleImageView
-import java.util.UUID
 import android.app.Activity
 import android.net.Uri
 import android.provider.MediaStore
 import androidx.activity.result.contract.ActivityResultContracts
-import com.fpis.money.utils.ToastUtils
 
 
 class ProfileActivity : AppCompatActivity() {
@@ -104,7 +100,7 @@ class ProfileActivity : AppCompatActivity() {
         }
 
         editProfileOption.setOnClickListener {
-            ToastUtils.showToast(this, "Edit profile feature coming soon")
+            showCustomToast(this, "Edit profile feature coming soon", ToastType.INFO)
         }
 
         changePasswordOption.setOnClickListener {
@@ -112,7 +108,7 @@ class ProfileActivity : AppCompatActivity() {
         }
 
         notificationOption.setOnClickListener {
-            ToastUtils.showToast(this, "Notification settings coming soon")
+            showCustomToast(this, "Notification settings coming soon", ToastType.INFO)
         }
 
         val logoutAction = {
@@ -166,7 +162,7 @@ class ProfileActivity : AppCompatActivity() {
 //                }
 //            }
 //            .addOnFailureListener {
-//                ToastUtils.showToast(this, "Failed to upload image")
+//                showCustomToast(this, "Failed to upload image", ToastType.ERROR)
 //            }
 //    }
 

@@ -21,7 +21,8 @@ import androidx.fragment.app.Fragment
 import com.fpis.money.R
 import com.fpis.money.databinding.FragmentAddCardBinding
 import com.fpis.money.models.Card
-import com.fpis.money.utils.ToastUtils
+import com.fpis.money.utils.ToastType
+import com.fpis.money.utils.showCustomToast
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.larswerkman.holocolorpicker.ColorPicker
@@ -442,14 +443,14 @@ class AddCardFragment : Fragment() {
                 .document(card.id)
                 .set(card)
                 .addOnSuccessListener {
-                    ToastUtils.showToast(requireContext(), "Card added successfully")
+                    showCustomToast(requireContext(), "Card added successfully", ToastType.SUCCESS)
                     parentFragmentManager.popBackStack()
                 }
                 .addOnFailureListener { e ->
-                    ToastUtils.showToast(requireContext(), "Error saving card: ${e.message}")
+                    showCustomToast(requireContext(), "Error saving card: ${e.message}", ToastType.ERROR)
                 }
         } else {
-            ToastUtils.showToast(requireContext(), "User not authenticated")
+            showCustomToast(requireContext(), "User not authenticated", ToastType.ERROR)
         }
         parentFragmentManager.popBackStack()
     }
