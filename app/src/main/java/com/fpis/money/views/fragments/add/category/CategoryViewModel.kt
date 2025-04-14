@@ -34,4 +34,28 @@ class CategoryViewModel(application: Application) : AndroidViewModel(application
             loadCategories(category.isIncomeCategory)
         }
     }
+
+    private val _subcategories = MutableLiveData<List<Subcategory>>()
+    val subcategories: LiveData<List<Subcategory>> = _subcategories
+
+    fun loadSubcategories(categoryId: Int) {
+        viewModelScope.launch {
+            repository.initializeDefaultSubcategories()
+            _subcategories.value = repository.getSubcategories(categoryId)
+        }
+    }
+
+    fun addCustomSubcategory(categoryId: Int, name: String) {
+        viewModelScope.launch {
+            repository.addCustomSubcategory(categoryId, name)
+            loadSubcategories(categoryId)
+        }
+    }
+
+    fun deleteSubcategory(subcategoryId: Int, categoryId: Int) {
+        viewModelScope.launch {
+            repository.deleteSubcategory(subcategoryId)
+            loadSubcategories(categoryId)
+        }
+    }
 }

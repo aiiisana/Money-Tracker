@@ -2,6 +2,7 @@ package com.fpis.money.views.fragments.add
 
 import android.app.AlertDialog
 import android.app.DatePickerDialog
+import android.app.Dialog
 import android.app.TimePickerDialog
 import android.content.Context
 import android.graphics.Color
@@ -13,6 +14,7 @@ import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import android.widget.*
 import androidx.core.content.ContextCompat
+import androidx.core.widget.NestedScrollView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
@@ -30,7 +32,7 @@ class AddFragment : Fragment() {
 
     private var currentType = "expense"
     private var amount = "0"
-    private lateinit var selectedCategory: String
+    private var selectedCategory: String = ""
 
     private lateinit var amountValue: TextView
     private lateinit var tabExpense: LinearLayout
@@ -51,6 +53,9 @@ class AddFragment : Fragment() {
     private lateinit var accountNameTextView: TextView
     private lateinit var accountSelectionLayout: LinearLayout
     private var selectedPaymentMethod: String = "Select account"
+    private var selectedSubcategory: String? = null
+    private lateinit var subcategoriesContainer: NestedScrollView
+    private lateinit var subcategoriesScrollView: HorizontalScrollView
 
     private val iconMap = mapOf(
         "Food & Drink" to R.drawable.ic_food_drink,
@@ -125,9 +130,21 @@ class AddFragment : Fragment() {
             val type = bundle.getString("transactionType", "expense")
             setType(type)
         }
+
+        subcategoriesContainer = view.findViewById(R.id.subcategories_container)
+        subcategoriesScrollView = view.findViewById(R.id.subcategories_scroll_view)
+
+        view.findViewById<LinearLayout>(R.id.add_subcategory_button).setOnClickListener {
+            showAddSubcategoryDialog()
+        }
     }
 
     private fun saveTransaction() {
+        if (selectedCategory.isEmpty()) {
+            showCustomToast(requireContext(), "Please select a category", ToastType.INFO)
+            return
+        }
+
         val inputMethodManager = activity?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
         inputMethodManager.hideSoftInputFromWindow(view?.windowToken, 0)
 
@@ -142,14 +159,22 @@ class AddFragment : Fragment() {
                 throw Exception("Invalid date")
             }
 
-            addViewModel.saveTransaction(currentType, amount, selectedCategory, timestamp, notes.text.toString(), selectedPaymentMethod)
-            resetFields()
+            addViewModel.saveTransaction(
+                currentType,
+                amount,
+                selectedCategory,
+                timestamp,
+                notes.text.toString(),
+                selectedPaymentMethod,
+                selectedSubcategory ?: ""
+            )
 
-            val navController = findNavController()
-            navController.navigate(R.id.action_addFragment_to_recordFragment)
+            resetFields()
+            findNavController().navigate(R.id.action_addFragment_to_recordFragment)
 
         } catch (e: Exception) {
-            Log.e("AddFragment", "Error parsing data: ${e.message}")
+            Log.e("AddFragment", "Error saving transaction: ${e.message}")
+            showCustomToast(requireContext(), "Error saving transaction", ToastType.ERROR)
         }
     }
 
@@ -157,11 +182,16 @@ class AddFragment : Fragment() {
         amount = "0"
         currentType = "expense"
         selectedCategory = ""
+        selectedSubcategory = null
         amountValue.text = "₸$amount"
         categoryText.text = "Select Category"
         categoryIcon.setImageResource(R.drawable.ic_launcher_foreground)
         dateTimeValue.text = "Select Date & Time"
         notes.setText("")
+
+        val subcategoriesLinearLayout = subcategoriesContainer.findViewById<LinearLayout>(R.id.subcategories_linear_layout)
+        subcategoriesLinearLayout.removeAllViews()
+
         updateAmountValue()
         updateTabSelection()
     }
@@ -245,6 +275,8 @@ class AddFragment : Fragment() {
             selectedCategory = category.name
             categoryText.text = category.name
             categoryIcon.setImageResource(category.iconRes)
+
+            loadDefaultSubcategories(category.name)
         }
         bottomSheet.show(parentFragmentManager, "CategoryBottomSheet")
     }
@@ -334,5 +366,83 @@ class AddFragment : Fragment() {
                 Log.e("Firebase", "Error fetching cards: ${e.message}")
                 showCustomToast(requireContext(), "Failed to load accounts", ToastType.ERROR)
             }
+    }
+
+    private fun showAddSubcategoryDialog() {
+        if (selectedCategory.isEmpty()) {
+            showCustomToast(requireContext(), "Please select a category first", ToastType.INFO)
+            return
+        }
+
+        val dialog = Dialog(requireContext())
+        dialog.setContentView(R.layout.dialog_add_subcategory)
+
+        val etName = dialog.findViewById<EditText>(R.id.etSubcategoryName)
+        val btnSave = dialog.findViewById<Button>(R.id.btnSave)
+
+        btnSave.setOnClickListener {
+            val name = etName.text.toString()
+            if (name.isNotBlank()) {
+                addSubcategory(name)
+                dialog.dismiss()
+            } else {
+                etName.error = "Please enter subcategory name"
+            }
+        }
+
+        dialog.show()
+    }
+
+    private fun addSubcategory(name: String) {
+        val subcategoriesLinearLayout = subcategoriesContainer.findViewById<LinearLayout>(R.id.subcategories_linear_layout)
+
+        val subcategoryView = LayoutInflater.from(requireContext())
+            .inflate(R.layout.item_subcategory, subcategoriesLinearLayout, false)
+
+        val icon = subcategoryView.findViewById<ImageView>(R.id.subcategory_icon)
+        val label = subcategoryView.findViewById<TextView>(R.id.subcategory_label)
+        val container = subcategoryView.findViewById<LinearLayout>(R.id.subcategory_container)
+
+        icon.setImageResource(iconMap[selectedCategory] ?: R.drawable.ic_launcher_foreground)
+        label.text = name
+
+        container.setOnClickListener {
+            for (i in 0 until subcategoriesLinearLayout.childCount) {
+                val child = subcategoriesLinearLayout.getChildAt(i)
+                child.background = ContextCompat.getDrawable(requireContext(), R.drawable.bg_subcategory)
+            }
+
+            container.background = ContextCompat.getDrawable(requireContext(), R.drawable.bg_subcategory_selected)
+            selectedSubcategory = name
+        }
+
+        subcategoriesLinearLayout.addView(subcategoryView, subcategoriesLinearLayout.childCount - 1)
+
+        subcategoriesScrollView.post {
+            subcategoriesScrollView.fullScroll(HorizontalScrollView.FOCUS_RIGHT)
+        }
+    }
+
+    private fun loadDefaultSubcategories(categoryName: String) {
+        val subcategoriesLinearLayout = subcategoriesContainer.findViewById<LinearLayout>(R.id.subcategories_linear_layout)
+        subcategoriesLinearLayout.removeAllViews()
+
+        val addButton = LayoutInflater.from(requireContext())
+            .inflate(R.layout.item_add_subcategory, subcategoriesLinearLayout, false)
+        subcategoriesLinearLayout.addView(addButton)
+
+        val defaultSubcategories = when (categoryName) {
+            "Transport" -> listOf("Taxi", "Public Transport", "Rent")
+            "Food & Drink" -> listOf("Drink", "Food", "Groceries")
+            "Shopping" -> listOf("Clothes", "Electronics", "Home")
+            "Health" -> listOf("Pharmacy", "Appointments", "Dental")
+            "Interest" -> listOf("Deposit", "Stock", "Rate")
+            "Life & Event" -> listOf("Presents", "Going out", "Restaurants")
+            else -> emptyList()
+        }
+
+        defaultSubcategories.forEach { subcategory ->
+            addSubcategory(subcategory)
+        }
     }
 }

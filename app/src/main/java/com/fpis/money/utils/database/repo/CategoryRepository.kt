@@ -38,11 +38,43 @@ class CategoryRepository(private val categoryDao: CategoryDao) {
         categoryDao.insert(category)
     }
 
+
+    private val defaultSubcategories = mapOf(
+        4 to listOf("Taxi", "Public Transport"),
+        1 to listOf("Restaurants", "Groceries"),
+    )
+
+    suspend fun initializeDefaultSubcategories() {
+        if (categoryDao.getDefaultSubcategories().isEmpty()) {
+            defaultSubcategories.forEach { (categoryId, subcategories) ->
+                subcategories.forEach { subcategoryName ->
+                    categoryDao.insertSubcategory(
+                        Subcategory(
+                            categoryId = categoryId,
+                            name = subcategoryName,
+                            isDefault = true
+                        )
+                    )
+                }
+            }
+        }
+    }
+
     suspend fun getSubcategories(categoryId: Int): List<Subcategory> {
         return categoryDao.getSubcategories(categoryId)
     }
 
-    suspend fun addSubcategory(categoryId: Int, subcategoryName: String) {
-        categoryDao.insertSubcategory(Subcategory(categoryId = categoryId, name = subcategoryName))
+    suspend fun addCustomSubcategory(categoryId: Int, name: String) {
+        categoryDao.insertSubcategory(
+            Subcategory(
+                categoryId = categoryId,
+                name = name,
+                isDefault = false
+            )
+        )
+    }
+
+    suspend fun deleteSubcategory(subcategoryId: Int) {
+        categoryDao.deleteCustomSubcategory(subcategoryId)
     }
 }

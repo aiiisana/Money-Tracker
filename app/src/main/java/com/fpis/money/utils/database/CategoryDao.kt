@@ -24,4 +24,10 @@ interface CategoryDao {
 
     @Query("SELECT * FROM categories WHERE isDefault = 1 AND isIncomeCategory = :isIncome")
     suspend fun getDefaultCategories(isIncome: Boolean): List<Category>
+
+    @Query("SELECT * FROM subcategories WHERE isDefault = 1")
+    suspend fun getDefaultSubcategories(): List<Subcategory>
+
+    @Query("DELETE FROM subcategories WHERE id = :subcategoryId AND isDefault = 0")
+    suspend fun deleteCustomSubcategory(subcategoryId: Int)
 }

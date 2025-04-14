@@ -17,7 +17,6 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun transactionDao(): TransactionDao
     abstract fun transferDao(): TransferDao
     abstract fun categoryDao(): CategoryDao
-    abstract fun subcategoryDao(): SubcategoryDao
 
     companion object {
         @Volatile

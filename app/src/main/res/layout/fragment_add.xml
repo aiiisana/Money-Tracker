@@ -356,12 +356,14 @@
 
                 <androidx.core.widget.NestedScrollView
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content">
+                    android:layout_height="wrap_content"
+                    android:id="@+id/subcategories_container">
 
                     <HorizontalScrollView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:scrollbars="horizontal">
+                        android:scrollbars="horizontal"
+                        android:id="@+id/subcategories_scroll_view">
 
                         <LinearLayout
                             android:layout_width="wrap_content"
@@ -369,57 +371,8 @@
                             android:orientation="horizontal"
                             android:gravity="center_vertical"
                             android:layout_marginStart="8dp"
-                            android:layout_marginBottom="8dp">
-
-                            <!-- Taxi -->
-<!--                            <LinearLayout-->
-<!--                                android:id="@+id/taxi_subcategory"-->
-<!--                                style="@style/SubcategoryItem"-->
-<!--                                android:background="@drawable/bg_subcategory"-->
-<!--                                tools:ignore="TouchTargetSizeCheck">-->
-<!--                                <com.google.android.material.imageview.ShapeableImageView-->
-<!--                                    android:id="@+id/taxi_icon"-->
-<!--                                    style="@style/SubcategoryIcon"-->
-<!--                                    android:src="@drawable/ic_car"/>-->
-<!--                                <TextView-->
-<!--                                    android:id="@+id/taxi_label"-->
-<!--                                    style="@style/SubcategoryText"-->
-<!--                                    android:text="Taxi"/>-->
-<!--                            </LinearLayout>-->
-
-                            <!-- Rent -->
-                            <LinearLayout
-                                android:id="@+id/rent_subcategory"
-                                style="@style/SubcategoryItem"
-                                android:background="@drawable/bg_subcategory"
-                                tools:ignore="TouchTargetSizeCheck">
-
-                                <com.google.android.material.imageview.ShapeableImageView
-                                    android:id="@+id/rent_icon"
-                                    style="@style/SubcategoryIcon"
-                                    android:src="@drawable/ic_car" />
-
-                                <TextView
-                                    android:id="@+id/rent_label"
-                                    style="@style/SubcategoryText"
-                                    android:text="Rent" />
-                            </LinearLayout>
-
-                            <!-- Plane -->
-<!--                            <LinearLayout-->
-<!--                                android:id="@+id/plane_subcategory"-->
-<!--                                style="@style/SubcategoryItem"-->
-<!--                                android:background="@drawable/bg_subcategory"-->
-<!--                                tools:ignore="TouchTargetSizeCheck">-->
-<!--                                <com.google.android.material.imageview.ShapeableImageView-->
-<!--                                    android:id="@+id/plane_icon"-->
-<!--                                    style="@style/SubcategoryIcon"-->
-<!--                                    android:src="@drawable/ic_car"/>-->
-<!--                                <TextView-->
-<!--                                    android:id="@+id/plane_label"-->
-<!--                                    style="@style/SubcategoryText"-->
-<!--                                    android:text="Plane"/>-->
-<!--                            </LinearLayout>-->
+                            android:layout_marginBottom="8dp"
+                            android:id="@+id/subcategories_linear_layout">
 
                             <!-- Add -->
                             <LinearLayout

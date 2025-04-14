@@ -3,7 +3,7 @@
     android:shape="rectangle">
 
     <!-- Цвет фона -->
-    <solid android:color="#121418" />
+    <solid android:color="#00121418" />
 
     <!-- Скругленные углы -->
     <corners android:radius="20dp" />

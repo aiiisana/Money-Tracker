@@ -9,6 +9,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
+import com.fpis.money.models.Subcategory
 import com.fpis.money.models.Transaction
 import com.fpis.money.models.Transfer
 import com.fpis.money.utils.database.AppDatabase
@@ -19,7 +20,7 @@ class AddViewModel(application: Application) : AndroidViewModel(application as A
 
     private val transactionDao = AppDatabase.getDatabase(application).transactionDao()
 
-    fun saveTransaction(type: String, amount: String, category: String, date: Long, notes: String, paymentMethod: String): LiveData<Boolean> {
+    fun saveTransaction(type: String, amount: String, category: String, date: Long, notes: String, paymentMethod: String, subcategory: String): LiveData<Boolean> {
         val result = MutableLiveData<Boolean>()
 
         val newTransaction = Transaction(
@@ -28,7 +29,7 @@ class AddViewModel(application: Application) : AndroidViewModel(application as A
             date = date,
             amount = amount.toFloat(),
             category = category,
-            subCategory = "",
+            subCategory = subcategory,
             notes = notes
         )
 
