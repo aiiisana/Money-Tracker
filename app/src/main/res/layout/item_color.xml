@@ -1,0 +1,21 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="48dp"
+    android:layout_height="48dp"
+    android:padding="8dp">
+
+    <View
+        android:id="@+id/colorView"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:layout_gravity="center"
+        android:background="@drawable/circle_color"/>
+
+    <View
+        android:id="@+id/selectionIndicator"
+        android:layout_width="12dp"
+        android:layout_height="12dp"
+        android:layout_gravity="bottom|end"
+        android:background="@drawable/circle_selection"
+        android:visibility="invisible"/>
+
+</FrameLayout>

@@ -29,15 +29,50 @@
         app:layout_constraintStart_toEndOf="@id/category_icon"
         app:layout_constraintTop_toTopOf="@id/category_icon"
         app:layout_constraintBottom_toBottomOf="@id/category_icon"
-        app:layout_constraintEnd_toStartOf="@id/arrow_icon" />
+        app:layout_constraintEnd_toStartOf="@id/category_checkbox" />
 
-    <ImageView
-        android:id="@+id/arrow_icon"
+    <CheckBox
+        android:id="@+id/category_checkbox"
         android:layout_width="24dp"
         android:layout_height="24dp"
         android:src="@mipmap/ic_launcher"
         app:tint="@color/white"
+        android:background="#121418"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@id/category_icon"
         app:layout_constraintBottom_toBottomOf="@id/category_icon" />
 </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+<!--<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"-->
+<!--android:layout_width="match_parent"-->
+<!--android:layout_height="wrap_content"-->
+<!--android:orientation="horizontal"-->
+<!--android:padding="16dp">-->
+
+<!--<ImageView-->
+<!--    android:id="@+id/category_icon"-->
+<!--    android:layout_width="24dp"-->
+<!--    android:layout_height="24dp" />-->
+
+<!--<TextView-->
+<!--    android:id="@+id/category_name"-->
+<!--    android:layout_width="0dp"-->
+<!--    android:layout_height="wrap_content"-->
+<!--    android:layout_weight="1"-->
+<!--    android:layout_marginStart="16dp"-->
+<!--    android:textSize="16sp" />-->
+
+<!--<ImageView-->
+<!--    android:id="@+id/arrow_icon"-->
+<!--    android:layout_width="24dp"-->
+<!--    android:layout_height="24dp"-->
+<!--    android:src="@drawable/ic_arrow_right"-->
+<!--    android:visibility="gone" />-->
+    <!--    <CheckBox-->
+    <!--        android:id="@+id/category_checkbox"-->
+    <!--        android:layout_width="wrap_content"-->
+    <!--        android:layout_height="wrap_content"-->
+    <!--        android:buttonTint="@color/primary_color" />-->
+
+<!--</LinearLayout>-->

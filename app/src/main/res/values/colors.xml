@@ -16,4 +16,39 @@
     <color name="red">#DB3C3C</color>
     <color name="green">#20FF79</color>
     <color name="background_dark">#2D2D2D</color>
+
+    <color name="circle_color_1">#726CFF</color>
+    <color name="circle_color_2">#97F7A3</color>
+    <color name="circle_color_3">#EE9861</color>
+    <color name="circle_color_4">#FF7EDC</color>
+
+        <!-- Row 2 -->
+    <color name="circle_color_5">#B7483E</color>
+    <color name="circle_color_6">#FFFFFF</color>
+    <color name="circle_color_7">#9A62FB</color>
+    <color name="circle_color_8">#90D8F8</color>
+
+        <!-- Row 3 -->
+    <color name="circle_color_9">#D75499</color>
+    <color name="circle_color_10">#4160F6</color>
+    <color name="circle_color_11">#C2D742</color>
+    <color name="circle_color_12">#F9D362</color>
+
+        <!-- Row 4 -->
+    <color name="circle_color_13">#9F9F9F</color>
+    <color name="circle_color_14">#7C7C7C</color>
+    <color name="circle_color_15">#4A4A4A</color>
+    <color name="circle_color_16">#2C2C2C</color>
+
+        <!-- Row 5 -->
+    <color name="circle_color_17">#91F48F</color>
+    <color name="circle_color_18">#8BC9B0</color>
+    <color name="circle_color_19">#583D8D</color>
+    <color name="circle_color_20">#F4A460</color>
+
+        <!-- Row 6 -->
+    <color name="circle_color_21">#667C8D</color>
+    <color name="circle_color_22">#39525A</color>
+    <color name="circle_color_23">#6C89F8</color>
+    <color name="circle_color_24">#94D7F8</color>
 </resources>

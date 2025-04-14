@@ -20,6 +20,7 @@ import com.fpis.money.R
 import com.fpis.money.models.Card
 import com.fpis.money.utils.ToastType
 import com.fpis.money.utils.showCustomToast
+import com.fpis.money.views.fragments.add.category.CategoryBottomSheet
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import java.text.SimpleDateFormat
@@ -239,26 +240,12 @@ class AddFragment : Fragment() {
     }
 
     private fun showCategoryBottomSheet() {
-        val categories = if (currentType == "income") {
-            listOf("Income")
-        } else {
-            listOf(
-                "Food & Drink",
-                "Shopping",
-                "Health",
-                "Transport",
-                "Interest",
-                "Life & Event",
-                "Add New Category"
-            )
+        val isIncome = currentType == "income"
+        val bottomSheet = CategoryBottomSheet(isIncome) { category ->
+            selectedCategory = category.name
+            categoryText.text = category.name
+            categoryIcon.setImageResource(category.iconRes)
         }
-
-        val bottomSheet = CategoryBottomSheet(categories) { category ->
-            selectedCategory = category
-            categoryText.text = category
-            categoryIcon.setImageResource(iconMap[category] ?: R.drawable.ic_launcher_foreground)
-        }
-
         bottomSheet.show(parentFragmentManager, "CategoryBottomSheet")
     }
 
