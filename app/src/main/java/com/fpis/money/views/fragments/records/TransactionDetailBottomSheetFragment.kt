@@ -9,11 +9,14 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
+import androidx.lifecycle.ViewModelProvider
 import com.fpis.money.R
 import com.fpis.money.models.Transaction
 import com.fpis.money.models.Transfer
 import com.fpis.money.utils.ToastType
 import com.fpis.money.utils.showCustomToast
+import com.fpis.money.views.fragments.add.AddViewModel
+import com.fpis.money.views.fragments.add.AddViewModelFactory
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -35,11 +38,16 @@ class TransactionDetailBottomSheetFragment(private val transfer: Transfer) : Bot
     private lateinit var notesInput: EditText
     private lateinit var addRecordButton: Button
 
+    private lateinit var detailsViewModel: DetailsViewModel
+
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        detailsViewModel = ViewModelProvider(this, DetailsViewViewModelFactory(requireActivity().application)).get(DetailsViewModel::class.java)
+
         val view = inflater.inflate(R.layout.fragment_transaction_detail_bottom_sheet, container, false)
 
         amountText = view.findViewById(R.id.amountText)
@@ -116,14 +124,38 @@ class TransactionDetailBottomSheetFragment(private val transfer: Transfer) : Bot
     }
 
     private fun saveRecord() {
-        val amount = amountText.text.toString()
+        if (!validateInput()) return
+
+        val amount = amountText.text.toString().replace("₸", "").toDoubleOrNull() ?: return
         val fromAccount = fromAccountName.text.toString()
         val toAccount = toAccountName.text.toString()
-        val dateTime = dateTimeValue.text.toString()
+        val dateTime = parseDateTime(dateTimeValue.text.toString())
         val notes = notesInput.text.toString()
 
-        if (validateInput()) {
-            dismiss()
+        val transfer = Transfer(
+            fromAccount = fromAccount,
+            toAccount = toAccount,
+            amount = amount,
+            date = dateTime,
+            notes = notes
+        )
+
+        detailsViewModel.updateTransfer(transfer).observe(viewLifecycleOwner) { success ->
+            if (success) {
+                dismiss()
+            } else {
+                showCustomToast(requireContext(), "Error while saving", ToastType.ERROR)
+            }
+        }
+    }
+
+    private fun parseDateTime(dateTimeString: String): Long {
+        return try {
+            val format = SimpleDateFormat("dd MMM yyyy, hh:mm a", Locale.ENGLISH)
+            format.parse(dateTimeString)?.time ?: System.currentTimeMillis()
+        } catch (e: Exception) {
+            e.printStackTrace()
+            System.currentTimeMillis()
         }
     }
 
