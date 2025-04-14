@@ -31,11 +31,11 @@
         app:layout_constraintBottom_toBottomOf="@id/category_icon"
         app:layout_constraintEnd_toStartOf="@id/category_checkbox" />
 
-    <CheckBox
+    <ImageView
         android:id="@+id/category_checkbox"
         android:layout_width="24dp"
         android:layout_height="24dp"
-        android:src="@mipmap/ic_launcher"
+        android:src="@drawable/ic_arrow_right"
         app:tint="@color/white"
         android:background="#121418"
         app:layout_constraintEnd_toEndOf="parent"

@@ -21,7 +21,7 @@ class CategoryAdapter(
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val icon: ImageView = itemView.findViewById(R.id.category_icon)
         val name: TextView = itemView.findViewById(R.id.category_name)
-//        val arrow: ImageView = itemView.findViewById(R.id.category_checkbox)
+        val arrow: ImageView = itemView.findViewById(R.id.category_checkbox)
     }
 
     fun updateCategories(newCategories: List<Category>) {
