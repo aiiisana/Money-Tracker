@@ -15,7 +15,8 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 class CategoryAdapter(
     private var categories: List<Category>,
     private val onClick: (Category) -> Unit,
-    private val dialog: BottomSheetDialogFragment
+    private val dialog: BottomSheetDialogFragment,
+    private val onLongClick: (Category) -> Unit
 ) : RecyclerView.Adapter<CategoryAdapter.ViewHolder>() {
 
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
@@ -42,6 +43,13 @@ class CategoryAdapter(
         holder.itemView.setOnClickListener {
             onClick(category)
             dialog.dismiss()
+        }
+
+        holder.itemView.setOnLongClickListener {
+//            if (!category.isDefault) {
+                onLongClick(category)
+//            }
+            true
         }
     }
 

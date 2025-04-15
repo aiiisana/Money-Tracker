@@ -35,4 +35,7 @@ interface CategoryDao {
 
     @Query("SELECT * FROM subcategories WHERE categoryId = :categoryId")
     suspend fun getSubcategoriesByCategory(categoryId: Int): List<Subcategory>
+
+    @Query("DELETE FROM categories WHERE id = :categoryId")
+    suspend fun deleteCategory(categoryId: Int)
 }

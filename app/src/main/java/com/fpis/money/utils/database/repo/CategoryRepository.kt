@@ -11,7 +11,7 @@ class CategoryRepository(private val categoryDao: CategoryDao) {
         Category(name = "Shopping", iconRes = R.drawable.ic_shopping, colorRes = R.color.white, isDefault = true),
         Category(name = "Health", iconRes = R.drawable.health, colorRes = R.color.white, isDefault = true),
         Category(name = "Transport", iconRes = R.drawable.ic_transport, colorRes = R.color.white, isDefault = true),
-        Category(name = "Interest", iconRes = R.drawable.ic_interest, colorRes = R.color.white, isDefault = true),
+        Category(name = "Investment", iconRes = R.drawable.ic_interest, colorRes = R.color.white, isDefault = true),
         Category(name = "Life & Event", iconRes = R.drawable.ic_event, colorRes = R.color.green, isDefault = true)
     )
 
@@ -38,8 +38,12 @@ class CategoryRepository(private val categoryDao: CategoryDao) {
 
 
     private val defaultSubcategories = mapOf(
-        4 to listOf("Taxi", "Public Transport"),
         1 to listOf("Restaurants", "Groceries"),
+        2 to listOf("Clothes", "Electronics"),
+        3 to listOf("Pharmacy", "Vitamins"),
+        4 to listOf("Taxi", "Public Transport"),
+        5 to listOf("Deposit", "Shares"),
+        6 to listOf("Cinema", "Restaurants")
     )
 
     suspend fun initializeDefaultSubcategories() {
@@ -68,5 +72,9 @@ class CategoryRepository(private val categoryDao: CategoryDao) {
 
     suspend fun deleteSubcategory(subcategoryId: Int) {
         categoryDao.deleteCustomSubcategory(subcategoryId)
+    }
+
+    suspend fun deleteCategory(categoryId: Int) {
+        categoryDao.deleteCategory(categoryId)
     }
 }

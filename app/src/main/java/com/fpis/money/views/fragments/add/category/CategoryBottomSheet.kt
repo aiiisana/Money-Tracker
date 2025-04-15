@@ -1,5 +1,6 @@
 package com.fpis.money.views.fragments.add.category
 
+import android.app.AlertDialog
 import android.app.Dialog
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -35,10 +36,17 @@ class CategoryBottomSheet(
         val recyclerView = view.findViewById<RecyclerView>(R.id.recycler_view_categories)
         recyclerView.layoutManager = LinearLayoutManager(context)
 
-        adapter = CategoryAdapter(emptyList(), { category ->
-            onCategorySelected(category)
-            dismiss()
-        }, this)
+        adapter = CategoryAdapter(
+            emptyList(),
+            onClick = { category ->
+                onCategorySelected(category)
+                dismiss()
+            },
+            dialog = this,
+            onLongClick = { category ->
+                showDeleteCategoryDialog(category)
+            }
+        )
 
         recyclerView.adapter = adapter
 
@@ -104,5 +112,14 @@ class CategoryBottomSheet(
         dialog.show()
     }
 
-
+    private fun showDeleteCategoryDialog(category: Category) {
+        AlertDialog.Builder(requireContext())
+            .setTitle("Delete category")
+            .setMessage("Are you sure you want to delete \"${category.name}\"?")
+            .setPositiveButton("Delete") { _, _ ->
+                viewModel.deleteCategory(category.id, isIncome)
+            }
+            .setNegativeButton("Cancel", null)
+            .show()
+    }
 }

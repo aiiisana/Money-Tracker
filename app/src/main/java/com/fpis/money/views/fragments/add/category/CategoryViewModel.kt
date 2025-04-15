@@ -58,4 +58,11 @@ class CategoryViewModel(application: Application) : AndroidViewModel(application
             loadSubcategories(categoryId)
         }
     }
+
+    fun deleteCategory(categoryId: Int, isIncome: Boolean) {
+        viewModelScope.launch {
+            repository.deleteCategory(categoryId)
+            loadCategories(isIncome)
+        }
+    }
 }

@@ -21,6 +21,7 @@ import androidx.navigation.fragment.findNavController
 import com.fpis.money.R
 import com.fpis.money.models.Card
 import com.fpis.money.models.Category
+import com.fpis.money.models.Subcategory
 import com.fpis.money.utils.ToastType
 import com.fpis.money.utils.showCustomToast
 import com.fpis.money.views.fragments.add.category.CategoryBottomSheet
@@ -401,7 +402,6 @@ class AddFragment : Fragment() {
                 val viewModel = ViewModelProvider(this).get(CategoryViewModel::class.java)
                 viewModel.addCustomSubcategory(selectedCategoryId, name)
 
-                addSubcategoryToView(name)
                 dialog.dismiss()
             } else {
                 etName.error = "Please enter subcategory name"
@@ -411,16 +411,15 @@ class AddFragment : Fragment() {
         dialog.show()
     }
 
-
     private fun loadSubcategoriesForCategory(categoryId: Int) {
         val viewModel = ViewModelProvider(this).get(CategoryViewModel::class.java)
         viewModel.loadSubcategories(categoryId)
         viewModel.subcategories.observe(viewLifecycleOwner) { subcategories ->
-            updateSubcategoriesList(subcategories.map { it.name })
+            updateSubcategoriesList(subcategories)
         }
     }
 
-    private fun updateSubcategoriesList(subcategoryNames: List<String>) {
+    private fun updateSubcategoriesList(subcategories: List<Subcategory>) {
         val subcategoriesLinearLayout = subcategoriesContainer.findViewById<LinearLayout>(R.id.subcategories_linear_layout)
         subcategoriesLinearLayout.removeAllViews()
 
@@ -429,31 +428,41 @@ class AddFragment : Fragment() {
         addButton.setOnClickListener { showAddSubcategoryDialog() }
         subcategoriesLinearLayout.addView(addButton)
 
-        subcategoryNames.forEach { name ->
-            addSubcategoryToView(name)
+        subcategories.forEach { subcategory ->
+            addSubcategoryToView(subcategory)
         }
     }
 
-    private fun addSubcategoryToView(name: String) {
+    private fun addSubcategoryToView(subcategory: Subcategory) {
         val subcategoriesLinearLayout = subcategoriesContainer.findViewById<LinearLayout>(R.id.subcategories_linear_layout)
         subcategoriesLinearLayout.removeViewAt(subcategoriesLinearLayout.childCount - 1)
 
         val subcategoryView = LayoutInflater.from(requireContext())
             .inflate(R.layout.item_subcategory, subcategoriesLinearLayout, false)
 
-        subcategoryView.findViewById<TextView>(R.id.subcategory_label).text = name
+        subcategoryView.findViewById<TextView>(R.id.subcategory_label).text = subcategory.name
 
         val iconView = subcategoryView.findViewById<ImageView>(R.id.subcategory_icon)
         iconView.setImageResource(selectedIconRes)
         iconView.setColorFilter(ContextCompat.getColor(requireContext(), selectedColorRes))
 
         subcategoryView.setOnClickListener {
-            selectedSubcategory = name
+            selectedSubcategory = subcategory.name
             for (i in 0 until subcategoriesLinearLayout.childCount) {
                 val child = subcategoriesLinearLayout.getChildAt(i)
                 child.background = ContextCompat.getDrawable(requireContext(), R.drawable.bg_subcategory)
             }
             subcategoryView.background = ContextCompat.getDrawable(requireContext(), R.drawable.bg_subcategory_selected)
+        }
+
+        subcategoryView.setOnLongClickListener {
+//            if (!subcategory.isDefault) {
+                showDeleteSubcategoryDialog(subcategory)
+                true
+//            } else {
+//                context?.let { it1 -> showCustomToast(it1, "You can not delete default subcategory",ToastType.INFO) }
+//                false
+//            }
         }
 
         subcategoriesLinearLayout.addView(subcategoryView)
@@ -462,5 +471,17 @@ class AddFragment : Fragment() {
             .inflate(R.layout.item_add_subcategory, subcategoriesLinearLayout, false)
         addButton.setOnClickListener { showAddSubcategoryDialog() }
         subcategoriesLinearLayout.addView(addButton)
+    }
+
+    private fun showDeleteSubcategoryDialog(subcategory: Subcategory) {
+        AlertDialog.Builder(requireContext())
+            .setTitle("Delete Subcategory")
+            .setMessage("Are you sure you want to delete '${subcategory.name}'?")
+            .setPositiveButton("Delete") { _, _ ->
+                val viewModel = ViewModelProvider(this).get(CategoryViewModel::class.java)
+                viewModel.deleteSubcategory(subcategory.id, subcategory.categoryId)
+            }
+            .setNegativeButton("Cancel", null)
+            .show()
     }
 }
