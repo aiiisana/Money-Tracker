@@ -3,6 +3,7 @@ package com.fpis.money.utils.database
 import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
+import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Update
 import com.fpis.money.models.Category
@@ -13,7 +14,7 @@ interface CategoryDao {
     @Insert
     suspend fun insert(category: Category)
 
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertSubcategory(subcategory: Subcategory)
 
     @Query("SELECT * FROM categories WHERE isIncomeCategory = :isIncome")
@@ -30,4 +31,8 @@ interface CategoryDao {
 
     @Query("DELETE FROM subcategories WHERE id = :subcategoryId AND isDefault = 0")
     suspend fun deleteCustomSubcategory(subcategoryId: Int)
+
+
+    @Query("SELECT * FROM subcategories WHERE categoryId = :categoryId")
+    suspend fun getSubcategoriesByCategory(categoryId: Int): List<Subcategory>
 }

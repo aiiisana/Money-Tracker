@@ -58,18 +58,12 @@ class CategoryRepository(private val categoryDao: CategoryDao) {
         }
     }
 
-    suspend fun getSubcategories(categoryId: Int): List<Subcategory> {
-        return categoryDao.getSubcategories(categoryId)
+    suspend fun addCustomSubcategory(categoryId: Int, name: String) {
+        categoryDao.insertSubcategory(Subcategory(categoryId = categoryId, name = name))
     }
 
-    suspend fun addCustomSubcategory(categoryId: Int, name: String) {
-        categoryDao.insertSubcategory(
-            Subcategory(
-                categoryId = categoryId,
-                name = name,
-                isDefault = false
-            )
-        )
+    suspend fun getSubcategories(categoryId: Int): List<Subcategory> {
+        return categoryDao.getSubcategoriesByCategory(categoryId)
     }
 
     suspend fun deleteSubcategory(subcategoryId: Int) {

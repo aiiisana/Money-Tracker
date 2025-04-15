@@ -24,6 +24,7 @@ import com.fpis.money.models.Category
 import com.fpis.money.utils.ToastType
 import com.fpis.money.utils.showCustomToast
 import com.fpis.money.views.fragments.add.category.CategoryBottomSheet
+import com.fpis.money.views.fragments.add.category.CategoryViewModel
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import java.text.SimpleDateFormat
@@ -59,6 +60,7 @@ class AddFragment : Fragment() {
     private lateinit var subcategoriesScrollView: HorizontalScrollView
 
     private var selectedIconRes: Int = R.drawable.ic_launcher_foreground
+    private var selectedCategoryId: Int = -1
 
     private val iconMap = mapOf(
         "Food & Drink" to R.drawable.ic_food_drink,
@@ -139,8 +141,13 @@ class AddFragment : Fragment() {
         subcategoriesContainer = view.findViewById(R.id.subcategories_container)
         subcategoriesScrollView = view.findViewById(R.id.subcategories_scroll_view)
 
-        view.findViewById<LinearLayout>(R.id.add_subcategory_button).setOnClickListener {
-            showAddSubcategoryDialog()
+        val addButton = view.findViewById<LinearLayout>(R.id.add_subcategory_button)
+        addButton.setOnClickListener {
+            if (selectedCategory.isEmpty()) {
+                showCustomToast(requireContext(), "Please select a category first", ToastType.INFO)
+            } else {
+                showAddSubcategoryDialog()
+            }
         }
     }
 
@@ -275,12 +282,12 @@ class AddFragment : Fragment() {
         val isIncome = currentType == "income"
         val bottomSheet = CategoryBottomSheet(isIncome) { category ->
             selectedCategory = category.name
+            selectedCategoryId = category.id
             categoryText.text = category.name
             categoryIcon.setImageResource(category.iconRes)
-
             selectedIconRes = category.iconRes
 
-            loadDefaultSubcategories(category.name)
+            loadSubcategoriesForCategory(category.id)
         }
         bottomSheet.show(parentFragmentManager, "CategoryBottomSheet")
     }
@@ -373,7 +380,7 @@ class AddFragment : Fragment() {
     }
 
     private fun showAddSubcategoryDialog() {
-        if (selectedCategory.isEmpty()) {
+        if (selectedCategoryId == -1) {
             showCustomToast(requireContext(), "Please select a category first", ToastType.INFO)
             return
         }
@@ -387,7 +394,10 @@ class AddFragment : Fragment() {
         btnSave.setOnClickListener {
             val name = etName.text.toString()
             if (name.isNotBlank()) {
-                addSubcategory(name)
+                val viewModel = ViewModelProvider(this).get(CategoryViewModel::class.java)
+                viewModel.addCustomSubcategory(selectedCategoryId, name)
+
+                addSubcategoryToView(name)
                 dialog.dismiss()
             } else {
                 etName.error = "Please enter subcategory name"
@@ -397,58 +407,56 @@ class AddFragment : Fragment() {
         dialog.show()
     }
 
-    private fun addSubcategory(name: String) {
-        val subcategoriesLinearLayout = subcategoriesContainer.findViewById<LinearLayout>(R.id.subcategories_linear_layout)
 
-        val subcategoryView = LayoutInflater.from(requireContext())
-            .inflate(R.layout.item_subcategory, subcategoriesLinearLayout, false)
-
-        val icon = subcategoryView.findViewById<ImageView>(R.id.subcategory_icon)
-        val label = subcategoryView.findViewById<TextView>(R.id.subcategory_label)
-        val container = subcategoryView.findViewById<LinearLayout>(R.id.subcategory_container)
-
-        icon.setImageResource(iconMap[selectedCategory] ?: R.drawable.ic_launcher_foreground)
-        label.text = name
-
-        container.setOnClickListener {
-            for (i in 0 until subcategoriesLinearLayout.childCount) {
-                val child = subcategoriesLinearLayout.getChildAt(i)
-                child.background = ContextCompat.getDrawable(requireContext(), R.drawable.bg_subcategory)
-            }
-
-            container.background = ContextCompat.getDrawable(requireContext(), R.drawable.bg_subcategory_selected)
-            selectedSubcategory = name
-        }
-
-        subcategoriesLinearLayout.addView(subcategoryView, subcategoriesLinearLayout.childCount - 1)
-
-        subcategoriesScrollView.post {
-            subcategoriesScrollView.fullScroll(HorizontalScrollView.FOCUS_RIGHT)
+    private fun loadSubcategoriesForCategory(categoryId: Int) {
+        val viewModel = ViewModelProvider(this).get(CategoryViewModel::class.java)
+        viewModel.loadSubcategories(categoryId)
+        viewModel.subcategories.observe(viewLifecycleOwner) { subcategories ->
+            updateSubcategoriesList(subcategories.map { it.name })
         }
     }
 
-    private fun loadDefaultSubcategories(categoryName: String) {
+    private fun updateSubcategoriesList(subcategoryNames: List<String>) {
         val subcategoriesLinearLayout = subcategoriesContainer.findViewById<LinearLayout>(R.id.subcategories_linear_layout)
         subcategoriesLinearLayout.removeAllViews()
 
         val addButton = LayoutInflater.from(requireContext())
             .inflate(R.layout.item_add_subcategory, subcategoriesLinearLayout, false)
+        addButton.setOnClickListener { showAddSubcategoryDialog() }
         subcategoriesLinearLayout.addView(addButton)
 
-        val defaultSubcategories = when (categoryName) {
-            "Transport" -> listOf("Taxi", "Public Transport", "Rent")
-            "Food & Drink" -> listOf("Drink", "Food", "Groceries")
-            "Shopping" -> listOf("Clothes", "Electronics", "Home")
-            "Health" -> listOf("Pharmacy", "Appointments", "Dental")
-            "Interest" -> listOf("Deposit", "Stock", "Rate")
-            "Life & Event" -> listOf("Presents", "Going out", "Restaurants")
-            "Income" -> listOf("Salary", "Bonus", "Investment")
+        subcategoryNames.forEach { name ->
+            addSubcategoryToView(name)
+        }
+    }
 
-            else -> emptyList()
+    private fun addSubcategoryToView(name: String) {
+        val subcategoriesLinearLayout = subcategoriesContainer.findViewById<LinearLayout>(R.id.subcategories_linear_layout)
+
+        subcategoriesLinearLayout.removeViewAt(subcategoriesLinearLayout.childCount - 1)
+
+        val subcategoryView = LayoutInflater.from(requireContext())
+            .inflate(R.layout.item_subcategory, subcategoriesLinearLayout, false)
+
+        subcategoryView.findViewById<TextView>(R.id.subcategory_label).text = name
+        subcategoryView.findViewById<ImageView>(R.id.subcategory_icon).setImageResource(
+            iconMap[selectedCategory] ?: R.drawable.ic_launcher_foreground
+        )
+
+        subcategoryView.setOnClickListener {
+            selectedSubcategory = name
+            for (i in 0 until subcategoriesLinearLayout.childCount) {
+                val child = subcategoriesLinearLayout.getChildAt(i)
+                child.background = ContextCompat.getDrawable(requireContext(), R.drawable.bg_subcategory)
+            }
+            subcategoryView.background = ContextCompat.getDrawable(requireContext(), R.drawable.bg_subcategory_selected)
         }
 
-        defaultSubcategories.forEach { subcategory ->
-            addSubcategory(subcategory)
-        }
+        subcategoriesLinearLayout.addView(subcategoryView)
+
+        val addButton = LayoutInflater.from(requireContext())
+            .inflate(R.layout.item_add_subcategory, subcategoriesLinearLayout, false)
+        addButton.setOnClickListener { showAddSubcategoryDialog() }
+        subcategoriesLinearLayout.addView(addButton)
     }
 }

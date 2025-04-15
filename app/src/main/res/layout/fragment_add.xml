@@ -355,9 +355,11 @@
                     />
 
                 <androidx.core.widget.NestedScrollView
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:id="@+id/subcategories_container">
+                    android:id="@+id/subcategories_container"
+                    android:clipToPadding="false"
+                    android:paddingBottom="8dp">
 
                     <HorizontalScrollView
                         android:layout_width="wrap_content"
