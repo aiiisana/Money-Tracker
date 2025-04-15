@@ -9,13 +9,19 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageView
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import com.fpis.money.R
+import com.fpis.money.models.Budget
 import com.fpis.money.utils.ToastType
 import com.fpis.money.utils.showCustomToast
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class EditBudgetFragment : Fragment() {
 
-    private val viewModel: BudgetViewModel by viewModels()
+    private lateinit var viewModel: BudgetViewModel
     private var budgetId: String? = null
     private var budget: Budget? = null
 
@@ -35,6 +41,8 @@ class EditBudgetFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        viewModel = ViewModelProvider(this).get(BudgetViewModel::class.java)
 
         // Load budget data
         loadBudgetData()
@@ -67,15 +75,13 @@ class EditBudgetFragment : Fragment() {
 
     private fun loadBudgetData() {
         budgetId?.let { id ->
-            // Get budget from view model
-            budget = viewModel.getBudgetById(id)
+            viewModel.getBudgetById(id).observe(viewLifecycleOwner) { loadedBudget ->
+                budget = loadedBudget
 
-            // Populate UI with budget data
-            budget?.let { budget ->
-                view?.findViewById<EditText>(R.id.et_budget_name)?.setText(budget.category)
-                view?.findViewById<EditText>(R.id.et_budget_amount)?.setText("₸${String.format("%,.2f", budget.amount)}")
-
-                // TODO: Set color circle based on budget color
+                loadedBudget?.let { budget ->
+                    view?.findViewById<EditText>(R.id.et_budget_name)?.setText(budget.category)
+                    view?.findViewById<EditText>(R.id.et_budget_amount)?.setText(String.format("%,.2f", budget.amount))
+                }
             }
         }
     }

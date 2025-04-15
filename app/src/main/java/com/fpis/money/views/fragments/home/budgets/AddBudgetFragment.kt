@@ -9,13 +9,15 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageView
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.ViewModelProvider
 import com.fpis.money.R
+import com.fpis.money.models.Budget
 import com.fpis.money.utils.ToastType
 import com.fpis.money.utils.showCustomToast
 
 class AddBudgetFragment : Fragment() {
 
-    private val viewModel: BudgetViewModel by viewModels()
+    private lateinit var viewModel: BudgetViewModel
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -26,6 +28,8 @@ class AddBudgetFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        // Initialize ViewModel
+        viewModel = ViewModelProvider(this).get(BudgetViewModel::class.java)
 
         // Set up close button
         view.findViewById<ImageView>(R.id.btn_close).setOnClickListener {
@@ -61,12 +65,12 @@ class AddBudgetFragment : Fragment() {
 
         // Create a new budget
         val newBudget = Budget(
-            id = System.currentTimeMillis().toString(),
+           // id = System.currentTimeMillis().toString(),
             category = budgetName,
             amount = budgetAmount,
             spent = 0.0,
             color = "#66FFA3", // Default green color
-            percentage = 0
+            //percentage = 0
         )
 
         // Add the budget to the view model

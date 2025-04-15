@@ -10,10 +10,10 @@ import android.view.animation.AlphaAnimation
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.ViewModelProvider
 import com.fpis.money.R
 import com.fpis.money.views.fragments.home.stats.ExpenseChartView
 import com.fpis.money.databinding.FragmentHomeBinding
-import com.fpis.money.views.fragments.cards.AddCardFragment
 import com.fpis.money.views.fragments.home.budgets.BudgetFragment
 import com.fpis.money.views.fragments.home.stats.StatisticsFragment
 import java.text.SimpleDateFormat
@@ -23,13 +23,10 @@ import java.util.Locale
 
 class HomeFragment : Fragment() {
 
-    companion object {
-        fun newInstance() = HomeFragment()
-    }
 
     private var _binding: FragmentHomeBinding? = null
     private val binding get() = _binding!!
-    private val viewModel: HomeViewModel by viewModels()
+    private lateinit var viewModel: HomeViewModel
     private var currentDate = Calendar.getInstance()
     private lateinit var expenseChartView: ExpenseChartView
 
@@ -44,16 +41,10 @@ class HomeFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        viewModel = ViewModelProvider(this).get(HomeViewModel::class.java)
+
         // Initialize the expense chart view
         expenseChartView = view.findViewById(R.id.expense_chart_view)
-
-        // Make sure the chart view is not null
-        if (expenseChartView == null) {
-            // Log error or handle the case where the view is not found
-            println("ERROR: ExpenseChartView not found in layout")
-        } else {
-            println("ExpenseChartView initialized successfully")
-        }
 
         setupDateNavigation()
         setupTotalBalance()
@@ -211,11 +202,9 @@ class HomeFragment : Fragment() {
             binding.rg1ohu7vm6na.text = "-₸${budget.spent} spent this month"
 
             // Update progress bar
-            val spentPercentage = budget.spent.replace(",", "").toDouble() /
-                    budget.total.replace(",", "").toDouble() * 100
             binding.rxveltjdzj6.post {
                 val layoutParams = binding.rmrg11ps7xhr.layoutParams
-                layoutParams.width = (binding.rxveltjdzj6.width * spentPercentage / 100).toInt()
+                layoutParams.width = (binding.rxveltjdzj6.width * budget.percentage / 100).toInt()
                 binding.rmrg11ps7xhr.layoutParams = layoutParams
             }
         }
@@ -230,30 +219,31 @@ class HomeFragment : Fragment() {
                     binding.rpenb33b77xg.setTextColor(Color.parseColor(it.color))
                 }
 
-                // Update food category
-                val food = categories.find { it.name == "Food" }
+// Update food category
+                val food = categories.find { it.name == "Food & Drink" }
                 food?.let {
                     binding.rb1jkxtvtiq7.text = it.name
-                    binding.rn6ubd8927c.text = "₸${it.spent} spent"
-                    binding.rn6ubd8927c.setTextColor(Color.parseColor(it.color))
+                    binding.rn6ubd8927c.text = "₸${String.format("%,.2f", it.spent)} spent"
+                    binding.rn6ubd8927c.setTextColor(android.graphics.Color.parseColor(it.color))
                 }
 
-                // Update total expense
-                val totalExpense = categories.sumOf {
-                    it.spent.replace(",", "").toDouble()
-                }
-                val totalExpenseFormatted = "₸${totalExpense.toInt()}"
-
-                // Update chart data and center text
+                // Update chart data
                 if (::expenseChartView.isInitialized) {
                     try {
                         val chartCategories = categories.map {
                             ExpenseChartView.ExpenseCategoryInput(
                                 it.name,
-                                it.spent.replace(",", "").toFloat(),
+                                it.spent.toFloat(),
                                 it.color
                             )
                         }
+
+                        // Calculate total expense
+                        val totalExpense = categories.sumOf {
+                            it.spent
+                        }
+                        val totalExpenseFormatted = "₸${String.format("%,.2f", totalExpense)}"
+
                         expenseChartView.setData(chartCategories)
                         expenseChartView.setCenterText("Expense", totalExpenseFormatted)
                     } catch (e: Exception) {
@@ -297,6 +287,9 @@ class HomeFragment : Fragment() {
             .hide(this)
             .addToBackStack("statistics")
             .commit()
+    }
+    companion object {
+        fun newInstance() = HomeFragment()
     }
 
 

@@ -9,7 +9,7 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.fpis.money.R
 import com.fpis.money.databinding.ItemBudgetBinding
-import com.fpis.money.views.fragments.home.budgets.placeholder.PlaceholderContent
+import com.fpis.money.models.Budget
 import java.text.NumberFormat
 import java.util.Locale
 import kotlin.math.absoluteValue

@@ -9,10 +9,10 @@ import android.widget.ImageView
 import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import androidx.recyclerview.widget.RecyclerView.ViewHolder
-import com.fpis.money.databinding.FragmentStatisticsBinding
 import com.fpis.money.R
 import java.text.NumberFormat
 import java.text.SimpleDateFormat
@@ -23,7 +23,6 @@ import java.util.Locale
 class StatisticsFragment : Fragment() {
 
     private lateinit var expenseChart: ExpenseChartView
-    private lateinit var expenseAmount: TextView
     private lateinit var dateText: TextView
     private lateinit var categoryList: RecyclerView
     private lateinit var btnPrevDate: ImageView
@@ -34,13 +33,8 @@ class StatisticsFragment : Fragment() {
     private val dateFormat = SimpleDateFormat("dd MMM yyyy", Locale.getDefault())
     private val currencyFormat = NumberFormat.getCurrencyInstance(Locale("kk", "KZ"))
 
-    private val categories = listOf(
-        CategoryStats("Food", 3430.0, Color.parseColor("#FFDA66")),
-        CategoryStats("Entertainment", 1500.0, Color.parseColor("#FF9466")),
-        CategoryStats("Transport", 210.0, Color.parseColor("#66FFA3")),
-        CategoryStats("Health", 560.0, Color.parseColor("#FF66A3")),
-        CategoryStats("Shopping", 850.0, Color.parseColor("#66D9FF"))
-    )
+    private lateinit var viewModel: StatisticsViewModel
+    private val adapter = CategoryStatsAdapter(emptyList())
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -59,10 +53,12 @@ class StatisticsFragment : Fragment() {
         btnNextDate = view.findViewById(R.id.btn_next_date)
         btnBack = view.findViewById(R.id.btn_back)
 
+        viewModel = ViewModelProvider(this).get(StatisticsViewModel::class.java)
+
         setupListeners()
         setupRecyclerView()
         updateDateText()
-        loadExpenseData()
+        observeViewModel()
     }
 
     private fun setupListeners() {
@@ -85,7 +81,7 @@ class StatisticsFragment : Fragment() {
 
     private fun setupRecyclerView() {
         categoryList.layoutManager = LinearLayoutManager(requireContext())
-        categoryList.adapter = CategoryStatsAdapter(categories)
+        categoryList.adapter = adapter
     }
 
     private fun updateDateText() {
@@ -93,36 +89,45 @@ class StatisticsFragment : Fragment() {
     }
 
     private fun loadExpenseData() {
-        // In a real app, you would load data from your database based on the selected date
-        // For now, we'll use our sample data
+        viewModel.getExpensesByDate(calendar.time).observe(viewLifecycleOwner) { categories ->
+            adapter.updateItems(categories)
 
-        val totalExpense = categories.sumOf { it.amount }
-        val formattedAmount = "₸${String.format("%,.2f", totalExpense)}"
-
-        // Set the center text in the chart
-        expenseChart.clearCategories()
-        expenseChart.setCenterText("Expense", formattedAmount)
-
-        // Add categories to the chart
-        for (category in categories) {
-            expenseChart.addCategory(category.name, category.amount.toFloat(), category.color)
+            // Update chart
+            expenseChart.clearCategories()
+            for (category in categories) {
+                expenseChart.addCategory(category.name, category.amount.toFloat(), category.color)
+            }
         }
+
+        viewModel.getTotalExpenseByDate(calendar.time).observe(viewLifecycleOwner) { totalExpense ->
+            val formattedAmount = "₸${String.format("%,.2f", totalExpense)}"
+            expenseChart.setCenterText("Expense", formattedAmount)
+        }
+    }
+
+    private fun observeViewModel() {
+        loadExpenseData()
     }
 
     data class CategoryStats(
         val name: String,
         val amount: Double,
         val color: Int,
-        val progress: Int = ((amount / 5350.43) * 100).toInt() // Calculate percentage of total
+        val progress: Int = 0
     )
 
-    inner class CategoryStatsAdapter(private val items: List<CategoryStats>) :
+    inner class CategoryStatsAdapter(private var items: List<CategoryStats>) :
         RecyclerView.Adapter<CategoryStatsAdapter.ViewHolder>() {
 
         inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
             val categoryName: TextView = view.findViewById(R.id.category_name)
             val categoryAmount: TextView = view.findViewById(R.id.category_amount)
             val categoryProgress: ProgressBar = view.findViewById(R.id.category_progress)
+        }
+
+        fun updateItems(newItems: List<CategoryStats>) {
+            items = newItems
+            notifyDataSetChanged()
         }
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {

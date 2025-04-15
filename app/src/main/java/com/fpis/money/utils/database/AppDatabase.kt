@@ -10,13 +10,17 @@ import com.fpis.money.models.Converters
 import com.fpis.money.models.Subcategory
 import com.fpis.money.models.Transaction
 import com.fpis.money.models.Transfer
+import com.fpis.money.models.Budget
+import com.fpis.money.models.BudgetCategory
 
-@Database(entities = [Transaction::class, Transfer::class, Category::class, Subcategory::class], version = 8)
+@Database(entities = [Transaction::class, Transfer::class, Category::class, Subcategory::class,Budget::class,BudgetCategory::class], version = 2)
 @TypeConverters(Converters::class)
 abstract class AppDatabase : RoomDatabase() {
     abstract fun transactionDao(): TransactionDao
     abstract fun transferDao(): TransferDao
     abstract fun categoryDao(): CategoryDao
+    abstract fun budgetDao(): BudgetDao
+    abstract fun budgetCategoryDao(): BudgetCategoryDao
 
     companion object {
         @Volatile

@@ -1,98 +1,96 @@
 package com.fpis.money.views.fragments.home
 
+import android.app.Application
+import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
+import androidx.lifecycle.asLiveData
+import androidx.lifecycle.map
+import androidx.lifecycle.viewModelScope
+import com.fpis.money.utils.database.AppDatabase
+import com.fpis.money.utils.database.repo.BudgetRepository
+import com.fpis.money.utils.database.repo.StatisticsRepository
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.launch
+import java.util.Calendar
 import java.util.Date
+import com.fpis.money.models.Budget
+import com.fpis.money.models.BudgetCategory
+import com.fpis.money.models.Category
 
-data class BudgetData(
-    val total: String,
-    val spent: String,
-    val remaining: String,
-    val spentPercentage: Float // Add percentage for progress bar
-)
 
-data class Category(
-    val id: String,
-    val name: String,
-    val spent: String,
-    val color: String,
-    val progress: Float // Add progress percentage for circular indicators
-)
+class HomeViewModel(application: Application) : AndroidViewModel(application) {
 
-class HomeViewModel : ViewModel() {
+    private val budgetRepository: BudgetRepository
+    private val statisticsRepository: StatisticsRepository
 
     private val _totalBalance = MutableLiveData<String>()
     val totalBalance: LiveData<String> = _totalBalance
 
-    private val _budgetData = MutableLiveData<BudgetData>()
-    val budgetData: LiveData<BudgetData> = _budgetData
+    private val _budgetData = MutableLiveData<Budget>()
+    val budgetData: LiveData<Budget> = _budgetData
 
-    private val _categories = MutableLiveData<List<Category>>()
-    val categories: LiveData<List<Category>> = _categories
+    val categories: LiveData<List<BudgetCategory>>
 
     init {
+        val db = AppDatabase.getDatabase(application)
+        budgetRepository = BudgetRepository(db.budgetDao(),db.transactionDao())
+        statisticsRepository = StatisticsRepository(db.transactionDao())
+
+//        // Initialize with default values
+//        _totalBalance.value = "760,000.00"
+//
+//        _budgetData.value = Budget(
+//            category = "Total",
+//            amount = 760000.00,
+//            spent = 0.00,
+//            color = "#4285F4"
+//        )
+
+
+
+        // Transform budget data to categories
+        categories = budgetRepository.getAllBudgets().asLiveData().map { budgets ->
+            budgets.map { budget ->
+                BudgetCategory(
+                    name = budget.category,
+                    spent = budget.spent, // ✅ use Double, not formatted String
+                    color = budget.color,
+                    progress = budget.percentage.toFloat()
+                )
+            }
+        }
+
+
         // Load initial data
         loadInitialData()
     }
-
     private fun loadInitialData() {
-        // In a real app, you would load this data from a repository or API
-        _totalBalance.value = "760,000.00"
+        viewModelScope.launch {
+            // Calculate total budget and spent amount
+            val budgets = budgetRepository.getAllBudgets().asLiveData().value ?: emptyList()
 
-        val totalBudget = 760000.00
-        val spentBudget = 277000.00
-        val spentPercentage = (spentBudget / totalBudget) * 100
+            val totalBudget = budgets.sumOf { it.amount }
+            val spentBudget = budgets.sumOf { it.spent }
 
-        _budgetData.value = BudgetData(
-            total = "760,000.00",
-            spent = "277,000",
-            remaining = "483,000.00",
-            spentPercentage = spentPercentage.toFloat()
-        )
+            // Format for display
+            _totalBalance.value = String.format("%,.2f", totalBudget)
 
-        // Calculate progress percentages based on budget allocation
-        val entertainmentProgress = (156500.0 / totalBudget) * 100
-        val foodProgress = (80000.0 / totalBudget) * 100
-        val transportationProgress = (25000.0 / totalBudget) * 100
-        val shoppingProgress = (15500.0 / totalBudget) * 100
-
-        _categories.value = listOf(
-            Category(
-                id = "1",
-                name = "Entertainment",
-                spent = "156,500",
-                color = "#66FFA3",
-                progress = entertainmentProgress.toFloat()
-            ),
-            Category(
-                id = "2",
-                name = "Food",
-                spent = "80,000",
-                color = "#FF9366",
-                progress = foodProgress.toFloat()
-            ),
-            Category(
-                id = "3",
-                name = "Transportation",
-                spent = "25,000",
-                color = "#3DB9FF",
-                progress = transportationProgress.toFloat()
-            ),
-            Category(
-                id = "4",
-                name = "Shopping",
-                spent = "15,500",
-                color = "#FFD966",
-                progress = shoppingProgress.toFloat()
+            // Create a "total" budget for the progress bar
+            _budgetData.value = Budget(
+                category = "Total",
+                amount = totalBudget,
+                spent = spentBudget,
+                color = "#4285F4"
             )
-        )
+        }
     }
 
     fun loadDataForDate(date: Date) {
-        println("Loading data for: $date")
-        // In a real app, you would load data for the specific date
-        // For now, just reload the initial data
-        loadInitialData()
+        viewModelScope.launch {
+            // In a real app, you would load data for the specific date
+            // For now, just reload the initial data
+            loadInitialData()
+        }
     }
 }

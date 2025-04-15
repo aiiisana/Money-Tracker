@@ -3,69 +3,66 @@ package com.fpis.money.views.fragments.home.budgets
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.fpis.money.models.Budget
+import android.app.Application
+import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.asLiveData
+import androidx.lifecycle.viewModelScope
+import com.fpis.money.utils.database.AppDatabase
+import com.fpis.money.utils.database.repo.BudgetRepository
+import com.fpis.money.utils.database.TransactionDao
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.launch
 
-class BudgetViewModel : ViewModel() {
+class BudgetViewModel(application: Application) : AndroidViewModel(application) {
 
-    private val _budgets = MutableLiveData<List<Budget>>()
-    val budgets: LiveData<List<Budget>> = _budgets
+    private val repository: BudgetRepository
+    val budgets: LiveData<List<Budget>>
 
     init {
-        // In a real app, you would load this from a repository
-        loadBudgets()
+        val db = AppDatabase.getDatabase(application)
+        repository = BudgetRepository(db.budgetDao(), db.transactionDao())
+        budgets = repository.getAllBudgets().asLiveData()
     }
 
-    private fun loadBudgets() {
-        // Sample data for now
-        _budgets.value = listOf(
-            Budget(
-                id = "1",
-                category = "Entertainment",
-                amount = 100000.0,
-                spent = 54503.0,
-                color = "#66FFA3",
-                percentage = 19
-            ),
-            Budget(
-                id = "2",
-                category = "Food",
-                amount = 50000.0,
-                spent = 54503.0,
-                color = "#FF9366",
-                percentage = 123
-            ),
-            Budget(
-                id = "3",
-                category = "Transport",
-                amount = 10000.0,
-                spent = 0.0,
-                color = "#3DB9FF",
-                percentage = 0
-            )
-        )
-    }
-
-    fun deleteBudget(budgetId: String) {
-        val currentList = _budgets.value ?: return
-        _budgets.value = currentList.filter { it.id != budgetId }
-    }
-    // Add these methods to your BudgetViewModel class
-
-    fun getBudgetById(budgetId: String): Budget? {
-        return _budgets.value?.find { it.id == budgetId }
+    fun getBudgetById(budgetId: String): LiveData<Budget?> {
+        val result = MutableLiveData<Budget?>()
+        viewModelScope.launch {
+            val budget = repository.getBudgetById(budgetId)
+            result.postValue(budget)
+        }
+        return result
     }
 
     fun addBudget(budget: Budget) {
-        val currentList = _budgets.value?.toMutableList() ?: mutableListOf()
-        currentList.add(budget)
-        _budgets.value = currentList
+        viewModelScope.launch {
+            repository.insertBudget(budget)
+        }
     }
 
     fun updateBudget(budget: Budget) {
-        val currentList = _budgets.value?.toMutableList() ?: mutableListOf()
-        val index = currentList.indexOfFirst { it.id == budget.id }
-        if (index != -1) {
-            currentList[index] = budget
-            _budgets.value = currentList
+        viewModelScope.launch {
+            repository.updateBudget(budget)
         }
     }
+
+    fun deleteBudget(budgetId: String) {
+        viewModelScope.launch {
+            repository.deleteBudget(budgetId)
+        }
+    }
+//    fun updateBudgetSpending() {
+//        if (transactionDao == null) return
+//
+//        viewModelScope.launch {
+//            val budgets = budgetDao.getAllBudgets().first()
+//
+//            for (budget in budgets) {
+//                val spent = transactionDao.getSpentAmountByCategory(budget.category).first() ?: 0.0
+//                val updatedBudget = budget.copy(spent = spent)
+//                budgetDao.updateBudget(updatedBudget)
+//            }
+//        }
+//    }
 }
+
