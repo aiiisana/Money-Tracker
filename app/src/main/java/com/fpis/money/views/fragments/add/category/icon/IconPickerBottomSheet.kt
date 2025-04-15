@@ -47,7 +47,7 @@ class IconPickerBottomSheet(
 
         val icons = listOf(
             R.drawable.ic_food,
-            R.drawable.ic_shopping,
+            R.drawable.shopping,
             R.drawable.ic_health,
             R.drawable.ic_bus,
             R.drawable.ic_entertainment,
@@ -129,6 +129,6 @@ class IconPickerBottomSheet(
             selectedColorRes?.let { colorRes ->
                 previewIcon.setColorFilter(ContextCompat.getColor(requireContext(), colorRes))
             } ?: previewIcon.clearColorFilter()
-        } ?: previewIcon.setImageResource(R.drawable.ic_shopping)
+        } ?: previewIcon.setImageResource(R.drawable.shopping)
     }
 }

@@ -51,7 +51,7 @@ class RecordRecyclerViewAdapter(
                 } ?: run {
                     iconMap[record.category]?.let {
                         holder.categoryIcon.setImageResource(it)
-                    } ?: holder.categoryIcon.setImageResource(R.drawable.ic_shopping)
+                    } ?: holder.categoryIcon.setImageResource(R.drawable.shopping)
                 }
 
                 record.colorRes?.let {
