@@ -84,6 +84,7 @@ dependencies {
     implementation("com.github.PhilJay:MPAndroidChart:v3.1.0")
     implementation("de.hdodenhof:circleimageview:3.1.0")
     implementation("com.github.bumptech.glide:glide:4.16.0")
+    implementation("androidx.core:core-splashscreen:1.0.1")
     val room_version = "2.6.1"
 
     implementation("androidx.room:room-runtime:$room_version")
