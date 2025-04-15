@@ -46,10 +46,17 @@ class RecordRecyclerViewAdapter(
                 holder.categoryName.text = record.category
                 holder.cardHeader.text = record.subCategory
 
-                holder.categoryIcon.visibility = View.VISIBLE
-                iconMap[record.category]?.let {
+                record.iconRes?.let {
                     holder.categoryIcon.setImageResource(it)
-                } ?: holder.categoryIcon.setImageResource(R.drawable.ic_shopping)
+                } ?: run {
+                    iconMap[record.category]?.let {
+                        holder.categoryIcon.setImageResource(it)
+                    } ?: holder.categoryIcon.setImageResource(R.drawable.ic_shopping)
+                }
+
+                record.colorRes?.let {
+                    holder.categoryIcon.setColorFilter(holder.itemView.context.getColor(it))
+                } ?: holder.categoryIcon.clearColorFilter()
 
                 val dateFormat = SimpleDateFormat("dd MMM yyyy", Locale.getDefault())
                 holder.date.text = dateFormat.format(record.date)

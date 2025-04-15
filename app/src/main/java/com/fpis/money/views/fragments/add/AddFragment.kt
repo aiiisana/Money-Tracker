@@ -61,6 +61,7 @@ class AddFragment : Fragment() {
 
     private var selectedIconRes: Int = R.drawable.ic_launcher_foreground
     private var selectedCategoryId: Int = -1
+    private var selectedColorRes: Int = R.color.green
 
     private val iconMap = mapOf(
         "Food & Drink" to R.drawable.ic_food_drink,
@@ -179,7 +180,8 @@ class AddFragment : Fragment() {
                 notes.text.toString(),
                 selectedPaymentMethod,
                 selectedSubcategory ?: "",
-                iconRes = selectedIconRes
+                iconRes = selectedIconRes,
+                colorRes = selectedColorRes
             )
 
             showCustomToast(requireContext(), "Successfully saved transaction!", ToastType.SUCCESS)
@@ -285,7 +287,9 @@ class AddFragment : Fragment() {
             selectedCategoryId = category.id
             categoryText.text = category.name
             categoryIcon.setImageResource(category.iconRes)
+            categoryIcon.setColorFilter(ContextCompat.getColor(requireContext(), category.colorRes))
             selectedIconRes = category.iconRes
+            selectedColorRes = category.colorRes
 
             loadSubcategoriesForCategory(category.id)
         }
@@ -432,16 +436,16 @@ class AddFragment : Fragment() {
 
     private fun addSubcategoryToView(name: String) {
         val subcategoriesLinearLayout = subcategoriesContainer.findViewById<LinearLayout>(R.id.subcategories_linear_layout)
-
         subcategoriesLinearLayout.removeViewAt(subcategoriesLinearLayout.childCount - 1)
 
         val subcategoryView = LayoutInflater.from(requireContext())
             .inflate(R.layout.item_subcategory, subcategoriesLinearLayout, false)
 
         subcategoryView.findViewById<TextView>(R.id.subcategory_label).text = name
-        subcategoryView.findViewById<ImageView>(R.id.subcategory_icon).setImageResource(
-            iconMap[selectedCategory] ?: R.drawable.ic_launcher_foreground
-        )
+
+        val iconView = subcategoryView.findViewById<ImageView>(R.id.subcategory_icon)
+        iconView.setImageResource(selectedIconRes)
+        iconView.setColorFilter(ContextCompat.getColor(requireContext(), selectedColorRes))
 
         subcategoryView.setOnClickListener {
             selectedSubcategory = name

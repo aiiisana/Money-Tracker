@@ -9,6 +9,7 @@ data class Category(
     @PrimaryKey(autoGenerate = true) val id: Int = 0,
     val name: String,
     val iconRes: Int,
+    val colorRes: Int,
     val subcategories: List<String> = emptyList(),
     val isIncomeCategory: Boolean = false,
     val isDefault: Boolean = false

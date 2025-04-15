@@ -99,7 +99,13 @@ class RecordDetailBottomSheet(private val transaction: Transaction) : BottomShee
         } ?: run {
             iconMap[transaction.category]?.let {
                 categoryIcon.setImageResource(it)
-            }
+            } ?: categoryIcon.setImageResource(R.drawable.ic_shopping)
+        }
+
+        transaction.colorRes?.let {
+            categoryIcon.setColorFilter(ContextCompat.getColor(requireContext(), it))
+        } ?: run {
+            categoryIcon.clearColorFilter()
         }
 
         when (transaction.type) {

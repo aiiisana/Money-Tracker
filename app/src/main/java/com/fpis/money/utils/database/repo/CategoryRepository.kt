@@ -7,16 +7,16 @@ import com.fpis.money.utils.database.CategoryDao
 
 class CategoryRepository(private val categoryDao: CategoryDao) {
     private val defaultExpenseCategories = listOf(
-        Category(name = "Food & Drink", iconRes = R.drawable.ic_food_drink, isDefault = true),
-        Category(name = "Shopping", iconRes = R.drawable.ic_shopping, isDefault = true),
-        Category(name = "Health", iconRes = R.drawable.health, isDefault = true),
-        Category(name = "Transport", iconRes = R.drawable.ic_transport, isDefault = true),
-        Category(name = "Interest", iconRes = R.drawable.ic_interest, isDefault = true),
-        Category(name = "Life & Event", iconRes = R.drawable.ic_event, isDefault = true)
+        Category(name = "Food & Drink", iconRes = R.drawable.ic_food_drink, colorRes = R.color.white, isDefault = true),
+        Category(name = "Shopping", iconRes = R.drawable.ic_shopping, colorRes = R.color.white, isDefault = true),
+        Category(name = "Health", iconRes = R.drawable.health, colorRes = R.color.white, isDefault = true),
+        Category(name = "Transport", iconRes = R.drawable.ic_transport, colorRes = R.color.white, isDefault = true),
+        Category(name = "Interest", iconRes = R.drawable.ic_interest, colorRes = R.color.white, isDefault = true),
+        Category(name = "Life & Event", iconRes = R.drawable.ic_event, colorRes = R.color.green, isDefault = true)
     )
 
     private val defaultIncomeCategories = listOf(
-        Category(name = "Income", iconRes = R.drawable.ic_debit_card, isIncomeCategory = true, isDefault = true),
+        Category(name = "Income", iconRes = R.drawable.ic_debit_card, isIncomeCategory = true, colorRes = R.color.green, isDefault = true),
     )
 
     suspend fun initializeDefaultCategories() {

@@ -91,6 +91,7 @@ class CategoryBottomSheet(
                 val newCategory = Category(
                     name = name,
                     iconRes = selectedIconRes,
+                    colorRes = selectedColorRes,
                     isIncomeCategory = isIncome
                 )
                 viewModel.addCustomCategory(newCategory)

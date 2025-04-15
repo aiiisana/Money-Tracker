@@ -14,5 +14,6 @@ data class Transaction(
     val category: String,
     val subCategory: String,
     val notes: String,
-    val iconRes: Int? = null
+    val iconRes: Int? = null,
+    val colorRes: Int? = null
 )
