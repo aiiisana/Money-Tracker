@@ -1,6 +1,7 @@
 package com.fpis.money.views.fragments.records
 
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
@@ -45,9 +46,10 @@ class RecordRecyclerViewAdapter(
                 holder.categoryName.text = record.category
                 holder.cardHeader.text = record.subCategory
 
+                holder.categoryIcon.visibility = View.VISIBLE
                 iconMap[record.category]?.let {
                     holder.categoryIcon.setImageResource(it)
-                }
+                } ?: holder.categoryIcon.setImageResource(R.drawable.ic_shopping)
 
                 val dateFormat = SimpleDateFormat("dd MMM yyyy", Locale.getDefault())
                 holder.date.text = dateFormat.format(record.date)
@@ -65,6 +67,8 @@ class RecordRecyclerViewAdapter(
                 val transfer = item.transfer
                 holder.categoryName.text = "Transfer"
                 holder.cardHeader.text = "${transfer.fromAccount} → ${transfer.toAccount}"
+
+                holder.categoryIcon.visibility = View.GONE
 
                 val dateFormat = SimpleDateFormat("dd MMM yyyy", Locale.getDefault())
                 holder.date.text = dateFormat.format(transfer.date)

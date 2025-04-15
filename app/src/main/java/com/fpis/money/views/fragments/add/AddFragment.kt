@@ -58,6 +58,8 @@ class AddFragment : Fragment() {
     private lateinit var subcategoriesContainer: NestedScrollView
     private lateinit var subcategoriesScrollView: HorizontalScrollView
 
+    private var selectedIconRes: Int = R.drawable.ic_launcher_foreground
+
     private val iconMap = mapOf(
         "Food & Drink" to R.drawable.ic_food_drink,
         "Shopping" to R.drawable.ic_shopping,
@@ -169,7 +171,8 @@ class AddFragment : Fragment() {
                 timestamp,
                 notes.text.toString(),
                 selectedPaymentMethod,
-                selectedSubcategory ?: ""
+                selectedSubcategory ?: "",
+                iconRes = selectedIconRes
             )
 
             showCustomToast(requireContext(), "Successfully saved transaction!", ToastType.SUCCESS)
@@ -192,6 +195,7 @@ class AddFragment : Fragment() {
         categoryIcon.setImageResource(R.drawable.ic_launcher_foreground)
         dateTimeValue.text = "Select Date & Time"
         notes.setText("")
+        selectedIconRes = R.drawable.ic_launcher_foreground
 
         val subcategoriesLinearLayout = subcategoriesContainer.findViewById<LinearLayout>(R.id.subcategories_linear_layout)
         subcategoriesLinearLayout.removeAllViews()
@@ -273,6 +277,8 @@ class AddFragment : Fragment() {
             selectedCategory = category.name
             categoryText.text = category.name
             categoryIcon.setImageResource(category.iconRes)
+
+            selectedIconRes = category.iconRes
 
             loadDefaultSubcategories(category.name)
         }

@@ -94,8 +94,12 @@ class RecordDetailBottomSheet(private val transaction: Transaction) : BottomShee
         categoryText.text = transaction.category
         subcategoryText.text = transaction.subCategory
 
-        iconMap[transaction.category]?.let {
+        transaction.iconRes?.let {
             categoryIcon.setImageResource(it)
+        } ?: run {
+            iconMap[transaction.category]?.let {
+                categoryIcon.setImageResource(it)
+            }
         }
 
         when (transaction.type) {

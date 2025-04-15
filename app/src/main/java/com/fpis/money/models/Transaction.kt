@@ -13,5 +13,6 @@ data class Transaction(
     val amount: Float,
     val category: String,
     val subCategory: String,
-    val notes: String
+    val notes: String,
+    val iconRes: Int? = null
 )
