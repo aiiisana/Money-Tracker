@@ -20,6 +20,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.fpis.money.R
 import com.fpis.money.models.Card
+import com.fpis.money.models.Category
 import com.fpis.money.utils.ToastType
 import com.fpis.money.utils.showCustomToast
 import com.fpis.money.views.fragments.add.category.CategoryBottomSheet
@@ -65,7 +66,9 @@ class AddFragment : Fragment() {
         "Interest" to R.drawable.ic_interest,
         "Life & Event" to R.drawable.ic_event,
         "Income" to R.drawable.ic_interest,
-        "Add New Category" to R.drawable.ic_add
+        "Salary" to R.drawable.ic_cards,
+        "Bonus" to R.drawable.ic_debit_card,
+        "Investment" to R.drawable.ic_cash,
     )
 
     private lateinit var addViewModel: AddViewModel
@@ -169,8 +172,9 @@ class AddFragment : Fragment() {
                 selectedSubcategory ?: ""
             )
 
+            showCustomToast(requireContext(), "Successfully saved transaction!", ToastType.SUCCESS)
             resetFields()
-            findNavController().navigate(R.id.action_addFragment_to_recordFragment)
+//            findNavController().navigate(R.id.action_addFragment_to_recordFragment)
 
         } catch (e: Exception) {
             Log.e("AddFragment", "Error saving transaction: ${e.message}")
@@ -208,12 +212,6 @@ class AddFragment : Fragment() {
         currentType = type
         updateAmountValue()
         updateTabSelection()
-
-        if (type == "income") {
-            selectedCategory = "Income"
-            categoryText.text = selectedCategory
-            categoryIcon.setImageResource(iconMap[selectedCategory] ?: R.drawable.ic_launcher_foreground)
-        }
     }
 
     private fun updateAmountValue() {
@@ -438,6 +436,8 @@ class AddFragment : Fragment() {
             "Health" -> listOf("Pharmacy", "Appointments", "Dental")
             "Interest" -> listOf("Deposit", "Stock", "Rate")
             "Life & Event" -> listOf("Presents", "Going out", "Restaurants")
+            "Income" -> listOf("Salary", "Bonus", "Investment")
+
             else -> emptyList()
         }
 

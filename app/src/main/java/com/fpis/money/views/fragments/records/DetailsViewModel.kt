@@ -17,17 +17,17 @@ class DetailsViewModel(application: Application) : AndroidViewModel(application)
     private val transferDao = AppDatabase.getDatabase(application).transferDao()
 
     fun updateTransaction(transaction: Transaction): LiveData<Boolean> {
-            val result = MutableLiveData<Boolean>()
-            viewModelScope.launch {
-                try {
-                    transactionDao.update(transaction)
-                    result.postValue(true)
-                } catch (e: Exception) {
-                    result.postValue(false)
-                }
+        val result = MutableLiveData<Boolean>()
+        viewModelScope.launch {
+            try {
+                transactionDao.update(transaction)
+                result.postValue(true)
+            } catch (e: Exception) {
+                result.postValue(false)
             }
-            return result
         }
+        return result
+    }
 
 
     fun updateTransfer(transfer: Transfer): LiveData<Boolean> {

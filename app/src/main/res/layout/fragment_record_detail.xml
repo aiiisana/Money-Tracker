@@ -182,7 +182,7 @@
                             android:text="Expense"
                             />
 
-                        <TextView
+                        <EditText
                             android:id="@+id/amount_value"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
@@ -191,7 +191,10 @@
                             android:text="-₸0"
                             android:textColor="#DA3C3C"
                             android:textSize="46sp"
-                            android:textStyle="bold" />
+                            android:textStyle="bold"
+                            android:inputType="numberDecimal"
+                            android:focusable="true"
+                            android:clickable="true"/>
                     </LinearLayout>
                 </LinearLayout>
 
@@ -339,27 +342,39 @@
                 </LinearLayout>
 
                 <TextView
-                    android:id="@+id/subcategory_label"
+                    android:id="@+id/subcategory"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
                     android:textColor="#FFFFFF"
                     android:textSize="12sp"
                     android:textStyle="bold"
-                    android:layout_marginBottom="5dp"
-                    android:layout_height="wrap_content"
+                    android:layout_marginStart="15dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginEnd="15dp"
+                    android:text="Subcategory"/>
+
+                <TextView
+                    android:id="@+id/subcategory_label"
                     android:layout_width="match_parent"
-                    android:layout_weight="1"
-                    android:text="Subcategory"
-                    android:paddingStart="15dp"
-                    android:paddingEnd="15dp"
-                    />
+                    android:layout_height="wrap_content"
+                    android:textColor="#FFFFFF"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    android:layout_marginStart="15dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginEnd="15dp"
+                    android:text="Subcategory"/>
 
                 <androidx.core.widget.NestedScrollView
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content">
+                    android:layout_height="wrap_content"
+                    android:id="@+id/subcategories_container">
 
                     <HorizontalScrollView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:scrollbars="horizontal">
+                        android:scrollbars="horizontal"
+                        android:id="@+id/subcategories_scroll_view">
 
                         <LinearLayout
                             android:layout_width="wrap_content"
@@ -367,44 +382,20 @@
                             android:orientation="horizontal"
                             android:gravity="center_vertical"
                             android:layout_marginStart="8dp"
-                            android:layout_marginBottom="8dp">
-
-                            <LinearLayout
-                                android:id="@+id/subcategory"
-                                style="@style/SubcategoryItem"
-                                android:background="@drawable/bg_subcategory"
-                                tools:ignore="TouchTargetSizeCheck">
-
-                                <com.google.android.material.imageview.ShapeableImageView
-                                    android:id="@+id/subcategory_icon"
-                                    style="@style/SubcategoryIcon"
-                                    android:src="@drawable/ic_car" />
-
-                                <TextView
-                                    android:id="@+id/subcategory_name"
-                                    style="@style/SubcategoryText"
-                                    android:text="Rent" />
-                            </LinearLayout>
+                            android:layout_marginBottom="8dp"
+                            android:id="@+id/subcategories_linear_layout">
 
                             <LinearLayout
                                 android:id="@+id/add_subcategory_button"
                                 style="@style/SubcategoryItem"
-                                android:background="@drawable/bg_subcategory"
                                 tools:ignore="TouchTargetSizeCheck">
-                                <com.google.android.material.imageview.ShapeableImageView
-                                    android:id="@+id/add_subcategory_icon"
-                                    style="@style/SubcategoryIcon"
-                                    android:src="@drawable/ic_add"/>
-                                <TextView
-                                    android:id="@+id/add_subcategory_label"
-                                    style="@style/SubcategoryText"
-                                    android:text="Add"/>
                             </LinearLayout>
 
                         </LinearLayout>
                     </HorizontalScrollView>
 
                 </androidx.core.widget.NestedScrollView>
+
 
                 <LinearLayout
                     android:id="@+id/separator_4"

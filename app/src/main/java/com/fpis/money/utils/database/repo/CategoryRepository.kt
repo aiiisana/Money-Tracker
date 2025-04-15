@@ -16,9 +16,7 @@ class CategoryRepository(private val categoryDao: CategoryDao) {
     )
 
     private val defaultIncomeCategories = listOf(
-        Category(name = "Salary", iconRes = R.drawable.ic_cards, isIncomeCategory = true, isDefault = true),
-        Category(name = "Bonus", iconRes = R.drawable.ic_debit_card, isIncomeCategory = true, isDefault = true),
-        Category(name = "Investment", iconRes = R.drawable.ic_cash, isIncomeCategory = true, isDefault = true)
+        Category(name = "Income", iconRes = R.drawable.ic_debit_card, isIncomeCategory = true, isDefault = true),
     )
 
     suspend fun initializeDefaultCategories() {
