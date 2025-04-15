@@ -18,7 +18,10 @@ import de.hdodenhof.circleimageview.CircleImageView
 import android.app.Activity
 import android.net.Uri
 import android.provider.MediaStore
+import android.text.TextUtils
 import androidx.activity.result.contract.ActivityResultContracts
+import com.google.android.material.bottomsheet.BottomSheetDialog
+import com.google.firebase.auth.*
 
 
 class ProfileActivity : AppCompatActivity() {
@@ -100,11 +103,11 @@ class ProfileActivity : AppCompatActivity() {
         }
 
         editProfileOption.setOnClickListener {
-            showCustomToast(this, "Edit profile feature coming soon", ToastType.INFO)
+            showEditProfileDialog()
         }
 
         changePasswordOption.setOnClickListener {
-            sendPasswordResetEmail()
+            showChangePasswordDialog()
         }
 
         notificationOption.setOnClickListener {
@@ -124,6 +127,196 @@ class ProfileActivity : AppCompatActivity() {
         logoutOption.setOnClickListener { logoutAction() }
         logoutButton.setOnClickListener { logoutAction() }
     }
+
+    private fun showEditProfileDialog() {
+        val dialog = BottomSheetDialog(this)
+        val view = layoutInflater.inflate(R.layout.dialog_edit_profile, null)
+        dialog.setContentView(view)
+        dialog.show()
+
+        val etUsername = view.findViewById<com.google.android.material.textfield.TextInputEditText>(R.id.etUsername)
+        val etEmail = view.findViewById<com.google.android.material.textfield.TextInputEditText>(R.id.etEmail)
+        val btnSave = view.findViewById<Button>(R.id.btnSave)
+
+        // Pre-fill current data
+        val user = auth.currentUser
+        etUsername.setText(user?.displayName ?: "")
+        etEmail.setText(user?.email ?: "")
+
+        btnSave.setOnClickListener {
+            val newUsername = etUsername.text.toString().trim()
+            val newEmail = etEmail.text.toString().trim()
+
+            if (TextUtils.isEmpty(newUsername)) {
+                showCustomToast(this, "Please enter username", ToastType.ERROR)
+                return@setOnClickListener
+            }
+
+            if (TextUtils.isEmpty(newEmail)) {
+                showCustomToast(this, "Please enter email", ToastType.ERROR)
+                return@setOnClickListener
+            }
+
+            updateProfile(newUsername, newEmail, dialog)
+        }
+    }
+
+    private fun updateProfile(username: String, email: String, dialog: BottomSheetDialog) {
+        val user = auth.currentUser ?: return
+
+        // Check if email changed
+        if (user.email != email) {
+            // Email changed - need to reauthenticate
+            showReauthenticateDialog(email, username, dialog)
+        } else {
+            // Only username changed
+            val profileUpdates = userProfileChangeRequest {
+                displayName = username
+            }
+
+            user.updateProfile(profileUpdates)
+                .addOnSuccessListener {
+                    usernameText.text = username
+                    showCustomToast(this, "Profile updated", ToastType.SUCCESS)
+                    dialog.dismiss()
+                }
+                .addOnFailureListener { e ->
+                    showCustomToast(this, "Failed to update profile: ${e.message}", ToastType.ERROR)
+                }
+        }
+    }
+
+    private fun showReauthenticateDialog(newEmail: String, username: String, profileDialog: BottomSheetDialog) {
+        val dialog = BottomSheetDialog(this)
+        val view = layoutInflater.inflate(R.layout.dialog_reauthenticate, null)
+        dialog.setContentView(view)
+        dialog.show()
+
+        val etPassword = view.findViewById<com.google.android.material.textfield.TextInputEditText>(R.id.etPassword)
+        val btnAuthenticate = view.findViewById<Button>(R.id.btnAuthenticate)
+
+        btnAuthenticate.setOnClickListener {
+            val password = etPassword.text.toString().trim()
+
+            if (TextUtils.isEmpty(password)) {
+                showCustomToast(this, "Please enter your password", ToastType.ERROR)
+                return@setOnClickListener
+            }
+
+            val user = auth.currentUser ?: return@setOnClickListener
+            val credential = EmailAuthProvider.getCredential(user.email!!, password)
+
+            user.reauthenticate(credential)
+                .addOnSuccessListener {
+                    // Now update email and profile
+                    updateEmailAndProfile(newEmail, username, profileDialog, dialog)
+                }
+                .addOnFailureListener { e ->
+                    when (e) {
+                        is FirebaseAuthInvalidCredentialsException -> {
+                            showCustomToast(this, "Invalid password", ToastType.ERROR)
+                        }
+                        else -> {
+                            showCustomToast(this, "Authentication failed: ${e.message}", ToastType.ERROR)
+                        }
+                    }
+                }
+        }
+    }
+
+    private fun updateEmailAndProfile(newEmail: String, username: String, profileDialog: BottomSheetDialog, authDialog: BottomSheetDialog) {
+        val user = auth.currentUser ?: return
+
+        user.updateEmail(newEmail)
+            .addOnSuccessListener {
+                val profileUpdates = userProfileChangeRequest {
+                    displayName = username
+                }
+
+                user.updateProfile(profileUpdates)
+                    .addOnSuccessListener {
+                        emailText.text = newEmail
+                        usernameText.text = username
+                        showCustomToast(this, "Profile updated", ToastType.SUCCESS)
+                        profileDialog.dismiss()
+                        authDialog.dismiss()
+                    }
+                    .addOnFailureListener { e ->
+                        showCustomToast(this, "Failed to update profile: ${e.message}", ToastType.ERROR)
+                    }
+            }
+            .addOnFailureListener { e ->
+                showCustomToast(this, "Failed to update email: ${e.message}", ToastType.ERROR)
+            }
+    }
+
+    private fun showChangePasswordDialog() {
+        val dialog = BottomSheetDialog(this)
+        val view = layoutInflater.inflate(R.layout.dialog_change_password, null)
+        dialog.setContentView(view)
+        dialog.show()
+
+        val etCurrentPassword = view.findViewById<com.google.android.material.textfield.TextInputEditText>(R.id.etCurrentPassword)
+        val etNewPassword = view.findViewById<com.google.android.material.textfield.TextInputEditText>(R.id.etNewPassword)
+        val etConfirmPassword = view.findViewById<com.google.android.material.textfield.TextInputEditText>(R.id.etConfirmPassword)
+        val btnChangePassword = view.findViewById<Button>(R.id.btnChangePassword)
+
+        btnChangePassword.setOnClickListener {
+            val currentPassword = etCurrentPassword.text.toString().trim()
+            val newPassword = etNewPassword.text.toString().trim()
+            val confirmPassword = etConfirmPassword.text.toString().trim()
+
+            if (TextUtils.isEmpty(currentPassword)) {
+                showCustomToast(this, "Please enter current password", ToastType.ERROR)
+                return@setOnClickListener
+            }
+
+            if (TextUtils.isEmpty(newPassword)) {
+                showCustomToast(this, "Please enter new password", ToastType.ERROR)
+                return@setOnClickListener
+            }
+
+            if (newPassword.length < 6) {
+                showCustomToast(this, "Password must be at least 6 characters", ToastType.ERROR)
+                return@setOnClickListener
+            }
+
+            if (newPassword != confirmPassword) {
+                showCustomToast(this, "Passwords don't match", ToastType.ERROR)
+                return@setOnClickListener
+            }
+
+            changePassword(currentPassword, newPassword, dialog)
+        }
+    }
+
+    private fun changePassword(currentPassword: String, newPassword: String, dialog: BottomSheetDialog) {
+        val user = auth.currentUser ?: return
+        val credential = EmailAuthProvider.getCredential(user.email!!, currentPassword)
+
+        user.reauthenticate(credential)
+            .addOnSuccessListener {
+                user.updatePassword(newPassword)
+                    .addOnSuccessListener {
+                        showCustomToast(this, "Password changed successfully", ToastType.SUCCESS)
+                        dialog.dismiss()
+                    }
+                    .addOnFailureListener { e ->
+                        showCustomToast(this, "Failed to change password: ${e.message}", ToastType.ERROR)
+                    }
+            }
+            .addOnFailureListener { e ->
+                when (e) {
+                    is FirebaseAuthInvalidCredentialsException -> {
+                        showCustomToast(this, "Invalid current password", ToastType.ERROR)
+                    }
+                    else -> {
+                        showCustomToast(this, "Authentication failed: ${e.message}", ToastType.ERROR)
+                    }
+                }
+            }
+    }
+
 
     private fun openImagePicker() {
         val intent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
