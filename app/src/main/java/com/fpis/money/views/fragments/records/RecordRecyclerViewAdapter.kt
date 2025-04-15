@@ -2,6 +2,7 @@ package com.fpis.money.views.fragments.records
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.RecyclerView
@@ -28,11 +29,25 @@ class RecordRecyclerViewAdapter(
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val item = values[position]
 
+        val iconMap = mapOf(
+            "Food & Drink" to R.drawable.ic_food_drink,
+            "Shopping" to R.drawable.ic_shopping,
+            "Health" to R.drawable.ic_health,
+            "Transport" to R.drawable.ic_transport,
+            "Interest" to R.drawable.ic_interest,
+            "Life & Event" to R.drawable.ic_event,
+            "Income" to R.drawable.ic_interest
+        )
+
         when (item) {
             is TransactionItem.RecordItem -> {
                 val record = item.record
                 holder.categoryName.text = record.category
                 holder.cardHeader.text = record.subCategory
+
+                iconMap[record.category]?.let {
+                    holder.categoryIcon.setImageResource(it)
+                }
 
                 val dateFormat = SimpleDateFormat("dd MMM yyyy", Locale.getDefault())
                 holder.date.text = dateFormat.format(record.date)
@@ -102,5 +117,6 @@ class RecordRecyclerViewAdapter(
         val cardHeader: TextView = binding.cardHeader
         val amountValue: TextView = binding.amountValue
         val date: TextView = binding.date
+        val categoryIcon: ImageView = binding.categoryIcon
     }
 }

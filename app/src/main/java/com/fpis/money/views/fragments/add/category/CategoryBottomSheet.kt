@@ -70,12 +70,17 @@ class CategoryBottomSheet(
         var selectedColorRes = R.color.green
 
         iconSelector.setOnClickListener {
-            IconPickerBottomSheet { iconRes, colorRes ->
-                selectedIconRes = iconRes
-                selectedColorRes = colorRes
-                iconSelector.setImageResource(iconRes)
-                iconSelector.setColorFilter(ContextCompat.getColor(requireContext(), colorRes))
-            }.show(parentFragmentManager, "icon_picker")
+            val iconPicker = IconPickerBottomSheet(
+                onSelectionComplete = { iconRes, colorRes ->
+                    selectedIconRes = iconRes
+                    selectedColorRes = colorRes
+                    iconSelector.setImageResource(iconRes)
+                    iconSelector.setColorFilter(ContextCompat.getColor(requireContext(), colorRes))
+                },
+                initialIconRes = selectedIconRes,
+                initialColorRes = selectedColorRes
+            )
+            iconPicker.show(parentFragmentManager, "icon_picker")
         }
 
         iconSelector.setColorFilter(ContextCompat.getColor(requireContext(), selectedColorRes))

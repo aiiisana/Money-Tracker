@@ -11,16 +11,20 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.fpis.money.R
-import com.fpis.money.models.IconSelection
+import com.fpis.money.utils.ToastType
+import com.fpis.money.utils.showCustomToast
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 
 class IconPickerBottomSheet(
-    private val onSelectionComplete: (iconRes: Int, colorRes: Int) -> Unit
+    private val onSelectionComplete: (iconRes: Int, colorRes: Int) -> Unit,
+    private val initialIconRes: Int? = null,
+    private val initialColorRes: Int? = null
 ) : BottomSheetDialogFragment() {
 
     private lateinit var iconAdapter: IconAdapter
     private lateinit var colorAdapter: ColorAdapter
-    private var currentSelection = IconSelection()
+    private var selectedIconRes: Int? = null
+    private var selectedColorRes: Int? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -33,18 +37,14 @@ class IconPickerBottomSheet(
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        // Заголовок
         view.findViewById<TextView>(R.id.title).text = "Select Icon & Color"
 
-        // Инициализация RecyclerView для иконок
         val iconsRecyclerView = view.findViewById<RecyclerView>(R.id.iconsRecyclerView)
         iconsRecyclerView.layoutManager = GridLayoutManager(requireContext(), 4)
 
-        // Инициализация RecyclerView для цветов
         val colorsRecyclerView = view.findViewById<RecyclerView>(R.id.colorsRecyclerView)
         colorsRecyclerView.layoutManager = GridLayoutManager(requireContext(), 6)
 
-        // Список доступных иконок
         val icons = listOf(
             R.drawable.ic_food,
             R.drawable.ic_shopping,
@@ -62,7 +62,6 @@ class IconPickerBottomSheet(
             R.drawable.ic_wallet
         )
 
-        // Список доступных цветов
         val colors = listOf(
             R.color.circle_color_1,
             R.color.circle_color_2,
@@ -78,44 +77,58 @@ class IconPickerBottomSheet(
             R.color.circle_color_12
         )
 
-        // Адаптер для иконок
         iconAdapter = IconAdapter(icons) { iconRes ->
-            currentSelection.selectedIconRes = iconRes
+            selectedIconRes = iconRes
             updatePreview(view)
         }
 
-        // Адаптер для цветов
         colorAdapter = ColorAdapter(colors) { colorRes ->
-            currentSelection.selectedColorRes = colorRes
+            selectedColorRes = colorRes
+            iconAdapter.setCurrentColor(colorRes)
             updatePreview(view)
         }
 
         iconsRecyclerView.adapter = iconAdapter
         colorsRecyclerView.adapter = colorAdapter
 
-        // Кнопка сохранения
-        view.findViewById<Button>(R.id.saveButton).setOnClickListener {
-            currentSelection.selectedIconRes?.let { iconRes ->
-                currentSelection.selectedColorRes?.let { colorRes ->
-                    onSelectionComplete(iconRes, colorRes)
-                    dismiss()
-                }
+        initialIconRes?.let { iconRes ->
+            val iconPos = icons.indexOf(iconRes)
+            if (iconPos != -1) {
+                iconAdapter.setSelectedPosition(iconPos)
+                selectedIconRes = iconRes
             }
         }
 
-        // Предпросмотр выбранной комбинации
-        view.findViewById<View>(R.id.previewContainer).visibility = View.VISIBLE
+        initialColorRes?.let { colorRes ->
+            val colorPos = colors.indexOf(colorRes)
+            if (colorPos != -1) {
+                colorAdapter.setSelectedPosition(colorPos)
+                selectedColorRes = colorRes
+                iconAdapter.setCurrentColor(colorRes)
+            }
+        }
+
+        view.findViewById<Button>(R.id.saveButton).setOnClickListener {
+            selectedIconRes?.let { iconRes ->
+                selectedColorRes?.let { colorRes ->
+                    onSelectionComplete(iconRes, colorRes)
+                    dismiss()
+                } ?: showCustomToast(requireContext(), "Please select a color", ToastType.INFO)
+            } ?: showCustomToast(requireContext(), "Please select an icon", ToastType.INFO)
+        }
+
+        updatePreview(view)
     }
 
     private fun updatePreview(view: View) {
         val previewIcon = view.findViewById<ImageView>(R.id.previewIcon)
 
-        currentSelection.selectedIconRes?.let { iconRes ->
+        selectedIconRes?.let { iconRes ->
             previewIcon.setImageResource(iconRes)
 
-            currentSelection.selectedColorRes?.let { colorRes ->
+            selectedColorRes?.let { colorRes ->
                 previewIcon.setColorFilter(ContextCompat.getColor(requireContext(), colorRes))
-            }
-        }
+            } ?: previewIcon.clearColorFilter()
+        } ?: previewIcon.setImageResource(R.drawable.ic_shopping)
     }
 }

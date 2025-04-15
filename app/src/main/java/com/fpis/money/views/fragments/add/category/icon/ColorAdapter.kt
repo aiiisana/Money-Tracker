@@ -1,13 +1,14 @@
 package com.fpis.money.views.fragments.add.category.icon
 
+import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.fpis.money.R
 
-// ColorAdapter.kt
 class ColorAdapter(
     private val colors: List<Int>,
     private val onColorSelected: (colorRes: Int) -> Unit
@@ -41,4 +42,30 @@ class ColorAdapter(
     }
 
     override fun getItemCount(): Int = colors.size
+
+    fun setSelectedPosition(position: Int) {
+        selectedPosition = position
+        notifyItemChanged(position)
+    }
+
+    fun getSelectedPosition(): Int = selectedPosition
+
+    fun updateColors(newColors: List<Int>) {
+        val diffCallback = ColorDiffCallback(colors, newColors)
+        val diffResult = DiffUtil.calculateDiff(diffCallback)
+        // Обновляем данные
+        diffResult.dispatchUpdatesTo(this)
+    }
+
+    class ColorDiffCallback(
+        private val oldList: List<Int>,
+        private val newList: List<Int>
+    ) : DiffUtil.Callback() {
+        override fun getOldListSize(): Int = oldList.size
+        override fun getNewListSize(): Int = newList.size
+        override fun areItemsTheSame(oldPos: Int, newPos: Int): Boolean =
+            oldList[oldPos] == newList[newPos]
+        override fun areContentsTheSame(oldPos: Int, newPos: Int): Boolean =
+            oldList[oldPos] == newList[newPos]
+    }
 }

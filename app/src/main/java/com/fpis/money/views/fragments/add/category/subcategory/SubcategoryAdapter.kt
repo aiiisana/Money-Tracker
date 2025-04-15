@@ -38,7 +38,6 @@ class SubcategoryAdapter(
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         if (position == subcategories.size) {
-            // Это кнопка "Add"
             holder.icon.setImageResource(R.drawable.ic_add)
             holder.icon.clearColorFilter()
             holder.name.text = "Add"
@@ -52,5 +51,5 @@ class SubcategoryAdapter(
         }
     }
 
-    override fun getItemCount(): Int = subcategories.size + 1 // +1 для кнопки Add
+    override fun getItemCount(): Int = subcategories.size + 1
 }
