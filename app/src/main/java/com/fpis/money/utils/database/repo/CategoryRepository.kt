@@ -43,7 +43,8 @@ class CategoryRepository(private val categoryDao: CategoryDao) {
         3 to listOf("Pharmacy", "Vitamins"),
         4 to listOf("Taxi", "Public Transport"),
         5 to listOf("Deposit", "Shares"),
-        6 to listOf("Cinema", "Restaurants")
+        6 to listOf("Cinema", "Restaurants"),
+        7 to listOf("Salary", "Bonus")
     )
 
     suspend fun initializeDefaultSubcategories() {
