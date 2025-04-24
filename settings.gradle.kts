@@ -22,4 +22,4 @@ dependencyResolutionManagement {
 
 rootProject.name = "Money"
 include(":app")
- 
+include(":newscompose")

@@ -6,10 +6,12 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.core.content.ContextCompat
+import com.example.newscompose.NewsActivity
 import com.fpis.money.R
 import com.fpis.money.utils.preferences.SharedPreferencesManager
 import com.fpis.money.views.activities.login.LoginActivity
@@ -35,6 +37,13 @@ class MenuFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        val buttonOpenNews = view.findViewById<Button>(R.id.news_button)
+
+        buttonOpenNews.setOnClickListener {
+            val intent = Intent(activity, NewsActivity::class.java)
+            startActivity(intent)
+        }
 
         // Initialize menu item layouts
         privacyPolicyLayout = view.findViewById(R.id.privacy_policy_layout)
