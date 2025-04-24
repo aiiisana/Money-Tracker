@@ -3,10 +3,13 @@ package com.fpis.money.views.activities
 import CardFragment
 import com.fpis.money.databinding.ActivityMainBinding
 import android.annotation.SuppressLint
+import android.content.IntentFilter
+import android.net.wifi.WifiManager
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import com.fpis.money.R
+import com.fpis.money.utils.broadcast.WifiStateReceiver
 import com.fpis.money.utils.database.AppDatabase
 import com.fpis.money.views.fragments.add.AddFragment
 import com.fpis.money.views.fragments.home.HomeFragment
@@ -27,12 +30,17 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var db: AppDatabase
 
+    private lateinit var wifiReceiver: WifiStateReceiver
 
     @SuppressLint("MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        wifiReceiver = WifiStateReceiver()
+        val filter = IntentFilter(WifiManager.WIFI_STATE_CHANGED_ACTION)
+        registerReceiver(wifiReceiver, filter)
 
         db = AppDatabase.getDatabase(this)
 
@@ -85,5 +93,9 @@ class MainActivity : AppCompatActivity() {
             commit()
         }
         activeFragment = fragment
+    }
+    override fun onDestroy() {
+        super.onDestroy()
+        unregisterReceiver(wifiReceiver)
     }
 }
