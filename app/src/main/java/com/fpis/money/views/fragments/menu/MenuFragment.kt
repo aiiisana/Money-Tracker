@@ -38,7 +38,7 @@ class MenuFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val buttonOpenNews = view.findViewById<Button>(R.id.news_button)
+        val buttonOpenNews = view.findViewById<LinearLayout>(R.id.news_layout)
 
         buttonOpenNews.setOnClickListener {
             val intent = Intent(activity, NewsActivity::class.java)

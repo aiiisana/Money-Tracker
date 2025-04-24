@@ -146,13 +146,62 @@
                         android:textColor="#FFFFFF"
                         android:textSize="14sp"
                         android:textStyle="bold" />
-
-                    <!-- Privacy Policy -->
-                    <Button
-                        android:id="@+id/news_button"
+                    <!-- NEWS -->
+                    <LinearLayout
+                        android:id="@+id/news_layout"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Button" />
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal"
+                        android:paddingVertical="15dp">
+
+                        <LinearLayout
+                            android:id="@+id/news_content"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginEnd="12dp"
+                            android:layout_weight="1"
+                            android:gravity="center_vertical"
+                            android:orientation="horizontal">
+
+                            <LinearLayout
+                                android:id="@+id/news_icon_container"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginEnd="15dp"
+                                android:background="@drawable/cr9bffffff0d"
+                                android:clickable="true"
+                                android:focusable="true"
+                                android:orientation="vertical"
+                                android:padding="6dp">
+
+                                <ImageView
+                                    android:id="@+id/news_icon"
+                                    android:layout_width="17dp"
+                                    android:layout_height="17dp"
+                                    android:scaleType="fitXY"
+                                    android:src="@drawable/ic_news" />
+                            </LinearLayout>
+
+                            <TextView
+                                android:id="@+id/news_text"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:text="News"
+                                android:textColor="#FFFFFF"
+                                android:textSize="16sp"
+                                android:textStyle="bold" />
+                        </LinearLayout>
+
+                        <ImageView
+                            android:id="@+id/news_arrow"
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"
+                            android:scaleType="fitXY"
+                            android:src="@drawable/ic_arrow_right" />
+                    </LinearLayout>
+                    <!-- Privacy Policy -->
 
                     <LinearLayout
                         android:id="@+id/privacy_policy_layout"
