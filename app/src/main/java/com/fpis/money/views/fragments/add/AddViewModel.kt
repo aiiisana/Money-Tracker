@@ -68,7 +68,7 @@ class AddViewModel(application: Application) : AndroidViewModel(application as A
         val transfer = Transfer(
             fromAccount = fromAccount,
             toAccount = toAccount,
-            amount = amount.toDouble(),
+            amount = amount,
             date = date,
             notes = notes
         )

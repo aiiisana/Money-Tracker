@@ -8,7 +8,7 @@ data class Transfer(
     @PrimaryKey(autoGenerate = true) val id: Int = 0,
     val fromAccount: String,
     val toAccount: String,
-    val amount: Double,
+    val amount: Float,
     val date: Long,
     val notes: String? = null
 )

@@ -135,7 +135,7 @@ class TransactionDetailBottomSheetFragment(private val transfer: Transfer) : Bot
         val transfer = Transfer(
             fromAccount = fromAccount,
             toAccount = toAccount,
-            amount = amount,
+            amount = amount.toFloat(),
             date = dateTime,
             notes = notes
         )
