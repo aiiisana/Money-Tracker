@@ -62,6 +62,8 @@ android {
 dependencies {
     implementation(project(":newscompose"))
 
+    implementation ("io.insert-koin:koin-android:3.5.0")//koin
+
     // Core & AppCompat
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)

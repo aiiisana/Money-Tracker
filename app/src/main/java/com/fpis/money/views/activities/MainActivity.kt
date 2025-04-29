@@ -15,6 +15,7 @@ import com.fpis.money.views.fragments.add.AddFragment
 import com.fpis.money.views.fragments.home.HomeFragment
 import com.fpis.money.views.fragments.menu.MenuFragment
 import com.fpis.money.views.fragments.records.RecordFragment
+import org.koin.android.ext.android.inject
 
 class MainActivity : AppCompatActivity() {
 
@@ -30,7 +31,7 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var db: AppDatabase
 
-    private lateinit var wifiReceiver: WifiStateReceiver
+    private val wifiReceiver: WifiStateReceiver by inject()
 
     @SuppressLint("MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -38,7 +39,6 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        wifiReceiver = WifiStateReceiver()
         val filter = IntentFilter(WifiManager.WIFI_STATE_CHANGED_ACTION)
         registerReceiver(wifiReceiver, filter)
 
