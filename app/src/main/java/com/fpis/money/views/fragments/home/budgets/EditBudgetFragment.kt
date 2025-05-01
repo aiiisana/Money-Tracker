@@ -1,37 +1,38 @@
 package com.fpis.money.views.fragments.home.budgets
 
-import android.app.AlertDialog
-import android.graphics.Color
 import android.os.Bundle
-import android.view.*
-import android.widget.Button
-import android.widget.TextView
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.fpis.money.R
 import com.fpis.money.databinding.FragmentEditBudgetBinding
 import com.fpis.money.models.Budget
-import com.fpis.money.utils.ToastType
-import com.fpis.money.utils.showCustomToast
-import com.larswerkman.holocolorpicker.ColorPicker
-import com.larswerkman.holocolorpicker.SaturationBar
+import com.fpis.money.models.Category
+import com.fpis.money.views.fragments.add.category.CategoryBottomSheet
+import com.fpis.money.views.fragments.add.category.icon.IconPickerBottomSheet
 
 class EditBudgetFragment : Fragment() {
-
     private var _binding: FragmentEditBudgetBinding? = null
     private val binding get() = _binding!!
     private lateinit var viewModel: BudgetViewModel
 
-    private var budgetId: String? = null
+    private var budgetId: Long = 0L
     private var budget: Budget? = null
 
-    // track the selected color
-    private var selectedColorHex = "#66FFA3"
+    // ─── Selected state ────────────────────────────────
+    private var selectedCategoryId   = 0
+    private var selectedCategoryName = ""
+    private var selectedIconRes      = R.drawable.ic_food
+    private var selectedColorRes     = R.color.teal_200
+    private var selectedColorHex     = "#66FFA3"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        budgetId = arguments?.getString(ARG_BUDGET_ID)
+        budgetId = arguments?.getString(ARG_BUDGET_ID)?.toLongOrNull() ?: 0L
     }
 
     override fun onCreateView(
@@ -43,79 +44,76 @@ class EditBudgetFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        viewModel = ViewModelProvider(this).get(BudgetViewModel::class.java)
+        viewModel = ViewModelProvider(this)[BudgetViewModel::class.java]
 
         // Load existing budget
-        budgetId?.let { id ->
-            viewModel.getBudgetById(id).observe(viewLifecycleOwner, Observer { loaded ->
-                budget = loaded
-                loaded?.let {
-                    selectedColorHex = it.color
+        viewModel.getBudgetById(budgetId.toString())
+            .observe(viewLifecycleOwner, Observer { b ->
+                budget = b
+                b?.let {
+                    selectedCategoryName = it.category
+                    selectedColorHex     = it.color
+                    // if you also stored iconRes/colorRes in your DB, pull them here
                     binding.etBudgetName.setText(it.category)
                     binding.etBudgetAmount.setText(String.format("%,.2f", it.amount))
-                    updateColorCircle()
+                    binding.tvCategories.text = it.category
+                    // make sure colorCircle is ImageView
+                    binding.colorCircle.setImageResource(selectedIconRes)
+                    binding.colorCircle.setColorFilter(
+                        ContextCompat.getColor(requireContext(), selectedColorRes)
+                    )
                 }
             })
-        }
 
-        // Close & save
+        // Close
         binding.btnClose.setOnClickListener { requireActivity().onBackPressed() }
-        binding.btnSaveBudget.setOnClickListener { saveBudget() }
 
-        // Color picker
-        binding.colorCircle.setOnClickListener { showColorPickerDialog() }
-    }
-
-    private fun showColorPickerDialog() {
-        val dialogView = layoutInflater.inflate(R.layout.card_color_picker, null)
-        val picker  = dialogView.findViewById<ColorPicker>(R.id.color_picker)
-        val sat     = dialogView.findViewById<SaturationBar>(R.id.saturation_bar)
-        val hexTv   = dialogView.findViewById<TextView>(R.id.tv_hex_color)
-        val cancel  = dialogView.findViewById<Button>(R.id.btn_cancel)
-        val select  = dialogView.findViewById<Button>(R.id.btn_select)
-
-        picker.addSaturationBar(sat)
-        try { picker.color = Color.parseColor(selectedColorHex) } catch (_:Exception){}
-
-        picker.onColorChangedListener = ColorPicker.OnColorChangedListener { c ->
-            val h = String.format("#%06X", 0xFFFFFF and c)
-            hexTv.text = h
-            hexTv.setBackgroundColor(c)
+        // CATEGORY re‐picker
+        binding.btnCategories.setOnClickListener {
+            CategoryBottomSheet(isIncome = false) { cat: Category ->
+                selectedCategoryId   = cat.id
+                selectedCategoryName = cat.name
+                binding.tvCategories.text = cat.name
+            }.show(parentFragmentManager, "CategoryBottomSheet")
         }
 
-        val dlg = AlertDialog.Builder(requireContext())
-            .setView(dialogView)
-            .create()
-
-        cancel.setOnClickListener { dlg.dismiss() }
-        select.setOnClickListener {
-            selectedColorHex = hexTv.text.toString()
-            updateColorCircle()
-            dlg.dismiss()
+        // ICON & COLOR re‐picker
+        binding.colorCircle.setOnClickListener {
+            IconPickerBottomSheet(
+                onSelectionComplete = { icon, color ->
+                    selectedIconRes  = icon
+                    selectedColorRes = color
+                    binding.colorCircle.setImageResource(icon)
+                    binding.colorCircle.setColorFilter(
+                        ContextCompat.getColor(requireContext(), color)
+                    )
+                    selectedColorHex = String.format(
+                        "#%06X",
+                        0xFFFFFF and ContextCompat.getColor(requireContext(), color)
+                    )
+                },
+                initialIconRes  = selectedIconRes,
+                initialColorRes = selectedColorRes
+            ).show(parentFragmentManager, "IconPicker")
         }
 
-        dlg.show()
-    }
+        // SAVE updates
+        binding.btnSaveBudget.setOnClickListener {
+            budget?.let {
+                val newName = binding.etBudgetName.text.toString().ifBlank { it.category }
+                val newAmt  = binding.etBudgetAmount.text.toString()
+                    .replace("[^0-9.]".toRegex(), "")
+                    .toDoubleOrNull() ?: it.amount
 
-    private fun updateColorCircle() {
-        binding.colorCircle.background.setTint(Color.parseColor(selectedColorHex))
-    }
-
-    private fun saveBudget() {
-        val name   = binding.etBudgetName.text.toString().trim().ifEmpty { budget?.category ?: "" }
-        val amount = binding.etBudgetAmount.text.toString()
-            .replace("[^0-9.]".toRegex(), "")
-            .toDoubleOrNull() ?: budget?.amount ?: 0.0
-
-        budget?.let {
-            val updated = it.copy(
-                category = name,
-                amount   = amount,
-                color    = selectedColorHex
-            )
-            viewModel.updateBudget(updated)
-            showCustomToast(requireContext(), "Budget updated", ToastType.SUCCESS)
-            requireActivity().onBackPressed()
+                viewModel.updateBudget(
+                    it.copy(
+                        category = if (selectedCategoryName.isBlank()) newName else selectedCategoryName,
+                        amount   = newAmt,
+                        color    = selectedColorHex
+                    )
+                )
+                requireActivity().onBackPressed()
+            }
         }
     }
 
@@ -126,9 +124,9 @@ class EditBudgetFragment : Fragment() {
 
     companion object {
         private const val ARG_BUDGET_ID = "budget_id"
-        @JvmStatic fun newInstance(budgetId: String) =
+        @JvmStatic fun newInstance(id: String) =
             EditBudgetFragment().apply {
-                arguments = Bundle().apply { putString(ARG_BUDGET_ID, budgetId) }
+                arguments = Bundle().apply { putString(ARG_BUDGET_ID, id) }
             }
     }
 }
