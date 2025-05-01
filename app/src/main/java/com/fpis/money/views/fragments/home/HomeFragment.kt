@@ -22,7 +22,7 @@ class HomeFragment : Fragment() {
     private lateinit var viewModel: HomeViewModel
     private lateinit var chartView: ExpenseChartView
     private val statsAdapter = HomeCategoryAdapter()
-    val budgetAdapter = BudgetCategoryAdapter()
+    private val budgetAdapter = BudgetCategoryAdapter()
 
     private val calendar = Calendar.getInstance()
     private var lastKnownBalance = "–"
@@ -150,16 +150,21 @@ class HomeFragment : Fragment() {
         binding.statisticsSection.setOnClickListener { showStatistics() }
     }
 
-    private fun showBudget() =
+    private fun showBudget() {
         parentFragmentManager.beginTransaction()
             .add(R.id.fragment_container, BudgetFragment.newInstance())
-            .hide(this).addToBackStack("budget").commit()
+            .hide(this)
+            .addToBackStack(null)
+//            .addToBackStack("budget")
+            .commit()
+    }
 
     private fun showStatistics() =
         parentFragmentManager.beginTransaction()
             .add(R.id.fragment_container, StatisticsFragment.newInstance())
             .hide(this)
-            .addToBackStack("statistics")
+            .addToBackStack(null)
+//            .addToBackStack("statistics")
             .commit()
 
     companion object {

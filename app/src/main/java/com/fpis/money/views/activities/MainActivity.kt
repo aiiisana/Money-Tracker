@@ -6,6 +6,7 @@ import android.annotation.SuppressLint
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
 import com.fpis.money.R
 import com.fpis.money.utils.database.AppDatabase
 import com.fpis.money.views.fragments.add.AddFragment
@@ -52,6 +53,12 @@ class MainActivity : AppCompatActivity() {
 
     private fun setupBottomNavigation() {
         binding.bottomNavigationView.setOnItemSelectedListener { menuItem ->
+
+            fragmentManager.popBackStack(
+                null,
+                FragmentManager.POP_BACK_STACK_INCLUSIVE
+            )
+
             when (menuItem.itemId) {
                 R.id.nav_home -> {
                     showFragment(fragmentFive)
