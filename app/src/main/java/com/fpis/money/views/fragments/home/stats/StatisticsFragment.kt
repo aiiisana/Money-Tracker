@@ -77,6 +77,7 @@ class StatisticsFragment : Fragment() {
         btnBack.setOnClickListener {
             requireActivity().onBackPressed()
         }
+
     }
 
     private fun setupRecyclerView() {

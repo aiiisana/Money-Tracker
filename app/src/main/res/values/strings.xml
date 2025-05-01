@@ -11,5 +11,6 @@
     <string name="login_failed">"Login failed"</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="share_statistics">Share statistics</string>
     <string name="title_activity_chat_wrapper">ChatWrapperActivity</string>
 </resources>
