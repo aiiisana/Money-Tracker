@@ -1,68 +1,54 @@
 package com.fpis.money.views.fragments.home.budgets
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
-import com.fpis.money.models.Budget
 import android.app.Application
-import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.asLiveData
-import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.*
+import com.fpis.money.models.Budget
+import com.fpis.money.models.Category
 import com.fpis.money.utils.database.AppDatabase
 import com.fpis.money.utils.database.repo.BudgetRepository
-import com.fpis.money.utils.database.TransactionDao
-import kotlinx.coroutines.flow.first
+import com.fpis.money.utils.database.repo.CategoryRepository
 import kotlinx.coroutines.launch
 
 class BudgetViewModel(application: Application) : AndroidViewModel(application) {
+    private val db = AppDatabase.getDatabase(application)
+    private val budgetRepo = BudgetRepository(db.budgetDao(), db.transactionDao())
+    private val categoryRepo = CategoryRepository(db.categoryDao())
 
-    private val repository: BudgetRepository
-    val budgets: LiveData<List<Budget>>
+    val budgets: LiveData<List<Budget>> =
+        budgetRepo.getAllBudgets().asLiveData()
+
+    // ► Expense‐category list
+    private val _expenseCats = MutableLiveData<List<Category>>(emptyList())
+    val expenseCategories: LiveData<List<Category>> = _expenseCats
 
     init {
-        val db = AppDatabase.getDatabase(application)
-        repository = BudgetRepository(db.budgetDao(), db.transactionDao())
-        budgets = repository.getAllBudgets().asLiveData()
-    }
-
-    fun getBudgetById(budgetId: String): LiveData<Budget?> {
-        val result = MutableLiveData<Budget?>()
         viewModelScope.launch {
-            val budget = repository.getBudgetById(budgetId)
-            result.postValue(budget)
-        }
-        return result
-    }
-
-    fun addBudget(budget: Budget) {
-        viewModelScope.launch {
-            repository.insertBudget(budget)
+            // ensure defaults exist
+            categoryRepo.initializeDefaultCategories()
+            categoryRepo.initializeDefaultSubcategories()
+            // load them
+            _expenseCats.postValue(categoryRepo.getCategories(isIncome = false))
         }
     }
 
-    fun updateBudget(budget: Budget) {
-        viewModelScope.launch {
-            repository.updateBudget(budget)
-        }
+    fun addBudget(b: Budget)     = viewModelScope.launch { budgetRepo.insertBudget(b) }
+    fun updateBudget(b: Budget)  = viewModelScope.launch { budgetRepo.updateBudget(b) }
+    fun deleteBudget(id: String) = viewModelScope.launch {
+        val longId = id.toLongOrNull()
+        longId?.let { budgetRepo.deleteBudget(it) }
     }
 
-    fun deleteBudget(budgetId: String) {
+    fun getBudgetById(id: String): LiveData<Budget?> {
+        val out = MutableLiveData<Budget?>()
         viewModelScope.launch {
-            repository.deleteBudget(budgetId)
+            val longId = id.toLongOrNull()
+            if (longId != null) {
+                val b = budgetRepo.getBudgetById(longId)
+                out.postValue(b)
+            } else {
+                out.postValue(null)
+            }
         }
+        return out
     }
-//    fun updateBudgetSpending() {
-//        if (transactionDao == null) return
-//
-//        viewModelScope.launch {
-//            val budgets = budgetDao.getAllBudgets().first()
-//
-//            for (budget in budgets) {
-//                val spent = transactionDao.getSpentAmountByCategory(budget.category).first() ?: 0.0
-//                val updatedBudget = budget.copy(spent = spent)
-//                budgetDao.updateBudget(updatedBudget)
-//            }
-//        }
-//    }
 }
-

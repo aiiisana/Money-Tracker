@@ -1,124 +1,134 @@
 package com.fpis.money.views.fragments.home.budgets
 
+import android.app.AlertDialog
+import android.graphics.Color
 import android.os.Bundle
-import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import android.widget.Button
-import android.widget.EditText
-import android.widget.ImageView
-import androidx.fragment.app.viewModels
+import android.widget.TextView
+import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.lifecycleScope
 import com.fpis.money.R
+import com.fpis.money.databinding.FragmentEditBudgetBinding
 import com.fpis.money.models.Budget
 import com.fpis.money.utils.ToastType
 import com.fpis.money.utils.showCustomToast
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
+import com.larswerkman.holocolorpicker.ColorPicker
+import com.larswerkman.holocolorpicker.SaturationBar
 
 class EditBudgetFragment : Fragment() {
 
+    private var _binding: FragmentEditBudgetBinding? = null
+    private val binding get() = _binding!!
     private lateinit var viewModel: BudgetViewModel
+
     private var budgetId: String? = null
     private var budget: Budget? = null
 
+    // track the selected color
+    private var selectedColorHex = "#66FFA3"
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        arguments?.let {
-            budgetId = it.getString(ARG_BUDGET_ID)
-        }
+        budgetId = arguments?.getString(ARG_BUDGET_ID)
     }
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        return inflater.inflate(R.layout.fragment_edit_budget, container, false)
+        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
+    ): View {
+        _binding = FragmentEditBudgetBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
         viewModel = ViewModelProvider(this).get(BudgetViewModel::class.java)
 
-        // Load budget data
-        loadBudgetData()
-
-        // Set up close button
-        view.findViewById<ImageView>(R.id.btn_close).setOnClickListener {
-            requireActivity().onBackPressed()
+        // Load existing budget
+        budgetId?.let { id ->
+            viewModel.getBudgetById(id).observe(viewLifecycleOwner, Observer { loaded ->
+                budget = loaded
+                loaded?.let {
+                    selectedColorHex = it.color
+                    binding.etBudgetName.setText(it.category)
+                    binding.etBudgetAmount.setText(String.format("%,.2f", it.amount))
+                    updateColorCircle()
+                }
+            })
         }
 
-        // Set up save button
-        view.findViewById<Button>(R.id.btn_save_budget).setOnClickListener {
-            saveBudget()
-        }
+        // Close & save
+        binding.btnClose.setOnClickListener { requireActivity().onBackPressed() }
+        binding.btnSaveBudget.setOnClickListener { saveBudget() }
 
-        // Set up color picker
-        view.findViewById<View>(R.id.color_circle).setOnClickListener {
-            // TODO: Show color picker dialog
-        }
-
-        // Set up accounts selector
-        view.findViewById<ImageView>(R.id.btn_accounts).setOnClickListener {
-            // TODO: Show accounts selection dialog
-        }
-
-        // Set up categories selector
-        view.findViewById<ImageView>(R.id.btn_categories).setOnClickListener {
-            // TODO: Show categories selection dialog
-        }
+        // Color picker
+        binding.colorCircle.setOnClickListener { showColorPickerDialog() }
     }
 
-    private fun loadBudgetData() {
-        budgetId?.let { id ->
-            viewModel.getBudgetById(id).observe(viewLifecycleOwner) { loadedBudget ->
-                budget = loadedBudget
+    private fun showColorPickerDialog() {
+        val dialogView = layoutInflater.inflate(R.layout.card_color_picker, null)
+        val picker  = dialogView.findViewById<ColorPicker>(R.id.color_picker)
+        val sat     = dialogView.findViewById<SaturationBar>(R.id.saturation_bar)
+        val hexTv   = dialogView.findViewById<TextView>(R.id.tv_hex_color)
+        val cancel  = dialogView.findViewById<Button>(R.id.btn_cancel)
+        val select  = dialogView.findViewById<Button>(R.id.btn_select)
 
-                loadedBudget?.let { budget ->
-                    view?.findViewById<EditText>(R.id.et_budget_name)?.setText(budget.category)
-                    view?.findViewById<EditText>(R.id.et_budget_amount)?.setText(String.format("%,.2f", budget.amount))
-                }
-            }
+        picker.addSaturationBar(sat)
+        try { picker.color = Color.parseColor(selectedColorHex) } catch (_:Exception){}
+
+        picker.onColorChangedListener = ColorPicker.OnColorChangedListener { c ->
+            val h = String.format("#%06X", 0xFFFFFF and c)
+            hexTv.text = h
+            hexTv.setBackgroundColor(c)
         }
+
+        val dlg = AlertDialog.Builder(requireContext())
+            .setView(dialogView)
+            .create()
+
+        cancel.setOnClickListener { dlg.dismiss() }
+        select.setOnClickListener {
+            selectedColorHex = hexTv.text.toString()
+            updateColorCircle()
+            dlg.dismiss()
+        }
+
+        dlg.show()
+    }
+
+    private fun updateColorCircle() {
+        binding.colorCircle.background.setTint(Color.parseColor(selectedColorHex))
     }
 
     private fun saveBudget() {
-        val budgetName = view?.findViewById<EditText>(R.id.et_budget_name)?.text.toString()
-        val budgetAmount = view?.findViewById<EditText>(R.id.et_budget_amount)?.text.toString()
+        val name   = binding.etBudgetName.text.toString().trim().ifEmpty { budget?.category ?: "" }
+        val amount = binding.etBudgetAmount.text.toString()
             .replace("[^0-9.]".toRegex(), "")
-            .toDoubleOrNull() ?: 0.0
+            .toDoubleOrNull() ?: budget?.amount ?: 0.0
 
-        // Update the budget
         budget?.let {
-            val updatedBudget = it.copy(
-                category = budgetName,
-                amount = budgetAmount
-                // Keep other properties the same
+            val updated = it.copy(
+                category = name,
+                amount   = amount,
+                color    = selectedColorHex
             )
-
-            // Update the budget in the view model
-            viewModel.updateBudget(updatedBudget)
-
-            // Show success toast
-            showCustomToast(requireContext(), "Budget updated successfully", ToastType.SUCCESS)
-
-            // Go back to budget list
+            viewModel.updateBudget(updated)
+            showCustomToast(requireContext(), "Budget updated", ToastType.SUCCESS)
             requireActivity().onBackPressed()
         }
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 
     companion object {
         private const val ARG_BUDGET_ID = "budget_id"
-
-        @JvmStatic
-        fun newInstance(budgetId: String) = EditBudgetFragment().apply {
-            arguments = Bundle().apply {
-                putString(ARG_BUDGET_ID, budgetId)
+        @JvmStatic fun newInstance(budgetId: String) =
+            EditBudgetFragment().apply {
+                arguments = Bundle().apply { putString(ARG_BUDGET_ID, budgetId) }
             }
-        }
     }
 }

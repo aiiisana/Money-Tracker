@@ -3,94 +3,60 @@ package com.fpis.money.views.fragments.home
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.map
-import androidx.lifecycle.viewModelScope
+import com.fpis.money.models.Budget
 import com.fpis.money.utils.database.AppDatabase
 import com.fpis.money.utils.database.repo.BudgetRepository
 import com.fpis.money.utils.database.repo.StatisticsRepository
-import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.launch
-import java.util.Calendar
-import java.util.Date
-import com.fpis.money.models.Budget
-import com.fpis.money.models.BudgetCategory
-import com.fpis.money.models.Category
+import com.fpis.money.views.fragments.home.stats.StatisticsFragment.CategoryStats
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.map
+import java.text.NumberFormat
+import java.util.*
 
+class HomeViewModel(app: Application) : AndroidViewModel(app) {
+    private val db         = AppDatabase.getDatabase(app)
+    private val budgetRepo = BudgetRepository(db.budgetDao(), db.transactionDao())
+    private val statsRepo  = StatisticsRepository(db.transactionDao())
 
-class HomeViewModel(application: Application) : AndroidViewModel(application) {
+    private val _date = MutableStateFlow(Date())
 
-    private val budgetRepository: BudgetRepository
-    private val statisticsRepository: StatisticsRepository
+    // ← Use a block here instead of '=' because assignments are not expressions
+    fun setDate(d: Date) {
+        _date.value = d
+    }
 
-    private val _totalBalance = MutableLiveData<String>()
-    val totalBalance: LiveData<String> = _totalBalance
+    val totalExpense: LiveData<String> = _date
+        .flatMapLatest { statsRepo.getTotalExpenseByDate(it) }
+        .map { NumberFormat.getNumberInstance(Locale.US).format(it) }
+        .map { "₸$it" }
+        .asLiveData()
 
-    private val _budgetData = MutableLiveData<Budget>()
-    val budgetData: LiveData<Budget> = _budgetData
-
-    val categories: LiveData<List<BudgetCategory>>
-
-    init {
-        val db = AppDatabase.getDatabase(application)
-        budgetRepository = BudgetRepository(db.budgetDao(),db.transactionDao())
-        statisticsRepository = StatisticsRepository(db.transactionDao())
-
-//        // Initialize with default values
-//        _totalBalance.value = "760,000.00"
-//
-//        _budgetData.value = Budget(
-//            category = "Total",
-//            amount = 760000.00,
-//            spent = 0.00,
-//            color = "#4285F4"
-//        )
-
-
-
-        // Transform budget data to categories
-        categories = budgetRepository.getAllBudgets().asLiveData().map { budgets ->
-            budgets.map { budget ->
-                BudgetCategory(
-                    name = budget.category,
-                    spent = budget.spent, // ✅ use Double, not formatted String
-                    color = budget.color,
-                    progress = budget.percentage.toFloat()
-                )
+    val categoryStats: LiveData<List<CategoryStats>> = _date
+        .flatMapLatest { statsRepo.getExpensesByDate(it) }
+        .map { list ->
+            val total = list.sumOf { it.amount }
+            list.map {
+                it.copy(progress = if (total == 0.0) 0 else ((it.amount / total) * 100).toInt())
             }
         }
+        .asLiveData()
 
-
-        // Load initial data
-        loadInitialData()
+    data class Summary(val total: Double, val spent: Double) {
+        val remaining get() = total - spent
+        val percentage get() = if (total == 0.0) 0 else (spent / total * 100).toInt()
     }
-    private fun loadInitialData() {
-        viewModelScope.launch {
-            // Calculate total budget and spent amount
-            val budgets = budgetRepository.getAllBudgets().asLiveData().value ?: emptyList()
 
-            val totalBudget = budgets.sumOf { it.amount }
-            val spentBudget = budgets.sumOf { it.spent }
-
-            // Format for display
-            _totalBalance.value = String.format("%,.2f", totalBudget)
-
-            // Create a "total" budget for the progress bar
-            _budgetData.value = Budget(
-                category = "Total",
-                amount = totalBudget,
-                spent = spentBudget,
-                color = "#4285F4"
-            )
+    val budgetSummary: LiveData<Summary> = budgetRepo.getAllBudgets()
+        .map { list ->
+            val t = list.sumOf { it.amount }
+            val s = list.sumOf { it.spent }
+            Summary(t, s)
         }
-    }
-
-    fun loadDataForDate(date: Date) {
-        viewModelScope.launch {
-            // In a real app, you would load data for the specific date
-            // For now, just reload the initial data
-            loadInitialData()
-        }
-    }
+        .asLiveData()
+    val budgets: LiveData<List<Budget>> =
+        budgetRepo.getAllBudgets()
+            .asLiveData()
 }

@@ -1,90 +1,103 @@
 package com.fpis.money.views.fragments.home.budgets
 
+import android.app.AlertDialog
+import android.graphics.Color
 import android.os.Bundle
-import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import android.widget.Button
-import android.widget.EditText
-import android.widget.ImageView
-import androidx.fragment.app.viewModels
+import android.widget.TextView
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.fpis.money.R
+import com.fpis.money.databinding.FragmentAddBudgetBinding
 import com.fpis.money.models.Budget
 import com.fpis.money.utils.ToastType
 import com.fpis.money.utils.showCustomToast
+import com.larswerkman.holocolorpicker.ColorPicker
+import com.larswerkman.holocolorpicker.SaturationBar
 
 class AddBudgetFragment : Fragment() {
-
+    private var _binding: FragmentAddBudgetBinding? = null
+    private val binding get() = _binding!!
     private lateinit var viewModel: BudgetViewModel
 
+    // track the selected color
+    private var selectedColorHex = "#66FFA3" // default green
+
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        return inflater.inflate(R.layout.fragment_add_budget, container, false)
+        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
+    ): View {
+        _binding = FragmentAddBudgetBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        // Initialize ViewModel
         viewModel = ViewModelProvider(this).get(BudgetViewModel::class.java)
 
-        // Set up close button
-        view.findViewById<ImageView>(R.id.btn_close).setOnClickListener {
-            requireActivity().onBackPressed()
+        // close & create
+        binding.btnClose.setOnClickListener { requireActivity().onBackPressed() }
+        binding.btnCreateBudget.setOnClickListener { createBudget() }
+
+        // ◀︎ Color circle
+        updateColorCircle()
+        binding.colorCircle.setOnClickListener { showColorPickerDialog() }
+    }
+
+    private fun showColorPickerDialog() {
+        val dialogView = layoutInflater.inflate(R.layout.card_color_picker, null)
+        val picker  = dialogView.findViewById<ColorPicker>(R.id.color_picker)
+        val sat     = dialogView.findViewById<SaturationBar>(R.id.saturation_bar)
+        val hexTv   = dialogView.findViewById<TextView>(R.id.tv_hex_color)
+        val cancel  = dialogView.findViewById<Button>(R.id.btn_cancel)
+        val select  = dialogView.findViewById<Button>(R.id.btn_select)
+
+        picker.addSaturationBar(sat)
+        try { picker.color = Color.parseColor(selectedColorHex) } catch (_:Exception){}
+
+        picker.onColorChangedListener = ColorPicker.OnColorChangedListener { c ->
+            val h = String.format("#%06X", 0xFFFFFF and c)
+            hexTv.text = h
+            hexTv.setBackgroundColor(c)
         }
 
-        // Set up create button
-        view.findViewById<Button>(R.id.btn_create_budget).setOnClickListener {
-            createBudget()
+        val dlg = AlertDialog.Builder(requireContext())
+            .setView(dialogView)
+            .create()
+
+        cancel.setOnClickListener { dlg.dismiss() }
+        select.setOnClickListener {
+            selectedColorHex = hexTv.text.toString()
+            updateColorCircle()
+            dlg.dismiss()
         }
 
-        // Set up color picker
-        view.findViewById<View>(R.id.color_circle).setOnClickListener {
-            // TODO: Show color picker dialog
-        }
+        dlg.show()
+    }
 
-        // Set up accounts selector
-        view.findViewById<ImageView>(R.id.btn_accounts).setOnClickListener {
-            // TODO: Show accounts selection dialog
-        }
-
-        // Set up categories selector
-        view.findViewById<ImageView>(R.id.btn_categories).setOnClickListener {
-            // TODO: Show categories selection dialog
-        }
+    private fun updateColorCircle() {
+        binding.colorCircle.background.setTint(Color.parseColor(selectedColorHex))
     }
 
     private fun createBudget() {
-        val budgetName = view?.findViewById<EditText>(R.id.et_budget_name)?.text.toString()
-        val budgetAmount = view?.findViewById<EditText>(R.id.et_budget_amount)?.text.toString()
+        val name = binding.etBudgetName.text.toString().ifBlank { "Unnamed" }
+        val amt  = binding.etBudgetAmount.text.toString()
             .replace("[^0-9.]".toRegex(), "")
             .toDoubleOrNull() ?: 0.0
 
-        // Create a new budget
-        val newBudget = Budget(
-           // id = System.currentTimeMillis().toString(),
-            category = budgetName,
-            amount = budgetAmount,
-            spent = 0.0,
-            color = "#66FFA3", // Default green color
-            //percentage = 0
+        viewModel.addBudget(
+            Budget(category = name, amount = amt, spent = 0.0, color = selectedColorHex)
         )
-
-        // Add the budget to the view model
-        viewModel.addBudget(newBudget)
-
-        // Show success toast
-        showCustomToast(requireContext(), "Budget created successfully", ToastType.SUCCESS)
-
-        // Go back to budget list
+        showCustomToast(requireContext(), "Budget created", ToastType.SUCCESS)
         requireActivity().onBackPressed()
     }
 
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
+
     companion object {
-        @JvmStatic
-        fun newInstance() = AddBudgetFragment()
+        @JvmStatic fun newInstance() = AddBudgetFragment()
     }
 }

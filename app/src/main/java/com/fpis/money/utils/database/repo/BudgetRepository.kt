@@ -1,48 +1,60 @@
 package com.fpis.money.utils.database.repo
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.map
 import com.fpis.money.models.Budget
 import com.fpis.money.utils.database.BudgetDao
 import com.fpis.money.utils.database.TransactionDao
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.map
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
-class BudgetRepository(private val budgetDao: BudgetDao,private val transactionDao: TransactionDao) {
+import kotlinx.coroutines.flow.*
 
+class BudgetRepository(
+    private val budgetDao: BudgetDao,
+    private val transactionDao: TransactionDao
+) {
 
+    /**
+     * Emits budgets with fresh `spent` totals.
+     * Also writes those back to the DB so they’re persisted.
+     */
     fun getAllBudgets(): Flow<List<Budget>> {
-        return if (transactionDao != null) {
-            // Combine budgets with their actual spending from transactions
-            budgetDao.getAllBudgets().map { budgets ->
-                budgets.map { budget ->
-                    // For each budget, get the spent amount from transactions
-                    // This is a simplified approach - in a real app, you'd use combine() to get real-time updates
-                    budget
+        // Watch the list of budgets
+        return budgetDao.getAllBudgets()
+            // whenever budgets change...
+            .flatMapLatest { budgets ->
+                if (budgets.isEmpty()) {
+                    flowOf(emptyList())
+                } else {
+                    // For each budget, get its spent amount as a Flow<Double?>
+                    val updatedFlows = budgets.map { budget ->
+                        transactionDao.getSpentAmountByCategory(budget.category)
+                            .map { sum ->
+                                // Null sum means 0.0
+                                val spent = sum ?: 0.0
+                                // Copy budget with new spent
+                                budget.copy(spent = spent)
+                            }
+                    }
+                    // Combine all those into List<Budget>
+                    combine(updatedFlows) { arrayOfBudgets ->
+                        arrayOfBudgets.toList()
+                    }
                 }
             }
-        } else {
-            // Just return budgets as is
-            budgetDao.getAllBudgets()
-        }
+            // Whenever we emit a new list, write the updated spent back into the DB
+            .onEach { updatedBudgets ->
+                updatedBudgets.forEach { b ->
+                    budgetDao.updateBudget(b)
+                }
+            }
     }
 
-    suspend fun getBudgetById(budgetId: String): Budget? {
-        return budgetDao.getBudgetById(budgetId.toLongOrNull() ?: 0)
-    }
+    suspend fun getBudgetById(budgetId: Long): Budget? =
+        budgetDao.getBudgetById(budgetId)
 
-    suspend fun insertBudget(budget: Budget) {
+    suspend fun insertBudget(budget: Budget) =
         budgetDao.insertBudget(budget)
-    }
 
-    suspend fun updateBudget(budget: Budget) {
+    suspend fun updateBudget(budget: Budget) =
         budgetDao.updateBudget(budget)
-    }
 
-    suspend fun deleteBudget(budgetId: String) {
-        budgetDao.deleteBudgetById(budgetId.toLongOrNull() ?: 0)
-    }
+    suspend fun deleteBudget(budgetId: Long) =
+        budgetDao.deleteBudgetById(budgetId)
 }
