@@ -1,21 +1,18 @@
 package com.fpis.money.views.fragments.menu
 
+import advanced.lab.chatlibrary.ChatLauncher
 import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 import com.example.newscompose.NewsActivity
 import com.fpis.money.R
-import com.fpis.money.utils.preferences.SharedPreferencesManager
-import com.fpis.money.views.activities.login.LoginActivity
-import com.google.firebase.auth.FirebaseAuth
 
 class MenuFragment : Fragment() {
 
@@ -185,7 +182,7 @@ class MenuFragment : Fragment() {
                 // Навигация на Play Market
             }
             R.id.support_layout -> {
-                // Открытие почты
+                ChatLauncher.start(requireContext())
             }
             R.id.restore_purchases_layout -> {
                 // Логика восстановления покупок

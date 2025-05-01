@@ -16,6 +16,11 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Money"
         tools:targetApi="31">
+        <activity
+            android:name=".views.fragments.menu.ChatWrapperActivity"
+            android:exported="false"
+            android:label="@string/title_activity_chat_wrapper"
+            android:theme="@style/Theme.Money" />
         <activity android:name="com.example.newscompose.NewsActivity" />
         <activity
             android:name=".views.activities.login.ForgotPasswordActivity"
@@ -30,11 +35,13 @@
         <activity
             android:name=".views.activities.login.LoginActivity"
             android:exported="true">
-<!--            <intent-filter>-->
-<!--                <action android:name="android.intent.action.MAIN" />-->
 
-<!--                <category android:name="android.intent.category.LAUNCHER" />-->
-<!--            </intent-filter>-->
+            <!-- <intent-filter> -->
+            <!-- <action android:name="android.intent.action.MAIN" /> -->
+
+
+            <!-- <category android:name="android.intent.category.LAUNCHER" /> -->
+            <!-- </intent-filter> -->
 
             <meta-data
                 android:name="android.app.lib_name"
@@ -71,7 +78,6 @@
                 <action android:name="android.net.wifi.WIFI_STATE_CHANGED" />
             </intent-filter>
         </receiver>
-
     </application>
 
 </manifest>
