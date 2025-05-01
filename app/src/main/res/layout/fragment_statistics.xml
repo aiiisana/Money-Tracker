@@ -92,12 +92,6 @@
             android:layout_width="250dp"
             android:layout_height="250dp"
             android:layout_gravity="center" />
-        <FrameLayout
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            android:layout_gravity="top|end"
-            android:padding="8dp">
-        </FrameLayout>
     </FrameLayout>
 
     <!-- Categories Scroll Chips -->

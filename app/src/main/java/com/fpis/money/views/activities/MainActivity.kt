@@ -8,6 +8,7 @@ import android.net.wifi.WifiManager
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
 import com.fpis.money.R
 import com.fpis.money.utils.broadcast.WifiStateReceiver
 import com.fpis.money.utils.database.AppDatabase
@@ -60,6 +61,12 @@ class MainActivity : AppCompatActivity() {
 
     private fun setupBottomNavigation() {
         binding.bottomNavigationView.setOnItemSelectedListener { menuItem ->
+
+            fragmentManager.popBackStack(
+                null,
+                FragmentManager.POP_BACK_STACK_INCLUSIVE
+            )
+
             when (menuItem.itemId) {
                 R.id.nav_home -> {
                     showFragment(fragmentFive)
