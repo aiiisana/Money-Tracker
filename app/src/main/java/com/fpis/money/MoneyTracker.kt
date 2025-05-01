@@ -1,6 +1,7 @@
 //Koin launcher
 package com.fpis.money
 
+import advanced.lab.chatlibrary.chatLibraryModule
 import android.app.Application
 import com.fpis.money.utils.koinModule
 import org.koin.android.ext.koin.androidContext
@@ -11,7 +12,7 @@ class MoneyTracker : Application() {
         super.onCreate()
         startKoin {
             androidContext(this@MoneyTracker)
-            modules(koinModule)
+            modules(koinModule, chatLibraryModule)
         }
     }
 }

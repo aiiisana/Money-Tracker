@@ -121,7 +121,7 @@ dependencies {
     ksp("androidx.room:room-compiler:$room_version")
     implementation("androidx.room:room-ktx:$room_version")
 
-    implementation("com.github.aiiisana:chatlibrary:1.1.1")
+    implementation("com.github.aiiisana:chatlibrary:1.2.0")
 //    implementation(libs.chat.library)
 
     // Testing
