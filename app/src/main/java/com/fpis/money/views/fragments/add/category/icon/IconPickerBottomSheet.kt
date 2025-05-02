@@ -11,6 +11,7 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.fpis.money.R
+import com.fpis.money.utils.GridSpacingItemDecoration
 import com.fpis.money.utils.ToastType
 import com.fpis.money.utils.showCustomToast
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
@@ -86,6 +87,17 @@ class IconPickerBottomSheet(
             selectedColorRes = colorRes
             iconAdapter.setCurrentColor(colorRes)
             updatePreview(view)
+        }
+        val spacingPx = (12 * resources.displayMetrics.density).toInt()
+        iconsRecyclerView.apply {
+            layoutManager = GridLayoutManager(context, 4)
+            adapter = iconAdapter
+            addItemDecoration(GridSpacingItemDecoration(4, spacingPx, true))
+        }
+        colorsRecyclerView.apply {
+            layoutManager = GridLayoutManager(context, 6)
+            adapter = colorAdapter
+            addItemDecoration(GridSpacingItemDecoration(6, spacingPx, true))
         }
 
         iconsRecyclerView.adapter = iconAdapter

@@ -5,18 +5,20 @@
     android:layout_height="wrap_content"
     android:padding="8dp">
 
-    <ImageView
-        android:id="@+id/iconImage"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
-        android:scaleType="centerInside"
-        app:tint="@null" />
-
     <View
         android:id="@+id/selectionIndicator"
         android:layout_width="56dp"
         android:layout_height="56dp"
         android:layout_gravity="center"
-        android:background="@drawable/circle_selection"
+        android:background="@drawable/preview_circle_background"
         android:visibility="invisible" />
+
+    <ImageView
+        android:id="@+id/iconImage"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_gravity="center"
+        android:scaleType="centerInside"
+        app:tint="@null" />
+
 </FrameLayout>

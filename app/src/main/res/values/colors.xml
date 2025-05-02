@@ -17,6 +17,10 @@
     <color name="green">#20FF79</color>
     <color name="background_dark">#2D2D2D</color>
     <color name="gray_50">#7A7A7A</color>"
+    <color name="grey900">#08090C</color>
+    <color name="grey800">#121418</color>
+    <color name="grey400">#9E9E9E</color>
+
 
     <color name="circle_color_1">#726CFF</color>
     <color name="circle_color_2">#97F7A3</color>

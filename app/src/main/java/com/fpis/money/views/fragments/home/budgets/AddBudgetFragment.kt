@@ -65,15 +65,13 @@ class AddBudgetFragment : Fragment() {
                 onSelectionComplete = { icon, color ->
                     selectedIconRes  = icon
                     selectedColorRes = color
-                    // now binding.colorCircle is an ImageView
-                    binding.colorCircle.background?.setTint(
-                        ContextCompat.getColor(requireContext(), color)
+                    selectedColorHex = String.format("#%06X",
+                        0xFFFFFF and ContextCompat.getColor(requireContext(), color)
                     )
                     binding.colorCircle.setImageResource(icon)
-                    // also update hex for saving
-                    selectedColorHex = String.format(
-                        "#%06X",
-                        0xFFFFFF and ContextCompat.getColor(requireContext(), color)
+                    binding.colorCircle.setColorFilter(
+                        ContextCompat.getColor(requireContext(), color),
+                        android.graphics.PorterDuff.Mode.SRC_IN
                     )
                 },
                 initialIconRes  = selectedIconRes,
@@ -101,7 +99,9 @@ class AddBudgetFragment : Fragment() {
                     category = if (selectedCategoryName.isBlank()) name else selectedCategoryName,
                     amount   = selectedAmount,
                     spent    = 0.0,
-                    color    = selectedColorHex
+                    color    = selectedColorHex,
+                    iconRes  = selectedIconRes,
+                    colorRes = selectedColorRes
                 )
             )
             requireActivity().onBackPressed()

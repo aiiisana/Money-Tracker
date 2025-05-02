@@ -53,6 +53,10 @@ class EditBudgetFragment : Fragment() {
         // 1) initialize amount field to 0 and wire up bottom sheet
         binding.etBudgetAmount.apply {
             setText("₸${String.format("%,.2f", 0.0)}")
+            isFocusable = false
+            isFocusableInTouchMode = false
+            isCursorVisible = false
+            isClickable = true
             setOnClickListener { showAmountInput() }
         }
 
@@ -69,12 +73,15 @@ class EditBudgetFragment : Fragment() {
                     selectedAmount = it.amount
                     binding.etBudgetAmount.setText("₸${String.format("%,.2f", it.amount)}")
 
+                    selectedIconRes  = it.iconRes ?: selectedIconRes
+                    selectedColorRes = it.colorRes ?: selectedColorRes
                     selectedColorHex = it.color
                     // If you stored icon/color resources, pull them too; else leave defaults
-                    binding.colorCircle.background?.setTint(
-                        ContextCompat.getColor(requireContext(), selectedColorRes)
-                    )
                     binding.colorCircle.setImageResource(selectedIconRes)
+                    binding.colorCircle.setColorFilter(
+                        ContextCompat.getColor(requireContext(), selectedColorRes),
+                        android.graphics.PorterDuff.Mode.SRC_IN
+                    )
                 }
             })
 
@@ -96,10 +103,11 @@ class EditBudgetFragment : Fragment() {
                 onSelectionComplete = { icon, color ->
                     selectedIconRes  = icon
                     selectedColorRes = color
-                    binding.colorCircle.background?.setTint(
-                        ContextCompat.getColor(requireContext(), color)
-                    )
                     binding.colorCircle.setImageResource(icon)
+                    binding.colorCircle.setColorFilter(
+                        ContextCompat.getColor(requireContext(), color),
+                        android.graphics.PorterDuff.Mode.SRC_IN
+                    )
                     selectedColorHex = String.format(
                         "#%06X",
                         0xFFFFFF and ContextCompat.getColor(requireContext(), color)
@@ -126,6 +134,8 @@ class EditBudgetFragment : Fragment() {
                     it.copy(
                         category = if (selectedCategoryName.isBlank()) newName else selectedCategoryName,
                         amount   = selectedAmount,
+                        iconRes  = selectedIconRes,
+                        colorRes = selectedColorRes,
                         color    = selectedColorHex
                     )
                 )

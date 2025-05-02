@@ -10,6 +10,8 @@ data class Budget(
     val amount: Double,
     val spent: Double,
     val color: String,
+    val iconRes: Int,
+    val colorRes: Int
 )
 {
     val remaining: Double
