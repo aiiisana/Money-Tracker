@@ -64,6 +64,10 @@ dependencies {
 
     implementation ("io.insert-koin:koin-android:3.5.0")//koin
 
+    testImplementation ("junit:junit:4.13.2")
+    testImplementation ("org.mockito:mockito-core:3.11.2")
+    testImplementation ("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.5.2")
+
     // Core & AppCompat
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
