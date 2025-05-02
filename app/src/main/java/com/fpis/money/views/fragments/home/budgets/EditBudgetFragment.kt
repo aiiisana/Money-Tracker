@@ -12,6 +12,9 @@ import com.fpis.money.R
 import com.fpis.money.databinding.FragmentEditBudgetBinding
 import com.fpis.money.models.Budget
 import com.fpis.money.models.Category
+import com.fpis.money.utils.showCustomToast
+import com.fpis.money.utils.ToastType
+import com.fpis.money.views.fragments.add.AmountInputBottomSheet
 import com.fpis.money.views.fragments.add.category.CategoryBottomSheet
 import com.fpis.money.views.fragments.add.category.icon.IconPickerBottomSheet
 
@@ -29,6 +32,7 @@ class EditBudgetFragment : Fragment() {
     private var selectedIconRes      = R.drawable.ic_food
     private var selectedColorRes     = R.color.teal_200
     private var selectedColorHex     = "#66FFA3"
+    private var selectedAmount       = 0.0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -46,29 +50,38 @@ class EditBudgetFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         viewModel = ViewModelProvider(this)[BudgetViewModel::class.java]
 
-        // Load existing budget
+        // 1) initialize amount field to 0 and wire up bottom sheet
+        binding.etBudgetAmount.apply {
+            setText("₸${String.format("%,.2f", 0.0)}")
+            setOnClickListener { showAmountInput() }
+        }
+
+        // 2) load existing budget from DB
         viewModel.getBudgetById(budgetId.toString())
             .observe(viewLifecycleOwner, Observer { b ->
                 budget = b
                 b?.let {
-                    selectedCategoryName = it.category
-                    selectedColorHex     = it.color
-                    // if you also stored iconRes/colorRes in your DB, pull them here
+                    // populate fields & selected state
                     binding.etBudgetName.setText(it.category)
-                    binding.etBudgetAmount.setText(String.format("%,.2f", it.amount))
+                    selectedCategoryName = it.category
                     binding.tvCategories.text = it.category
-                    // make sure colorCircle is ImageView
-                    binding.colorCircle.setImageResource(selectedIconRes)
-                    binding.colorCircle.setColorFilter(
+
+                    selectedAmount = it.amount
+                    binding.etBudgetAmount.setText("₸${String.format("%,.2f", it.amount)}")
+
+                    selectedColorHex = it.color
+                    // If you stored icon/color resources, pull them too; else leave defaults
+                    binding.colorCircle.background?.setTint(
                         ContextCompat.getColor(requireContext(), selectedColorRes)
                     )
+                    binding.colorCircle.setImageResource(selectedIconRes)
                 }
             })
 
-        // Close
+        // Close button
         binding.btnClose.setOnClickListener { requireActivity().onBackPressed() }
 
-        // CATEGORY re‐picker
+        // CATEGORY picker
         binding.btnCategories.setOnClickListener {
             CategoryBottomSheet(isIncome = false) { cat: Category ->
                 selectedCategoryId   = cat.id
@@ -77,16 +90,16 @@ class EditBudgetFragment : Fragment() {
             }.show(parentFragmentManager, "CategoryBottomSheet")
         }
 
-        // ICON & COLOR re‐picker
+        // ICON & COLOR picker
         binding.colorCircle.setOnClickListener {
             IconPickerBottomSheet(
                 onSelectionComplete = { icon, color ->
                     selectedIconRes  = icon
                     selectedColorRes = color
-                    binding.colorCircle.setImageResource(icon)
-                    binding.colorCircle.setColorFilter(
+                    binding.colorCircle.background?.setTint(
                         ContextCompat.getColor(requireContext(), color)
                     )
+                    binding.colorCircle.setImageResource(icon)
                     selectedColorHex = String.format(
                         "#%06X",
                         0xFFFFFF and ContextCompat.getColor(requireContext(), color)
@@ -99,22 +112,34 @@ class EditBudgetFragment : Fragment() {
 
         // SAVE updates
         binding.btnSaveBudget.setOnClickListener {
+            if (selectedAmount <= 0.0) {
+                showCustomToast(
+                    requireContext(),
+                    "Please enter an amount greater than zero",
+                    ToastType.ERROR
+                )
+                return@setOnClickListener
+            }
             budget?.let {
                 val newName = binding.etBudgetName.text.toString().ifBlank { it.category }
-                val newAmt  = binding.etBudgetAmount.text.toString()
-                    .replace("[^0-9.]".toRegex(), "")
-                    .toDoubleOrNull() ?: it.amount
-
                 viewModel.updateBudget(
                     it.copy(
                         category = if (selectedCategoryName.isBlank()) newName else selectedCategoryName,
-                        amount   = newAmt,
+                        amount   = selectedAmount,
                         color    = selectedColorHex
                     )
                 )
                 requireActivity().onBackPressed()
             }
         }
+    }
+
+    private fun showAmountInput() {
+        AmountInputBottomSheet { entered ->
+            val v = entered.toDoubleOrNull() ?: 0.0
+            selectedAmount = v
+            binding.etBudgetAmount.setText("₸${String.format("%,.2f", v)}")
+        }.show(parentFragmentManager, "AmountInput")
     }
 
     override fun onDestroyView() {

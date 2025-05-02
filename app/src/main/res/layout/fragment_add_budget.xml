@@ -56,14 +56,14 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/divider" />
 
-    <EditText
+    <TextView
         android:id="@+id/et_budget_amount"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:background="@null"
         android:gravity="center"
-        android:inputType="numberDecimal"
-        android:text="₸1,400.00"
+        android:inputType="none"
+        android:hint="₸0.00"
         android:textColor="#FFFFFF"
         android:textSize="48sp"
         android:textStyle="bold"
@@ -99,9 +99,9 @@
         android:layout_marginHorizontal="16dp"
         android:layout_marginTop="8dp"
         android:background="@null"
-        android:hint="Enter budget name"
-        android:inputType="text"
-        android:text="Entertainment"
+        android:hint="@string/hint_budget_name"
+        android:textColorHint="@color/gray_50"
+        android:inputType="textPersonName"
         android:textColor="#FFFFFF"
         android:textSize="24sp"
         android:minHeight="48dp"

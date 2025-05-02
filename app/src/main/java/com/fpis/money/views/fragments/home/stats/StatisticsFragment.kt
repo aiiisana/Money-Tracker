@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.ProgressBar
 import android.widget.TextView
+import androidx.core.app.ShareCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.observe
@@ -30,11 +31,14 @@ class StatisticsFragment : Fragment() {
     private lateinit var btnPrev:      ImageView
     private lateinit var btnNext:      ImageView
     private lateinit var btnBack:      ImageView
+    private lateinit var btnShare:     ImageView
 
     // ─── Formatting & state ────────────────────────────────
     private val fmtDate  = SimpleDateFormat("dd MMM yyyy", Locale.getDefault())
     private val fmtMoney = NumberFormat.getCurrencyInstance(Locale("kk","KZ"))
     private val calendar = Calendar.getInstance()
+
+    private var lastTotal: String = ""
 
     // ─── Adapter ───────────────────────────────────────────
     private val adapter = CategoryStatsAdapter()
@@ -55,6 +59,7 @@ class StatisticsFragment : Fragment() {
         btnPrev      = view.findViewById(R.id.btn_prev_date)
         btnNext      = view.findViewById(R.id.btn_next_date)
         btnBack      = view.findViewById(R.id.btn_back)
+        btnShare     = view.findViewById(R.id.btn_share)
 
         setupRecycler()
         setupListeners()
@@ -78,7 +83,12 @@ class StatisticsFragment : Fragment() {
             refreshDateDisplay()
             loadDataForDate()
         }
-        btnBack.setOnClickListener { requireActivity().onBackPressed() }
+        btnBack.setOnClickListener {
+            requireActivity().onBackPressed()
+        }
+        btnShare.setOnClickListener {
+            shareStatistics()
+        }
     }
 
     private fun refreshDateDisplay() {
@@ -109,6 +119,22 @@ class StatisticsFragment : Fragment() {
                     "₸${String.format("%,.2f", total)}"
                 )
             }
+    }
+    private fun shareStatistics() {
+        // Build a share message with the total & a Play Store link
+        val message = """
+            Look what I did today!  
+            I spent $lastTotal on my new MoneyTracker app.  
+            Try it yourself:  
+            https://play.google.com/store/apps/details?id=${requireContext().packageName}
+        """.trimIndent()
+
+        // Use ShareCompat for simpler chooser
+        ShareCompat.IntentBuilder.from(requireActivity())
+            .setType("text/plain")
+            .setChooserTitle("Share your stats")
+            .setText(message)
+            .startChooser()
     }
 
     // ─── RecyclerView Adapter & model ──────────────────────

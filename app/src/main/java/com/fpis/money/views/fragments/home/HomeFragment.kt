@@ -13,6 +13,7 @@ import com.fpis.money.views.fragments.home.stats.ExpenseChartView
 import com.fpis.money.views.fragments.home.stats.StatisticsFragment
 import java.text.SimpleDateFormat
 import java.util.*
+import androidx.core.view.doOnLayout
 
 class HomeFragment : Fragment() {
 
@@ -95,10 +96,11 @@ class HomeFragment : Fragment() {
             binding.r2gswwyrlq43.text = "₸%,.2f left".format(sum.remaining)
             binding.rg1ohu7vm6na.text = "-₸%,.2f spent this month".format(sum.spent)
 
-            binding.rxveltjdzj6.post {
+             // update the “filled” part of the overall budget bar once it's laid out
+            binding.rxveltjdzj6.doOnLayout { bar ->
                 val lp = binding.rmrg11ps7xhr.layoutParams
-                lp.width = (binding.rxveltjdzj6.width * sum.percentage / 100.0).toInt()
-                binding.rmrg11ps7xhr.layoutParams = lp
+                lp.width = (bar.width * sum.percentage / 100.0).toInt()
+                 binding.rmrg11ps7xhr.layoutParams = lp
             }
         }
         viewModel.budgets.observe(viewLifecycleOwner) { list ->

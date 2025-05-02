@@ -36,6 +36,15 @@
             android:textColor="#FFFFFF"
             android:textSize="24sp"
             android:textStyle="bold" />
+        <ImageView
+            android:id="@+id/btn_share"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:background="@drawable/circle_button_background"
+            android:padding="8dp"
+            android:src="@drawable/ic_share"
+            android:contentDescription="Share"
+            app:tint="#FFFFFF" />
     </LinearLayout>
 
     <!-- Date Switcher -->
