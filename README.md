@@ -9,7 +9,7 @@
 - **Welcome Screen**: Sign up or log in
 - **Account Creation**: Name, email, password
 - **Authentication**: Access the main dashboard
-- **Premium Features**:
+- **Premium Features** _(implepents only after official release)_:
   - Advanced analytics
   - Data export
   - Custom themes
@@ -23,10 +23,11 @@
 
 ### **2. Category Analytics**
 - Visual breakdown of expenses by category
-- Pie charts and trend graphs
+- Pie charts
 
 ### **3. Transaction History**
 - Full list of records (expenses, income, transfers)
+- Sort by date
 - Filter by date, category, type, amount
 
 ### **4. Add Transactions and Transfers**
@@ -42,8 +43,7 @@
 - Categories are used in transaction records and analytics
 
 ### **6. Card Management**
-- Add, view, edit, and delete accounts (cash, bank, etc.)
-- Track card limits and balances
+- Add, view, edit, and delete cards
 
 ### **7. User Profile**
 - Edit name, email, password
