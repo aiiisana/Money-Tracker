@@ -11,19 +11,18 @@ import kotlinx.coroutines.flow.map
 import java.util.Date
 
 class StatisticsViewModel(application: Application) : AndroidViewModel(application) {
+    private val repo = StatisticsRepository(
+        AppDatabase.getDatabase(application).transactionDao()
+    )
 
-    private val repository: StatisticsRepository
+    fun getCategoriesByDate(date: Date) =
+        repo.getExpensesByDate(date).asLiveData()
 
-    init {
-        val transactionDao = AppDatabase.getDatabase(application).transactionDao()
-        repository = StatisticsRepository(transactionDao)
-    }
+    fun getTotalByDate(date: Date) =
+        repo.getTotalExpenseByDate(date).asLiveData()
 
-    fun getExpensesByDate(date: Date): LiveData<List<StatisticsFragment.CategoryStats>> {
-        return repository.getExpensesByDate(date).asLiveData()
-    }
+    // new — raw list of each expense
+    fun getTransactionsByDate(date: Date) =
+        repo.getTransactionsByDate(date).asLiveData()
 
-    fun getTotalExpenseByDate(date: Date): LiveData<Double> {
-        return repository.getTotalExpenseByDate(date).asLiveData()
-    }
 }

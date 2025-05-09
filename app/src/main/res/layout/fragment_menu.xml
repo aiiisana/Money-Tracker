@@ -96,7 +96,7 @@
                     android:id="@+id/get_premium_layout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="#25FF9D2A"
+                    android:background="@drawable/rounded_background"
                     android:gravity="center"
                     android:orientation="horizontal"
                     android:paddingVertical="15dp">

@@ -21,7 +21,6 @@ class CardOption(
         requestWindowFeature(Window.FEATURE_NO_TITLE)
         setContentView(R.layout.popup_card)
 
-        // Set dialog window properties
         window?.apply {
             setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
             setGravity(Gravity.BOTTOM)
@@ -31,7 +30,6 @@ class CardOption(
             )
         }
 
-        // Set click listeners
         findViewById<TextView>(R.id.tv_edit_card).setOnClickListener {
             onEditClick()
             dismiss()

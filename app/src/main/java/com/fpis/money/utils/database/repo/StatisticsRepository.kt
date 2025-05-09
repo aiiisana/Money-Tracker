@@ -1,5 +1,6 @@
 package com.fpis.money.utils.database.repo
 
+import com.fpis.money.models.Transaction
 import com.fpis.money.utils.database.TransactionDao
 import com.fpis.money.views.fragments.home.stats.StatisticsFragment.CategoryStats
 import kotlinx.coroutines.flow.Flow
@@ -10,28 +11,21 @@ import java.util.Date
 class StatisticsRepository(private val transactionDao: TransactionDao) {
 
     fun getExpensesByDate(date: Date): Flow<List<CategoryStats>> {
-        val startOfDay = getStartOfDay(date)
-        val endOfDay = getEndOfDay(date)
+        val start = getStartOfDay(date).timeInMillis
+        val end   = getEndOfDay(date).timeInMillis
 
-        return transactionDao.getTransactionsByDateRange(startOfDay.timeInMillis, endOfDay.timeInMillis)
+        return transactionDao.getTransactionsByDateRange(start, end)
             .map { transactions ->
-                // Group transactions by category
-                val categoryMap = transactions
-                    .filter { it.type == "expense" } // Only include expenses
-                    .groupBy { it.category }
-                    .mapValues { entry ->
-                        entry.value.sumOf { it.amount.toDouble() }
-                    }
-
-                // Convert to CategoryStats objects
-                val totalExpense = categoryMap.values.sum()
-
-                categoryMap.map { (category, amount) ->
+                val expenses    = transactions.filter { it.type == "expense" }
+                val totalAmount = expenses.sumOf { it.amount.toDouble() }
+                expenses.map { tx ->
                     CategoryStats(
-                        name = category,
-                        amount = amount,
-                        color = getCategoryColor(category),
-                        progress = if (totalExpense > 0) ((amount / totalExpense) * 100).toInt() else 0
+                        name     = tx.category,
+                        amount   = tx.amount.toDouble(),
+                        color    = getCategoryColor(tx.category),
+                        progress = if (totalAmount > 0)
+                            ((tx.amount / totalAmount) * 100).toInt()
+                        else 0
                     )
                 }
             }
@@ -48,6 +42,14 @@ class StatisticsRepository(private val transactionDao: TransactionDao) {
                     .sumOf { it.amount.toDouble() }
             }
     }
+
+    fun getTransactionsByDate(date: Date): Flow<List<Transaction>> {
+        val start = getStartOfDay(date).timeInMillis
+        val end   = getEndOfDay(date).timeInMillis
+        return transactionDao.getTransactionsByDateRange(start, end)
+            .map { it.filter { tx -> tx.type=="expense" } }
+    }
+
 
     private fun getStartOfDay(date: Date): Calendar {
         val calendar = Calendar.getInstance()

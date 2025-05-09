@@ -116,25 +116,20 @@ class EditCardFragment : Fragment() {
     }
 
     private fun setupUI() {
-        // Set up close button
         binding.btnClose.setOnClickListener {
-            // Go back to the previous fragment
             parentFragmentManager.popBackStack()
         }
 
-        // Set up save button
         binding.btnSave.setOnClickListener {
             if (validateForm()) {
                 saveCard()
             }
         }
 
-        // Set up custom image button
         binding.btnCustomImage.setOnClickListener {
             openImagePicker()
         }
 
-        // Set up color picker button
         binding.btnColorPicker.setOnClickListener {
             showColorPickerDialog()
         }
@@ -152,7 +147,6 @@ class EditCardFragment : Fragment() {
             showDatePicker()
         }
 
-        // Add automatic slash formatting for manual input
         binding.etExpiryDate.addTextChangedListener(object : TextWatcher {
             private var isFormatting = false
             private val calendar = Calendar.getInstance()
@@ -171,7 +165,6 @@ class EditCardFragment : Fragment() {
                 if (str.length > 0) {
                     val month = str.substring(0, minOf(2, str.length)).toIntOrNull() ?: 0
 
-                    // Validate month (1-12)
                     if (str.length == 1 && month > 1) {
                         s?.replace(0, s.length, "0$month")
                     } else if (str.length >= 2) {
@@ -184,13 +177,11 @@ class EditCardFragment : Fragment() {
                         if (str.length > 2) {
                             val year = str.substring(2, minOf(4, str.length)).toIntOrNull() ?: 0
 
-                            // Validate year (current year or later)
                             val validYear = when {
                                 year < currentYear -> currentYear.toString().padStart(2, '0')
                                 else -> year.toString().padStart(minOf(2, str.length - 2), '0')
                             }
 
-                            // If month is in the past for current year
                             if (year == currentYear && month < currentMonth) {
                                 s?.replace(0, s.length, "$validMonth/$validYear")
                             } else {
@@ -202,7 +193,6 @@ class EditCardFragment : Fragment() {
                     }
                 }
 
-                // Add slash after month
                 if (s?.length == 2) {
                     s.append("/")
                 }
@@ -213,10 +203,8 @@ class EditCardFragment : Fragment() {
     }
 
     private fun setupCardNumberAndCVVFormatting() {
-        // Limit card number to 12 digits
         binding.etCardNumber.filters = arrayOf(android.text.InputFilter.LengthFilter(19))
 
-        // Format card number with spaces
         binding.etCardNumber.addTextChangedListener(object : TextWatcher {
             private var isFormatting = false
 
@@ -246,7 +234,6 @@ class EditCardFragment : Fragment() {
             }
         })
 
-        // Limit CVV to 3 digits
         binding.etCvv.filters = arrayOf(android.text.InputFilter.LengthFilter(3))
     }
 
@@ -255,7 +242,6 @@ class EditCardFragment : Fragment() {
         val currentYear = calendar.get(Calendar.YEAR)
         val currentMonth = calendar.get(Calendar.MONTH)
 
-        // Parse existing date if available
         val existingDate = binding.etExpiryDate.text.toString()
         if (existingDate.matches("\\d{2}/\\d{2}".toRegex())) {
             val parts = existingDate.split("/")
@@ -269,7 +255,6 @@ class EditCardFragment : Fragment() {
             requireContext(),
             R.style.DatePickerTheme,
             { _, year, monthOfYear, _ ->
-                // Format as MM/YY
                 val selectedMonth = monthOfYear + 1 // Calendar months are 0-based
                 val yearShort = year % 100
                 val formattedDate = String.format("%02d/%02d", selectedMonth, yearShort)
@@ -278,17 +263,14 @@ class EditCardFragment : Fragment() {
             },
             calendar.get(Calendar.YEAR),
             calendar.get(Calendar.MONTH),
-            1 // Day doesn't matter for card expiry
+            1
         )
 
-        // Set min date to current month
         datePickerDialog.datePicker.minDate = calendar.timeInMillis
 
-        // Set max date to 10 years from now
         calendar.add(Calendar.YEAR, 10)
         datePickerDialog.datePicker.maxDate = calendar.timeInMillis
 
-        // Hide day picker since we only need month and year
         try {
             val datePickerField = datePickerDialog.datePicker.javaClass.getDeclaredField("mDaySpinner")
             datePickerField.isAccessible = true
@@ -327,17 +309,14 @@ class EditCardFragment : Fragment() {
         val cancelButton = dialogView.findViewById<Button>(R.id.btn_cancel)
         val selectButton = dialogView.findViewById<Button>(R.id.btn_select)
 
-        // Set up color picker
         colorPicker.addSaturationBar(saturationBar)
 
-        // Set initial color
         try {
             colorPicker.color = Color.parseColor(selectedColor)
         } catch (e: Exception) {
             colorPicker.color = Color.parseColor("#4285F4")
         }
 
-        // Update hex color text when color changes
         colorPicker.onColorChangedListener = object : ColorPicker.OnColorChangedListener {
             override fun onColorChanged(color: Int) {
                 val hexColor = String.format("#%06X", 0xFFFFFF and color)
@@ -346,12 +325,10 @@ class EditCardFragment : Fragment() {
             }
         }
 
-        // Set initial hex color text
         val initialHexColor = String.format("#%06X", 0xFFFFFF and colorPicker.color)
         hexColorText.text = initialHexColor
         hexColorText.setBackgroundColor(colorPicker.color)
 
-        // Set up buttons
         cancelButton.setOnClickListener {
             dialog.dismiss()
         }
@@ -376,20 +353,17 @@ class EditCardFragment : Fragment() {
     }
 
     private fun updateColorCircle() {
-        // Update the color circle to match the selected color
         try {
             val drawable = binding.selectedColorCircle.background.mutate()
             drawable.setTint(Color.parseColor(selectedColor))
             binding.selectedColorCircle.background = drawable
         } catch (e: Exception) {
-            // If there's an error parsing the color, use default blue
             binding.selectedColorCircle.setBackgroundResource(R.drawable.circle_blue)
         }
     }
 
     private fun updateCardPreview() {
         try {
-            // Set the background based on selection
             if (customImageUri != null) {
                 try {
                     val inputStream = requireContext().contentResolver.openInputStream(customImageUri!!)
@@ -408,16 +382,13 @@ class EditCardFragment : Fragment() {
                 setCardBackgroundColor()
             }
         } catch (e: Exception) {
-            // Fallback to default blue
             binding.cardBackgroundImage.visibility = View.GONE
             binding.cardBackground.setBackgroundResource(R.drawable.card_bg_blue)
         }
 
-        // Update card holder name
         val cardHolder = binding.etCardHolder.text.toString().trim()
         binding.tvCardHolder.text = if (cardHolder.isNotEmpty()) cardHolder else "John Doe"
 
-        // Update card number
         val cardNumber = binding.etCardNumber.text.toString().trim()
         val formattedNumber = formatCardNumber(cardNumber)
         val cardNumberGroups = splitCardNumber(formattedNumber)
@@ -427,17 +398,14 @@ class EditCardFragment : Fragment() {
         binding.tvCardGroup3.text = if (cardNumberGroups[2].isNotEmpty()) cardNumberGroups[2] else "1234"
         binding.tvCardGroup4.text = if (cardNumberGroups[3].isNotEmpty()) cardNumberGroups[3] else "1234"
 
-        // Update CVV
         val cvv = binding.etCvv.text.toString().trim()
         binding.tvCvv.text = "CVV: ${if (cvv.isNotEmpty()) cvv else "123"}"
 
-        // Update expiry date
         val expiryDate = binding.etExpiryDate.text.toString().trim()
         binding.tvExpireDate.text = if (expiryDate.isNotEmpty()) expiryDate else "MM/YY"
     }
 
     private fun setCardBackgroundColor() {
-        // Set card background color based on selected color
         try {
             binding.cardBackground.setBackgroundColor(Color.parseColor(selectedColor))
         } catch (e: Exception) {
@@ -448,27 +416,23 @@ class EditCardFragment : Fragment() {
     private fun validateForm(): Boolean {
         var isValid = true
 
-        // Validate card holder
         if (binding.etCardHolder.text.toString().trim().isEmpty()) {
             binding.etCardHolder.error = "Card holder name is required"
             isValid = false
         }
 
-        // Validate card number
         val cardNumber = binding.etCardNumber.text.toString().trim().replace("\\D".toRegex(), "")
         if (cardNumber.length < 16) {
             binding.etCardNumber.error = "Valid card number is required (16 digits)"
             isValid = false
         }
 
-        // Validate expiry date
         val expiryDate = binding.etExpiryDate.text.toString().trim()
         if (!expiryDate.matches("\\d{2}/\\d{2}".toRegex())) {
             binding.etExpiryDate.error = "Valid expiry date is required (MM/YY)"
             isValid = false
         }
 
-        // Validate CVV
         val cvv = binding.etCvv.text.toString().trim()
         if (cvv.length < 3) {
             binding.etCvv.error = "Valid CVV is required (3 digits)"
@@ -502,10 +466,8 @@ class EditCardFragment : Fragment() {
     }
 
     private fun formatCardNumber(cardNumber: String): String {
-        // Remove any non-digit characters
         val digitsOnly = cardNumber.replace("\\D".toRegex(), "")
 
-        // Format as groups of 4 digits
         val formatted = StringBuilder()
         for (i in digitsOnly.indices) {
             if (i > 0 && i % 4 == 0) {
@@ -521,7 +483,6 @@ class EditCardFragment : Fragment() {
         val groups = mutableListOf<String>()
         val parts = cardNumber.split(" ")
 
-        // Ensure we have 4 groups
         for (i in 0 until 4) {
             if (i < parts.size) {
                 groups.add(parts[i])

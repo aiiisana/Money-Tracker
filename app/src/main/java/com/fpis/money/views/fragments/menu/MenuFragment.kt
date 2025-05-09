@@ -1,6 +1,9 @@
 package com.fpis.money.views.fragments.menu
 
+import advanced.lab.chatlibrary.ChatLauncher
+import android.content.ActivityNotFoundException
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -11,9 +14,8 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 import com.fpis.money.R
-import com.fpis.money.utils.preferences.SharedPreferencesManager
-import com.fpis.money.views.activities.login.LoginActivity
-import com.google.firebase.auth.FirebaseAuth
+import com.fpis.money.utils.ToastType
+import com.fpis.money.utils.showCustomToast
 
 class MenuFragment : Fragment() {
 
@@ -36,7 +38,16 @@ class MenuFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        // Initialize menu item layouts
+        val getPremiumLayout = view.findViewById<LinearLayout>(R.id.get_premium_layout)
+        getPremiumLayout.setOnClickListener {
+            openPremiumFragment()
+        }
+
+        val getPremiumBtn = view.findViewById<LinearLayout>(R.id.diamond_button)
+        getPremiumBtn.setOnClickListener {
+            openPremiumFragment()
+        }
+
         privacyPolicyLayout = view.findViewById(R.id.privacy_policy_layout)
         eulaLayout = view.findViewById(R.id.eula_layout)
         rateUsLayout = view.findViewById(R.id.rate_us_layout)
@@ -44,10 +55,8 @@ class MenuFragment : Fragment() {
         restorePurchasesLayout = view.findViewById(R.id.restore_purchases_layout)
         profileLayout = view.findViewById(R.id.profile_layout)
 
-        // Set click listeners for all menu items
         setupMenuItemClickListeners()
 
-        // Reset all menu items to default state
         resetAllMenuItems()
     }
 
@@ -167,19 +176,25 @@ class MenuFragment : Fragment() {
     private fun handleMenuItemAction(menuItem: LinearLayout) {
         when (menuItem.id) {
             R.id.privacy_policy_layout -> {
-                // Навигация к Privacy Policy
+                val intent = Intent(Intent.ACTION_VIEW).apply {
+                    data = Uri.parse("https://docs.google.com/document/d/14Q2Jgtr4oB92vVx71uw0j2Yr4HTERie-OGVlSbDX8JQ/edit?usp=sharing")
+                }
+                startActivity(intent)
             }
             R.id.eula_layout -> {
-                // Навигация к EULA
+                val intent = Intent(Intent.ACTION_VIEW).apply {
+                    data = Uri.parse("https://revera.legal/en/info-centr/news-and-analytical-materials/1633-chto-takoe-eula-i-dlya-chego-ono-nuzhno-kolonka-revera/")
+                }
+                startActivity(intent)
             }
             R.id.rate_us_layout -> {
-                // Навигация на Play Market
+                showCustomToast(requireContext(), "We are not on Google Play yet, but we will be there soon!", ToastType.INFO)
             }
             R.id.support_layout -> {
-                // Открытие почты
+                ChatLauncher.start(requireContext())
             }
             R.id.restore_purchases_layout -> {
-                // Логика восстановления покупок
+                showCustomToast(requireContext(), "Restoration logic coming soon with Play Store launch!", ToastType.INFO)
             }
             R.id.profile_layout -> {
                 seeProfile()
@@ -190,5 +205,10 @@ class MenuFragment : Fragment() {
     private fun seeProfile() {
         val intent = Intent(requireContext(), com.fpis.money.views.activities.profile.ProfileActivity::class.java)
         startActivity(intent)
+    }
+
+    private fun openPremiumFragment() {
+        val premiumFragment = PremiumFragment()
+        premiumFragment.show(parentFragmentManager, "PremiumDialog")
     }
 }

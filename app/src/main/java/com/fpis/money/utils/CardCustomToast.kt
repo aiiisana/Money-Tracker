@@ -17,11 +17,9 @@ fun showCustomToast(context: Context, message: String, type: ToastType = ToastTy
     val inflater = LayoutInflater.from(context)
     val layout = inflater.inflate(R.layout.card_custom_toast, null)
 
-    // Set the message text
     val text = layout.findViewById<TextView>(R.id.toast_text)
     text.text = message
 
-    // Set the icon based on toast type
     val icon = layout.findViewById<ImageView>(R.id.toast_icon)
     when (type) {
         ToastType.SUCCESS -> {
@@ -38,7 +36,6 @@ fun showCustomToast(context: Context, message: String, type: ToastType = ToastTy
         }
     }
 
-    // Create and show the Toast
     val toast = Toast(context)
     toast.setGravity(Gravity.BOTTOM or Gravity.CENTER_HORIZONTAL, 0, 64)
     toast.duration = Toast.LENGTH_SHORT

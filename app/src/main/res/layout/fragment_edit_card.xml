@@ -355,12 +355,12 @@
 
                     <ImageButton
                         android:id="@+id/btn_color_picker"
-                        android:layout_width="40dp"
-                        android:layout_height="40dp"
-                        android:background="@drawable/circle_button_background"
-                        android:src="@drawable/ic_color_picker"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
                         android:layout_marginEnd="16dp"
-                        android:contentDescription="Color Picker" />
+                        android:background="@drawable/circle_button_background"
+                        android:contentDescription="Color Picker"
+                        android:src="@drawable/ic_color_picker" />
 
                     <ImageButton
                         android:id="@+id/btn_custom_image"

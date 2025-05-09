@@ -13,7 +13,7 @@
     <ScrollView
         android:clipChildren="false"
         android:clipToPadding="false"
-        android:id="@+id/r1uv1q0o6cqm"
+        android:id="@+id/home_main_container"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
@@ -82,51 +82,53 @@
                     android:scaleType="fitXY"
                     />
             </LinearLayout>
+
             <LinearLayout
                 android:id="@+id/rn51ulxur7u"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:gravity="center_vertical"
-                android:background="@drawable/cr12b121418"
-                android:padding="20dp"
-                android:layout_marginBottom="15dp"
                 android:layout_marginHorizontal="15dp"
-                android:orientation="horizontal">
+                android:layout_marginBottom="15dp"
+                android:background="@drawable/cr12b121418"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:padding="20dp">
+
                 <LinearLayout
                     android:id="@+id/rs6gwekwjy98"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:orientation="vertical">
+
                     <TextView
                         android:id="@+id/r2qzgpg8na1m"
-                        android:textColor="#FFFFFF"
-                        android:textSize="12sp"
-                        android:textStyle="bold"
-                        android:layout_marginBottom="5dp"
-                        android:layout_height="wrap_content"
                         android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="5dp"
                         android:layout_weight="1"
                         android:text="Total Balance"
-                        />
+                        android:textColor="#FFFFFF"
+                        android:textSize="12sp"
+                        android:textStyle="bold" />
+
                     <TextView
                         android:id="@+id/r40wus18jo1q"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="₸0.00"
                         android:textColor="#FFFFFF"
                         android:textSize="28sp"
-                        android:textStyle="bold"
-                        android:layout_height="wrap_content"
-                        android:layout_width="match_parent"
-                        android:layout_weight="1"
-                        android:text="₸760,000.00"
-                        />
+                        android:textStyle="bold" />
                 </LinearLayout>
+
                 <ImageView
                     android:id="@+id/r2tggiv586wg"
                     android:layout_width="24dp"
                     android:layout_height="24dp"
-                    android:src="@drawable/ic_home_ar_down"
                     android:scaleType="fitXY"
-                    />
+                    android:src="@drawable/ic_home_ar_down" />
             </LinearLayout>
             <RelativeLayout
                 android:id="@+id/rf2x8ku9qyes"
@@ -216,7 +218,7 @@
                                         android:layout_height="wrap_content"
                                         android:layout_marginBottom="5dp"
                                         android:layout_weight="1"
-                                        android:text="₸483,000.00 left"
+                                        android:text="₸0.00 left"
                                         android:textColor="#FFFFFF"
                                         android:textSize="28sp"
                                         android:textStyle="bold" />
@@ -226,7 +228,7 @@
                                         android:layout_width="match_parent"
                                         android:layout_height="wrap_content"
                                         android:layout_weight="1"
-                                        android:text="-₸277,000 spent this month"
+                                        android:text="-₸0 spent this month"
                                         android:textColor="#9E9E9E"
                                         android:textSize="14sp"
                                         android:textStyle="bold" />
@@ -244,7 +246,8 @@
                                         android:layout_width="176dp"
                                         android:layout_height="6dp"
                                         android:background="@drawable/cr19b6a66ff"
-                                        android:orientation="vertical"></LinearLayout>
+                                        android:orientation="vertical">
+                                    </LinearLayout>
                                 </LinearLayout>
                             </LinearLayout>
 
@@ -254,275 +257,104 @@
                                 android:layout_height="1dp"
                                 android:layout_marginBottom="25dp"
                                 android:background="#0DFFFFFF"
-                                android:orientation="vertical"></LinearLayout>
+                                android:orientation="vertical">
+                            </LinearLayout>
 
-                            <HorizontalScrollView
-                                android:id="@+id/categories_scroll"
+                            <androidx.recyclerview.widget.RecyclerView
+                                android:id="@+id/budgetCategoriesRecyclerView"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:scrollbars="none"
                                 android:clipToPadding="false"
-                                android:paddingHorizontal="15dp">
-
-                                <LinearLayout
-                                    android:id="@+id/r15ic2vybbrq"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:orientation="horizontal">
-
-                                    <!-- Entertainment Category -->
-                                    <LinearLayout
-                                        android:layout_width="wrap_content"
-                                        android:layout_height="wrap_content"
-                                        android:background="@drawable/cr35b66ffa30d"
-                                        android:paddingVertical="10dp"
-                                        android:layout_marginEnd="10dp"
-                                        android:paddingHorizontal="15dp"
-                                        android:gravity="center_vertical"
-                                        android:orientation="horizontal">
-
-                                        <ImageView
-                                            android:id="@+id/rxim720knfd"
-                                            android:layout_width="24dp"
-                                            android:layout_height="24dp"
-                                            android:layout_marginEnd="10dp"
-                                            android:scaleType="fitXY"
-                                            android:src="@drawable/ic_circular_progress"
-                                            app:shapeAppearanceOverlay="@style/cr35" />
-
-                                        <LinearLayout
-                                            android:id="@+id/rz6h649ncek"
-                                            android:layout_width="wrap_content"
-                                            android:layout_height="wrap_content"
-                                            android:orientation="vertical">
-
-                                            <TextView
-                                                android:id="@+id/rucdlzmkrjlp"
-                                                android:layout_width="wrap_content"
-                                                android:layout_height="wrap_content"
-                                                android:layout_marginBottom="2dp"
-                                                android:text="Entertainment"
-                                                android:textColor="#FFFFFF"
-                                                android:textSize="12sp"
-                                                android:textStyle="bold" />
-
-                                            <TextView
-                                                android:id="@+id/rpenb33b77xg"
-                                                android:layout_width="wrap_content"
-                                                android:layout_height="wrap_content"
-                                                android:text="₸156,500 spent"
-                                                android:textColor="#66FFA3"
-                                                android:textSize="12sp"
-                                                android:textStyle="bold" />
-                                        </LinearLayout>
-                                    </LinearLayout>
-
-                                    <!-- Food Category -->
-                                    <LinearLayout
-                                        android:id="@+id/rtrik66ylvzp"
-                                        android:layout_width="wrap_content"
-                                        android:layout_height="wrap_content"
-                                        android:background="@drawable/cr35bff94661a"
-                                        android:paddingVertical="10dp"
-                                        android:paddingHorizontal="15dp"
-                                        android:layout_marginEnd="10dp"
-                                        android:gravity="center_vertical"
-                                        android:orientation="horizontal">
-
-                                        <ImageView
-                                            android:id="@+id/rzq2sb82qscq"
-                                            android:layout_width="24dp"
-                                            android:layout_height="24dp"
-                                            android:layout_marginEnd="10dp"
-                                            android:scaleType="fitXY"
-                                            android:src="@drawable/circular_progress_food"
-                                            app:shapeAppearanceOverlay="@style/cr35" />
-
-                                        <LinearLayout
-                                            android:id="@+id/ro744g33gdwd"
-                                            android:layout_width="wrap_content"
-                                            android:layout_height="wrap_content"
-                                            android:orientation="vertical">
-
-                                            <TextView
-                                                android:id="@+id/rb1jkxtvtiq7"
-                                                android:layout_width="wrap_content"
-                                                android:layout_height="wrap_content"
-                                                android:layout_marginBottom="2dp"
-                                                android:text="Food"
-                                                android:textColor="#FFFFFF"
-                                                android:textSize="12sp"
-                                                android:textStyle="bold" />
-
-                                            <TextView
-                                                android:id="@+id/rn6ubd8927c"
-                                                android:layout_width="wrap_content"
-                                                android:layout_height="wrap_content"
-                                                android:text="₸80,000 spent"
-                                                android:textColor="#FF9366"
-                                                android:textSize="12sp"
-                                                android:textStyle="bold" />
-                                        </LinearLayout>
-                                    </LinearLayout>
-
-                                    <!-- Transportation Category -->
-                                    <LinearLayout
-                                        android:id="@+id/rmeoyx66i98"
-                                        android:layout_width="wrap_content"
-                                        android:layout_height="wrap_content"
-                                        android:background="@drawable/cr35b3db9ff1a"
-                                        android:paddingVertical="10dp"
-                                        android:paddingHorizontal="15dp"
-                                        android:gravity="center_vertical"
-                                        android:orientation="horizontal">
-
-                                        <ImageView
-                                            android:id="@+id/r0yptratukvh"
-                                            android:layout_width="24dp"
-                                            android:layout_height="24dp"
-                                            android:layout_marginEnd="10dp"
-                                            android:scaleType="fitXY"
-                                            android:src="@drawable/ic_cirular_progress_tr"
-                                            app:shapeAppearanceOverlay="@style/cr35" />
-
-                                        <LinearLayout
-                                            android:layout_width="wrap_content"
-                                            android:layout_height="wrap_content"
-                                            android:orientation="vertical">
-
-                                            <TextView
-                                                android:layout_width="wrap_content"
-                                                android:layout_height="wrap_content"
-                                                android:layout_marginBottom="2dp"
-                                                android:text="Transportation"
-                                                android:textColor="#FFFFFF"
-                                                android:textSize="12sp"
-                                                android:textStyle="bold" />
-
-                                            <TextView
-                                                android:layout_width="wrap_content"
-                                                android:layout_height="wrap_content"
-                                                android:text="₸25,000 spent"
-                                                android:textColor="#66D9FF"
-                                                android:textSize="12sp"
-                                                android:textStyle="bold" />
-                                        </LinearLayout>
-                                    </LinearLayout>
-                                </LinearLayout>
-                            </HorizontalScrollView>
+                                android:overScrollMode="never"
+                                android:paddingStart="15dp"
+                                android:paddingEnd="15dp"
+                                app:layout_constraintTop_toBottomOf="@id/rmrg11ps7xhr"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintEnd_toEndOf="parent"
+                                tools:listitem="@layout/item_home_category"/>
                         </LinearLayout>
                     </LinearLayout>
                 </LinearLayout>
             </RelativeLayout>
+
             <RelativeLayout
-                android:id="@+id/rgmax6dvsu1r"
+                android:id="@+id/statistics_section"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="15dp"
-                android:clipChildren="false"
                 android:clipToPadding="false"
-                >
+                android:clipChildren="false">
+
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:clipChildren="false"
-                    android:clipToPadding="false"
-                    android:orientation="vertical">
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/cr12b121418"
+                    android:orientation="vertical"
+                    android:paddingVertical="15dp">
+
+                    <!-- Title + “Statistics” button -->
                     <LinearLayout
-                        android:id="@+id/rxafjah9m8vq"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:background="@drawable/cr12b121418"
-                        android:paddingVertical="15dp"
-                        android:orientation="vertical">
-                        <LinearLayout
-                            android:id="@+id/r1osfu6n5y6pg"
-                            android:layout_width="match_parent"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:layout_marginHorizontal="20dp"
+                        android:layout_marginBottom="35dp">
+
+                        <TextView
+                            android:id="@+id/rjacmb9uf96j"
+                            android:layout_width="0dp"
                             android:layout_height="wrap_content"
-                            android:gravity="center_vertical"
-                            android:layout_marginBottom="35dp"
-                            android:layout_marginHorizontal="20dp"
-                            android:orientation="horizontal">
-                            <TextView
-                                android:id="@+id/rjacmb9uf96j"
-                                android:textColor="#FFFFFF"
-                                android:textSize="18sp"
-                                android:textStyle="bold"
-                                android:layout_height="wrap_content"
-                                android:layout_width="match_parent"
-                                android:layout_weight="1"
-                                android:text="Categories"
-                                />
-                            <LinearLayout
-                                android:id="@+id/ryndljmqcc9"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:background="@drawable/cr10b6a66ff1a"
-                                android:padding="10dp"
-                                android:clickable="true"
-                                android:focusable="true"
-                                android:orientation="vertical">
-                                <TextView
-                                    android:id="@+id/rowpjlrmrvps"
-                                    android:textColor="#6A66FF"
-                                    android:textSize="12sp"
-                                    android:textStyle="bold"
-                                    android:layout_height="wrap_content"
-                                    android:layout_width="wrap_content"
-                                    android:text="Statistics"
-                                    />
-                            </LinearLayout>
-                        </LinearLayout>
+                            android:layout_weight="1"
+                            android:text="Categories"
+                            android:textColor="#FFFFFF"
+                            android:textSize="18sp"
+                            android:textStyle="bold"/>
 
-                        <!-- Replace the existing chart placeholder with our custom chart view -->
-                        <FrameLayout
-                            android:layout_width="200dp"
-                            android:layout_height="200dp"
-                            android:layout_gravity="center_horizontal"
-                            android:layout_marginBottom="20dp">
-
-                            <com.fpis.money.views.fragments.home.stats.ExpenseChartView
-                                android:id="@+id/expense_chart_view"
-                                android:layout_width="match_parent"
-                                android:layout_height="match_parent" />
-                        </FrameLayout>
                         <LinearLayout
-                            android:id="@+id/rjthc0n5kdv"
+                            android:id="@+id/ryndljmqcc9"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginStart="127dp"
-                            android:layout_marginTop="20dp"
-                            android:orientation="horizontal">
-                            <LinearLayout
-                                android:id="@+id/rwzvf364tbg"
-                                android:layout_width="92dp"
-                                android:layout_height="52dp"
-                                android:background="@drawable/cr35bff94660d"
-                                android:layout_marginEnd="10dp"
-                                android:orientation="vertical">
-                            </LinearLayout>
-                            <LinearLayout
-                                android:id="@+id/rojgc1w49ug"
-                                android:layout_width="111dp"
-                                android:layout_height="52dp"
-                                android:background="@drawable/cr35b66ffa30d"
-                                android:orientation="vertical">
-                            </LinearLayout>
+                            android:background="@drawable/cr10b6a66ff1a"
+                            android:orientation="vertical"
+                            android:padding="10dp"
+                            android:clickable="true"
+                            android:focusable="true">
+
+                            <TextView
+                                android:id="@+id/rowpjlrmrvps"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Statistics"
+                                android:textColor="#6A66FF"
+                                android:textSize="12sp"
+                                android:textStyle="bold"/>
                         </LinearLayout>
                     </LinearLayout>
-                </LinearLayout>
-                <LinearLayout
-                    android:id="@+id/rpj8ya4xs0j8"
-                    android:layout_marginBottom="15dp"
-                    android:layout_marginEnd="-96dp"
-                    android:layout_alignParentBottom="true"
-                    android:layout_alignParentRight="true"
-                    android:layout_width="109dp"
-                    android:layout_height="52dp"
-                    android:background="@drawable/cr35b3db9ff0d"
-                    android:clipChildren="false"
-                    android:clipToPadding="false"
-                    android:orientation="vertical">
+
+                    <!-- Pie chart -->
+                    <FrameLayout
+                        android:layout_width="200dp"
+                        android:layout_height="200dp"
+                        android:layout_gravity="center_horizontal"
+                        android:layout_marginBottom="20dp">
+
+                        <com.fpis.money.views.fragments.home.stats.ExpenseChartView
+                            android:id="@+id/expense_chart_view"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"/>
+                    </FrameLayout>
+
+                    <!-- ◀️ STATIC DEMO CHIPS REMOVED ▶️ -->
+                    <!-- LIVE stats chips: -->
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/statsRecyclerView"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:clipToPadding="false"
+                        android:overScrollMode="never"
+                        android:paddingStart="15dp"
+                        android:paddingEnd="15dp"/>
                 </LinearLayout>
             </RelativeLayout>
         </LinearLayout>

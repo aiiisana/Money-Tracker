@@ -13,7 +13,7 @@ import com.fpis.money.models.Transfer
 import com.fpis.money.models.Budget
 import com.fpis.money.models.BudgetCategory
 
-@Database(entities = [Transaction::class, Transfer::class, Category::class, Subcategory::class, Budget::class, BudgetCategory::class], version = 10)
+@Database(entities = [Transaction::class, Transfer::class, Category::class, Subcategory::class, Budget::class, BudgetCategory::class], version = 12)
 @TypeConverters(Converters::class)
 abstract class AppDatabase : RoomDatabase() {
     abstract fun transactionDao(): TransactionDao
