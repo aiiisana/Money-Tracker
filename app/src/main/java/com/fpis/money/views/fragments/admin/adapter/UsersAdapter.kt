@@ -19,15 +19,19 @@ class UsersAdapter(
 
         fun bind(user: User) {
             binding.apply {
+                adminSwitch.setOnCheckedChangeListener(null)
+
                 userName.text = user.username
                 userEmail.text = user.email
-                adminSwitch.isChecked = user.role == "admin"
+                adminSwitch.isChecked = user.isAdmin
 
                 editButton.setOnClickListener { onEditClick(user) }
                 deleteButton.setOnClickListener { onDeleteClick(user) }
 
                 adminSwitch.setOnCheckedChangeListener { _, isChecked ->
-                    onRoleChange(user, isChecked)
+                    if (isChecked != user.isAdmin) {
+                        onRoleChange(user, isChecked)
+                    }
                 }
             }
         }
@@ -52,13 +56,7 @@ class UsersAdapter(
         }
 
         override fun areContentsTheSame(oldItem: User, newItem: User): Boolean {
-            return oldItem.username == newItem.username &&
-                    oldItem.email == newItem.email &&
-                    oldItem.role == newItem.role
-        }
-
-        override fun getChangePayload(oldItem: User, newItem: User): Any? {
-            return if (oldItem != newItem) true else null
+            return oldItem == newItem
         }
     }
 }

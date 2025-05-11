@@ -17,6 +17,7 @@ import com.github.mikephil.charting.data.BarData
 import com.github.mikephil.charting.data.BarDataSet
 import com.github.mikephil.charting.data.BarEntry
 import com.github.mikephil.charting.formatter.IndexAxisValueFormatter
+import com.github.mikephil.charting.formatter.ValueFormatter
 import kotlinx.coroutines.flow.collect
 
 class AdminStatsFragment : Fragment() {
@@ -52,6 +53,7 @@ class AdminStatsFragment : Fragment() {
         lifecycleScope.launchWhenStarted {
             viewModel.loading.collect { isLoading ->
                 binding.progressBar.visibility = if (isLoading) View.VISIBLE else View.GONE
+                binding.swipeRefresh.isRefreshing = isLoading
             }
         }
 
@@ -79,17 +81,17 @@ class AdminStatsFragment : Fragment() {
             tvActiveUsers.text = stats.activeUsers.toString()
             tvTotalTransactions.text = stats.totalTransactions.toString()
             tvAvgTransactions.text = String.format("%.1f", stats.avgTransactionsPerUser)
-            tvIncomeAmount.text = String.format("₸%.2f", stats.totalIncome)
-            tvExpenseAmount.text = String.format("₸%.2f", stats.totalExpenses)
+            tvIncomeAmount.text = String.format("₸%,.2f", stats.totalIncome)
+            tvExpenseAmount.text = String.format("₸%,.2f", stats.totalExpenses)
         }
     }
 
     private fun setupCharts() {
-        setupChart(binding.chartTransactions, "Transactions")
-        setupChart(binding.chartFinancial, "Financial")
+        setupChart(binding.chartTransactions)
+        setupChart(binding.chartFinancial)
     }
 
-    private fun setupChart(chart: BarChart, label: String) {
+    private fun setupChart(chart: BarChart) {
         with(chart) {
             description.isEnabled = false
             setDrawGridBackground(false)
@@ -98,10 +100,12 @@ class AdminStatsFragment : Fragment() {
             setScaleEnabled(true)
             setPinchZoom(true)
 
-            xAxis.position = XAxis.XAxisPosition.BOTTOM
-            xAxis.setDrawGridLines(false)
-            xAxis.granularity = 1f
-            xAxis.labelRotationAngle = -45f
+            xAxis.apply {
+                position = XAxis.XAxisPosition.BOTTOM
+                setDrawGridLines(false)
+                granularity = 1f
+                labelRotationAngle = -45f
+            }
 
             axisLeft.setDrawGridLines(true)
             axisRight.isEnabled = false
@@ -112,7 +116,6 @@ class AdminStatsFragment : Fragment() {
     }
 
     private fun updateCharts(stats: AdminStatsViewModel.StatsData) {
-        // Transactions by type chart
         val transactionEntries = listOf(
             BarEntry(0f, stats.transactionsByType["expense"]?.toFloat() ?: 0f),
             BarEntry(1f, stats.transactionsByType["income"]?.toFloat() ?: 0f)
@@ -120,16 +123,20 @@ class AdminStatsFragment : Fragment() {
 
         val transactionDataSet = BarDataSet(transactionEntries, "Transactions by Type").apply {
             colors = listOf(
-                resources.getColor(android.R.color.holo_red_light),
-                resources.getColor(android.R.color.holo_green_light)
+                resources.getColor(com.fpis.money.R.color.red),
+                resources.getColor(com.fpis.money.R.color.green)
             )
             valueTextSize = 12f
         }
 
         binding.chartTransactions.data = BarData(transactionDataSet).apply {
             barWidth = 0.4f
+            setValueFormatter(object : ValueFormatter() {
+                override fun getFormattedValue(value: Float): String {
+                    return value.toInt().toString()
+                }
+            })
         }
-
         binding.chartTransactions.xAxis.valueFormatter = IndexAxisValueFormatter(listOf("Expenses", "Income"))
         binding.chartTransactions.invalidate()
 
@@ -137,15 +144,20 @@ class AdminStatsFragment : Fragment() {
         val days = stats.transactionsByDay.keys.sorted()
         val dayEntries = days.mapIndexed { index, day ->
             BarEntry(index.toFloat(), stats.transactionsByDay[day]?.toFloat() ?: 0f)
-
         }
 
         val dayDataSet = BarDataSet(dayEntries, "Transactions by Day").apply {
-            color = resources.getColor(android.R.color.holo_blue_light)
+            color = resources.getColor(com.fpis.money.R.color.green)
             valueTextSize = 10f
         }
 
-        binding.chartFinancial.data = BarData(dayDataSet)
+        binding.chartFinancial.data = BarData(dayDataSet).apply {
+            setValueFormatter(object : ValueFormatter() {
+                override fun getFormattedValue(value: Float): String {
+                    return value.toInt().toString()
+                }
+            })
+        }
         binding.chartFinancial.xAxis.valueFormatter = IndexAxisValueFormatter(days)
         binding.chartFinancial.invalidate()
     }

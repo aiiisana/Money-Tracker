@@ -22,16 +22,19 @@
 
                 <ProgressBar
                     android:id="@+id/progressBar"
+                    style="?android:attr/progressBarStyleLarge"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:visibility="gone" />
 
+                <!-- User Statistics Card -->
                 <com.google.android.material.card.MaterialCardView
-                    style="@style/Widget.MaterialComponents.CardView"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="16dp">
+                    android:layout_marginBottom="16dp"
+                    app:cardCornerRadius="8dp"
+                    app:cardElevation="4dp">
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -49,14 +52,15 @@
                         <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="8dp"
+                            android:layout_marginTop="16dp"
                             android:orientation="horizontal">
 
                             <LinearLayout
                                 android:layout_width="0dp"
                                 android:layout_height="wrap_content"
                                 android:layout_weight="1"
-                                android:orientation="vertical">
+                                android:orientation="vertical"
+                                android:padding="8dp">
 
                                 <TextView
                                     android:layout_width="match_parent"
@@ -69,6 +73,7 @@
                                     android:id="@+id/tvTotalUsers"
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
+                                    android:layout_marginTop="4dp"
                                     android:text="0"
                                     android:textSize="18sp"
                                     android:textStyle="bold" />
@@ -78,7 +83,8 @@
                                 android:layout_width="0dp"
                                 android:layout_height="wrap_content"
                                 android:layout_weight="1"
-                                android:orientation="vertical">
+                                android:orientation="vertical"
+                                android:padding="8dp">
 
                                 <TextView
                                     android:layout_width="match_parent"
@@ -91,6 +97,7 @@
                                     android:id="@+id/tvActiveUsers"
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
+                                    android:layout_marginTop="4dp"
                                     android:text="0"
                                     android:textSize="18sp"
                                     android:textStyle="bold" />
@@ -100,14 +107,15 @@
                         <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="16dp"
+                            android:layout_marginTop="8dp"
                             android:orientation="horizontal">
 
                             <LinearLayout
                                 android:layout_width="0dp"
                                 android:layout_height="wrap_content"
                                 android:layout_weight="1"
-                                android:orientation="vertical">
+                                android:orientation="vertical"
+                                android:padding="8dp">
 
                                 <TextView
                                     android:layout_width="match_parent"
@@ -120,6 +128,7 @@
                                     android:id="@+id/tvTotalTransactions"
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
+                                    android:layout_marginTop="4dp"
                                     android:text="0"
                                     android:textSize="18sp"
                                     android:textStyle="bold" />
@@ -129,7 +138,8 @@
                                 android:layout_width="0dp"
                                 android:layout_height="wrap_content"
                                 android:layout_weight="1"
-                                android:orientation="vertical">
+                                android:orientation="vertical"
+                                android:padding="8dp">
 
                                 <TextView
                                     android:layout_width="match_parent"
@@ -142,6 +152,7 @@
                                     android:id="@+id/tvAvgTransactions"
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
+                                    android:layout_marginTop="4dp"
                                     android:text="0.0"
                                     android:textSize="18sp"
                                     android:textStyle="bold" />
@@ -150,11 +161,13 @@
                     </LinearLayout>
                 </com.google.android.material.card.MaterialCardView>
 
+                <!-- Financial Statistics Card -->
                 <com.google.android.material.card.MaterialCardView
-                    style="@style/Widget.MaterialComponents.CardView"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="16dp">
+                    android:layout_marginBottom="16dp"
+                    app:cardCornerRadius="8dp"
+                    app:cardElevation="4dp">
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -172,14 +185,15 @@
                         <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="8dp"
+                            android:layout_marginTop="16dp"
                             android:orientation="horizontal">
 
                             <LinearLayout
                                 android:layout_width="0dp"
                                 android:layout_height="wrap_content"
                                 android:layout_weight="1"
-                                android:orientation="vertical">
+                                android:orientation="vertical"
+                                android:padding="8dp">
 
                                 <TextView
                                     android:layout_width="match_parent"
@@ -192,6 +206,7 @@
                                     android:id="@+id/tvIncomeAmount"
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
+                                    android:layout_marginTop="4dp"
                                     android:text="₸0.00"
                                     android:textColor="@color/green"
                                     android:textSize="18sp"
@@ -202,7 +217,8 @@
                                 android:layout_width="0dp"
                                 android:layout_height="wrap_content"
                                 android:layout_weight="1"
-                                android:orientation="vertical">
+                                android:orientation="vertical"
+                                android:padding="8dp">
 
                                 <TextView
                                     android:layout_width="match_parent"
@@ -215,6 +231,7 @@
                                     android:id="@+id/tvExpenseAmount"
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
+                                    android:layout_marginTop="4dp"
                                     android:text="₸0.00"
                                     android:textColor="@color/red"
                                     android:textSize="18sp"
@@ -224,11 +241,13 @@
                     </LinearLayout>
                 </com.google.android.material.card.MaterialCardView>
 
+                <!-- Transactions by Type Chart -->
                 <com.google.android.material.card.MaterialCardView
-                    style="@style/Widget.MaterialComponents.CardView"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="16dp">
+                    android:layout_marginBottom="16dp"
+                    app:cardCornerRadius="8dp"
+                    app:cardElevation="4dp">
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -251,10 +270,12 @@
                     </LinearLayout>
                 </com.google.android.material.card.MaterialCardView>
 
+                <!-- Transactions by Day Chart -->
                 <com.google.android.material.card.MaterialCardView
-                    style="@style/Widget.MaterialComponents.CardView"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
+                    android:layout_height="wrap_content"
+                    app:cardCornerRadius="8dp"
+                    app:cardElevation="4dp">
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -266,7 +287,7 @@
                             style="@style/TextAppearance.MaterialComponents.Headline6"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:text="Transactions by Day"
+                            android:text="Transactions by Day (Last 7 Days)"
                             android:textAlignment="center" />
 
                         <com.github.mikephil.charting.charts.BarChart

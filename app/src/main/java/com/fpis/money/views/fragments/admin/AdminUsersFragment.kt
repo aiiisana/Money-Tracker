@@ -82,12 +82,13 @@ class AdminUsersFragment : Fragment() {
     private fun observeViewModel() {
         lifecycleScope.launch {
             viewModel.users.collect { users ->
-                Log.d("AdminUsersFragment", "Received ${users.size} users")
-                users.forEach { user ->
-                    Log.d("AdminUsersFragment", "User: ${user.username}, ${user.email}")
+                adapter.submitList(users.toList()) {
+                    binding.usersRecycler.post {
+                        if (binding.usersRecycler.computeVerticalScrollOffset() == 0) {
+                            binding.usersRecycler.scrollToPosition(0)
+                        }
+                    }
                 }
-                adapter.submitList(users)
-                binding.emptyState.visibility = if (users.isEmpty()) View.VISIBLE else View.GONE
             }
         }
 
@@ -138,8 +139,8 @@ class AdminUsersFragment : Fragment() {
 
         dialogView.findViewById<EditText>(R.id.etUsername)?.setText(user.username)
         dialogView.findViewById<EditText>(R.id.etEmail)?.setText(user.email)
-        dialogView.findViewById<SwitchCompat>(R.id.switchAdmin)?.isChecked = user.role == "admin"
-
+        dialogView.findViewById<SwitchCompat>(R.id.switchAdmin)?.isChecked =
+            user.role.equals("admin", ignoreCase = true)
         dialog.show()
     }
 
