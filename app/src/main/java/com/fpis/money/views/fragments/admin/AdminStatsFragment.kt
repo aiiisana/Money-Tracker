@@ -37,7 +37,6 @@ class AdminStatsFragment : Fragment() {
     }
 
     private fun setupCharts() {
-        // Simple bar chart setup
         with(binding.dailyActiveChart) {
             description.isEnabled = false
             setDrawGridBackground(false)
@@ -73,7 +72,6 @@ class AdminStatsFragment : Fragment() {
                 binding.tvTotalUsers.text = totalUsers.toString()
                 binding.tvActiveUsers.text = activeUsers.toString()
 
-                // Update chart with sample data
                 updateDailyActiveChart(listOf(2f, 1f))
             }
             .addOnFailureListener {
