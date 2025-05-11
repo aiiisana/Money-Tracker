@@ -1,14 +1,19 @@
 package com.fpis.money.views.fragments.add
 
 import android.app.Application
+import android.app.NotificationChannel
+import android.app.NotificationManager
 import android.content.Context
+import android.os.Build
 import android.util.Log
+import androidx.core.app.NotificationCompat
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
+import com.fpis.money.models.Budget
 import com.fpis.money.models.Subcategory
 import com.fpis.money.models.Transaction
 import com.fpis.money.models.Transfer
@@ -45,6 +50,29 @@ class AddViewModel(application: Application) : AndroidViewModel(application as A
         }
 
         return result
+    }
+
+    private fun sendBudgetNotification(budget: Budget) {
+        val notificationManager = getApplication<Application>()
+            .getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            val channel = NotificationChannel(
+                "budget_alerts",
+                "Budget Alerts",
+                NotificationManager.IMPORTANCE_HIGH
+            ).apply { description = "Budget limit notifications" }
+            notificationManager.createNotificationChannel(channel)
+        }
+
+        val notification = NotificationCompat.Builder(getApplication(), "budget_alerts")
+            .setSmallIcon(budget.iconRes)
+            .setContentTitle("Budget Limit Approaching")
+            .setContentText("${budget.category} spending at ${budget.percentage}% (₸${budget.spent}/₸${budget.amount})")
+            .setPriority(NotificationCompat.PRIORITY_HIGH)
+            .build()
+
+        notificationManager.notify(budget.id.toInt(), notification)
     }
 
     fun saveTransfer(fromAccount: String, toAccount: String, amount: Float, date: Long, notes: String) {

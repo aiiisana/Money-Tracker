@@ -131,8 +131,8 @@
 
     <FrameLayout
         android:id="@+id/color_preview_container"
-        android:layout_width="56dp"
-        android:layout_height="56dp"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
         android:layout_marginEnd="16dp"
         android:layout_marginTop="16dp"
         app:layout_constraintEnd_toEndOf="parent"
@@ -151,7 +151,6 @@
             android:layout_width="32dp"
             android:layout_height="20dp"
             android:layout_gravity="center"
-            android:src="@drawable/ic_health"
             android:scaleType="centerInside"
             android:tint="@android:color/white"
             tools:ignore="UseAppTint" />
@@ -184,7 +183,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginEnd="16dp"
-        android:text="All Accounts"
+        android:text="Select an account"
         android:textColor="#FFFFFF"
         android:textSize="24sp"
         app:layout_constraintEnd_toStartOf="@id/btn_accounts"
@@ -198,7 +197,7 @@
         android:layout_marginEnd="16dp"
         android:background="@drawable/circle_button_background"
         android:padding="8dp"
-        android:src="@drawable/ic_home"
+        android:src="@drawable/ic_credit_card"
         app:layout_constraintBottom_toBottomOf="@id/tv_accounts"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@id/tv_accounts" />
@@ -230,7 +229,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginEnd="16dp"
-        android:text="19 Categories"
+        android:text="Categories"
         android:textColor="#FFFFFF"
         android:textSize="24sp"
         app:layout_constraintEnd_toStartOf="@id/btn_categories"

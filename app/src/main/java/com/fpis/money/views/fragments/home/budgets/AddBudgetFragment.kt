@@ -1,9 +1,15 @@
 package com.fpis.money.views.fragments.home.budgets
 
+import android.app.AlertDialog
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
+import android.widget.ImageView
+import android.widget.LinearLayout
+import android.widget.TextView
 import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
@@ -11,12 +17,15 @@ import androidx.lifecycle.ViewModelProvider
 import com.fpis.money.R
 import com.fpis.money.databinding.FragmentAddBudgetBinding
 import com.fpis.money.models.Budget
+import com.fpis.money.models.Card
 import com.fpis.money.models.Category
 import com.fpis.money.utils.showCustomToast
 import com.fpis.money.utils.ToastType
 import com.fpis.money.views.fragments.add.AmountInputBottomSheet
 import com.fpis.money.views.fragments.add.category.CategoryBottomSheet
 import com.fpis.money.views.fragments.add.category.icon.IconPickerBottomSheet
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
 
 class AddBudgetFragment : Fragment() {
     private var _binding: FragmentAddBudgetBinding? = null
@@ -30,6 +39,9 @@ class AddBudgetFragment : Fragment() {
     private var selectedColorRes     = R.color.teal_200
     private var selectedColorHex     = "#66FFA3"
     private var selectedAmount = 0.0
+    private lateinit var accountNameTextView: TextView
+    private lateinit var accountSelectionLayout: ImageView
+    private var selectedPaymentMethod: String = "Select account"
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
@@ -47,6 +59,12 @@ class AddBudgetFragment : Fragment() {
         binding.etBudgetAmount.setText("₸${String.format("%,.2f", 0.0)}")    // default zero
         binding.etBudgetAmount.setOnClickListener { showAmountInput() }
 
+        accountNameTextView = view.findViewById(R.id.tv_accounts)
+        accountSelectionLayout = view.findViewById(R.id.btn_accounts)
+
+        accountSelectionLayout.setOnClickListener {
+            showAccountSelectionDialog()
+        }
         // Close button
         binding.btnClose.setOnClickListener { requireActivity().onBackPressed() }
 
@@ -119,6 +137,46 @@ class AddBudgetFragment : Fragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+    }
+    private fun showAccountSelectionDialog() {
+        val userId = FirebaseAuth.getInstance().currentUser?.uid ?: return
+        val db = FirebaseFirestore.getInstance()
+        val cardsRef = db.collection("users").document(userId).collection("cards")
+
+        cardsRef.get()
+            .addOnSuccessListener { documents ->
+                val accounts = mutableListOf<String>()
+                val cardMap = mutableMapOf<String, Card>()
+
+                accounts.add("Cash")
+
+                for (document in documents) {
+                    val card = document.toObject(Card::class.java)
+                    val lastFourDigits = if (card.cardNumber.length >= 4)
+                        card.cardNumber.takeLast(4)
+                    else
+                        card.cardNumber
+                    val displayName = "${card.bankName} •••• $lastFourDigits"
+                    accounts.add(displayName)
+                    cardMap[displayName] = card
+                }
+
+                AlertDialog.Builder(requireContext())
+                    .setTitle("Select Account")
+                    .setItems(accounts.toTypedArray()) { _, which ->
+                        selectedPaymentMethod = accounts[which]
+                        accountNameTextView.text = selectedPaymentMethod
+
+                        val selectedCard = cardMap[selectedPaymentMethod]
+                    }
+                    .setNegativeButton("Cancel", null)
+                    .create()
+                    .show()
+            }
+            .addOnFailureListener { e ->
+                Log.e("Firebase", "Error fetching cards: ${e.message}")
+                showCustomToast(requireContext(), "Failed to load accounts", ToastType.ERROR)
+            }
     }
 
     companion object {

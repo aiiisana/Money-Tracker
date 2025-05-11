@@ -12,6 +12,7 @@ import com.fpis.money.models.Transaction
 import com.fpis.money.models.Transfer
 import com.fpis.money.models.Budget
 import com.fpis.money.models.BudgetCategory
+import com.fpis.money.models.Goal
 
 @Database(entities = [Transaction::class, Transfer::class, Category::class, Subcategory::class, Budget::class, BudgetCategory::class], version = 12)
 @TypeConverters(Converters::class)

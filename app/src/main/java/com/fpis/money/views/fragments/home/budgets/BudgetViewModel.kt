@@ -1,12 +1,16 @@
 package com.fpis.money.views.fragments.home.budgets
 
 import android.app.Application
+import android.util.Log
 import androidx.lifecycle.*
 import com.fpis.money.models.Budget
 import com.fpis.money.models.Category
+import com.fpis.money.models.SpendingLimit
 import com.fpis.money.utils.database.AppDatabase
 import com.fpis.money.utils.database.repo.BudgetRepository
 import com.fpis.money.utils.database.repo.CategoryRepository
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.launch
 
 class BudgetViewModel(application: Application) : AndroidViewModel(application) {
@@ -50,5 +54,20 @@ class BudgetViewModel(application: Application) : AndroidViewModel(application) 
             }
         }
         return out
+    }
+    fun addSpendingLimit(limit: SpendingLimit) {
+        val db = FirebaseFirestore.getInstance()
+        val userId = FirebaseAuth.getInstance().currentUser?.uid ?: return
+
+        db.collection("users")
+            .document(userId)
+            .collection("spending_limits")
+            .add(limit)
+            .addOnSuccessListener {
+                Log.d("Firestore", "Spending limit added")
+            }
+            .addOnFailureListener { e ->
+                Log.e("Firestore", "Error adding limit", e)
+            }
     }
 }

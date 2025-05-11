@@ -41,6 +41,13 @@ class BudgetAdapter(
                 maximumFractionDigits = 2
             }
 
+//            if (budget.shouldNotify()) {
+//                binding.notificationIndicator.visibility = View.VISIBLE
+//                binding.notificationIndicator.setBackgroundColor(Color.YELLOW)
+//            } else {
+//                binding.notificationIndicator.visibility = View.GONE
+//            }
+
             // Set category name and color
             binding.tvBudgetCategory.text = budget.category
             binding.tvBudgetCategory.setTextColor(Color.parseColor(budget.color))
@@ -76,6 +83,7 @@ class BudgetAdapter(
             binding.btnBudgetMenu.setOnClickListener {
                 onMenuClick(budget, it)
             }
+            binding.progressBar.secondaryProgress = budget.notificationThreshold
         }
     }
 

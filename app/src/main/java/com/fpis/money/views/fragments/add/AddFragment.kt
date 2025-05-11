@@ -17,17 +17,16 @@ import androidx.core.content.ContextCompat
 import androidx.core.widget.NestedScrollView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
-import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.fpis.money.R
 import com.fpis.money.models.Card
-import com.fpis.money.models.Category
 import com.fpis.money.models.Subcategory
 import com.fpis.money.models.Transaction
 import com.fpis.money.utils.ToastType
 import com.fpis.money.utils.showCustomToast
 import com.fpis.money.views.fragments.add.category.CategoryBottomSheet
 import com.fpis.money.views.fragments.add.category.CategoryViewModel
+import com.fpis.money.views.fragments.spendinglimitpackage.SpendingLimitsDialog
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import java.text.SimpleDateFormat
@@ -162,6 +161,7 @@ class AddFragment : Fragment() {
                 return@setOnClickListener
             }
 
+
             val transaction = Transaction(
                 type = currentType,
                 amount = amount.toFloat(),
@@ -178,7 +178,13 @@ class AddFragment : Fragment() {
 
             addViewModel.saveAsFavorite(transaction)
             showCustomToast(requireContext(), "Saved as favorite!", ToastType.SUCCESS)
+
         }
+
+        view.findViewById<LinearLayout>(R.id.btn_spending_limits_container)
+            .setOnClickListener {
+                SpendingLimitsDialog().show(parentFragmentManager, "SpendingLimits")
+            }
 
         val addButton = view.findViewById<LinearLayout>(R.id.add_subcategory_button)
         addButton.setOnClickListener {
