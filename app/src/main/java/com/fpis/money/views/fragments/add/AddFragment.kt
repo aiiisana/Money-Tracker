@@ -18,10 +18,12 @@ import androidx.core.widget.NestedScrollView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.RecyclerView
 import com.fpis.money.R
 import com.fpis.money.models.Card
 import com.fpis.money.models.Category
 import com.fpis.money.models.Subcategory
+import com.fpis.money.models.Transaction
 import com.fpis.money.utils.ToastType
 import com.fpis.money.utils.showCustomToast
 import com.fpis.money.views.fragments.add.category.CategoryBottomSheet
@@ -59,6 +61,8 @@ class AddFragment : Fragment() {
     private var selectedSubcategory: String? = null
     private lateinit var subcategoriesContainer: NestedScrollView
     private lateinit var subcategoriesScrollView: HorizontalScrollView
+    private lateinit var favoritesRecycler: RecyclerView
+    private lateinit var favoritesAdapter: FavoritesAdapter
 
     private var selectedIconRes: Int = R.drawable.ic_launcher_foreground
     private var selectedCategoryId: Int = -1
@@ -143,6 +147,39 @@ class AddFragment : Fragment() {
         subcategoriesContainer = view.findViewById(R.id.subcategories_container)
         subcategoriesScrollView = view.findViewById(R.id.subcategories_scroll_view)
 
+        favoritesRecycler = view.findViewById(R.id.favorites_recycler)
+        favoritesAdapter = FavoritesAdapter(
+            { favorite -> applyFavoriteTransaction(favorite) },
+            { favorite -> showDeleteFavoriteDialog(favorite) }
+        )
+        favoritesRecycler.adapter = favoritesAdapter
+
+        loadFavoriteTransactions()
+
+        view.findViewById<Button>(R.id.add_favorite_button).setOnClickListener {
+            if (selectedCategory.isEmpty()) {
+                showCustomToast(requireContext(), "Please select a category", ToastType.INFO)
+                return@setOnClickListener
+            }
+
+            val transaction = Transaction(
+                type = currentType,
+                amount = amount.toFloat(),
+                category = selectedCategory,
+                date = System.currentTimeMillis(),
+                notes = notes.text.toString(),
+                paymentMethod = selectedPaymentMethod,
+                subCategory = selectedSubcategory ?: "",
+                iconRes = selectedIconRes,
+                colorRes = selectedColorRes,
+                isFavorite = true,
+                isTemplate = true
+            )
+
+            addViewModel.saveAsFavorite(transaction)
+            showCustomToast(requireContext(), "Saved as favorite!", ToastType.SUCCESS)
+        }
+
         val addButton = view.findViewById<LinearLayout>(R.id.add_subcategory_button)
         addButton.setOnClickListener {
             if (selectedCategory.isEmpty()) {
@@ -151,6 +188,18 @@ class AddFragment : Fragment() {
                 showAddSubcategoryDialog()
             }
         }
+    }
+
+    private fun showDeleteFavoriteDialog(favorite: Transaction) {
+        AlertDialog.Builder(requireContext())
+            .setTitle("Delete Favorite")
+            .setMessage("Are you sure you want to delete this favorite transaction?")
+            .setPositiveButton("Delete") { _, _ ->
+                addViewModel.deleteFavorite(favorite)
+                showCustomToast(requireContext(), "Favorite deleted", ToastType.SUCCESS)
+            }
+            .setNegativeButton("Cancel", null)
+            .show()
     }
 
     private fun saveTransaction() {
@@ -483,5 +532,33 @@ class AddFragment : Fragment() {
             }
             .setNegativeButton("Cancel", null)
             .show()
+    }
+
+
+    private fun loadFavoriteTransactions() {
+        addViewModel.getFavoriteTransactions().observe(viewLifecycleOwner) { favorites ->
+            favoritesAdapter.submitList(favorites)
+        }
+    }
+
+    private fun applyFavoriteTransaction(favorite: Transaction) {
+        currentType = favorite.type
+        amount = favorite.amount.toString()
+        selectedCategory = favorite.category
+        notes.setText(favorite.notes)
+        selectedPaymentMethod = favorite.paymentMethod
+        selectedSubcategory = favorite.subCategory
+        selectedIconRes = favorite.iconRes ?: R.drawable.ic_launcher_foreground
+        selectedColorRes = favorite.colorRes ?: R.color.green
+
+        updateAmountValue()
+        updateTabSelection()
+        categoryText.text = favorite.category
+
+        val currentDateTime = SimpleDateFormat("dd MMM yyyy, hh:mm a", Locale.getDefault())
+            .format(Date())
+        dateTimeValue.text = currentDateTime
+
+        showCustomToast(requireContext(), "Favorite applied! Just set the amount and time", ToastType.INFO)
     }
 }

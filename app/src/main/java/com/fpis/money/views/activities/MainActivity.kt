@@ -3,19 +3,24 @@ package com.fpis.money.views.activities
 import CardFragment
 import com.fpis.money.databinding.ActivityMainBinding
 import android.annotation.SuppressLint
+import android.content.Intent
 import android.content.IntentFilter
 import android.net.wifi.WifiManager
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
+import androidx.lifecycle.lifecycleScope
 import com.fpis.money.R
+import com.fpis.money.utils.AuthHelper
 import com.fpis.money.utils.broadcast.WifiStateReceiver
 import com.fpis.money.utils.database.AppDatabase
+import com.fpis.money.views.activities.admin.AdminActivity
 import com.fpis.money.views.fragments.add.AddFragment
 import com.fpis.money.views.fragments.home.HomeFragment
 import com.fpis.money.views.fragments.menu.MenuFragment
 import com.fpis.money.views.fragments.records.RecordFragment
+import kotlinx.coroutines.launch
 import org.koin.android.ext.android.inject
 
 class MainActivity : AppCompatActivity() {
@@ -72,22 +77,33 @@ class MainActivity : AppCompatActivity() {
                     showFragment(fragmentFive)
                     true
                 }
+
                 R.id.nav_records -> {
                     showFragment(fragmentTwo)
                     true
                 }
+
                 R.id.nav_add -> {
                     showFragment(fragmentThree)
                     true
                 }
+
                 R.id.nav_cards -> {
                     showFragment(fragmentFour)
                     true
                 }
+
                 R.id.nav_menu -> {
-                    showFragment(fragmentOne)
+                    lifecycleScope.launch {
+                        if (AuthHelper.isAdmin()) {
+                            startActivity(Intent(this@MainActivity, AdminActivity::class.java))
+                        } else {
+                            showFragment(fragmentOne)
+                        }
+                    }
                     true
                 }
+
                 else -> false
             }
         }

@@ -1,5 +1,6 @@
 package com.fpis.money.views.fragments.records
 
+import android.content.res.Resources
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -47,12 +48,13 @@ class RecordRecyclerViewAdapter(
                 holder.cardHeader.text = record.subCategory
 
                 record.iconRes?.let {
-                    holder.categoryIcon.setImageResource(it)
-                } ?: run {
-                    iconMap[record.category]?.let {
+                    try {
                         holder.categoryIcon.setImageResource(it)
-                    } ?: holder.categoryIcon.setImageResource(R.drawable.shopping)
-                }
+                        holder.categoryIcon.visibility = View.VISIBLE
+                    } catch (e: Resources.NotFoundException) {
+                        loadFallbackIcon(holder, record.category)
+                    }
+                } ?: loadFallbackIcon(holder, record.category)
 
                 record.colorRes?.let {
                     holder.categoryIcon.setColorFilter(holder.itemView.context.getColor(it))
@@ -129,5 +131,25 @@ class RecordRecyclerViewAdapter(
         val amountValue: TextView = binding.amountValue
         val date: TextView = binding.date
         val categoryIcon: ImageView = binding.categoryIcon
+    }
+
+    private fun loadFallbackIcon(holder: ViewHolder, category: String) {
+        val iconRes = when (category) {
+            "Food & Drink" -> R.drawable.ic_food_drink
+            "Shopping" -> R.drawable.ic_shopping
+            "Health" -> R.drawable.ic_health
+            "Transport" -> R.drawable.ic_transport
+            "Interest" -> R.drawable.ic_interest
+            "Life & Event" -> R.drawable.ic_event
+            "Income" -> R.drawable.ic_interest
+            else -> R.drawable.ic_eye_off
+        }
+
+        try {
+            holder.categoryIcon.setImageResource(iconRes)
+            holder.categoryIcon.visibility = View.VISIBLE
+        } catch (e: Resources.NotFoundException) {
+            holder.categoryIcon.visibility = View.GONE
+        }
     }
 }

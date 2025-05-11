@@ -3,14 +3,18 @@ package com.fpis.money.views.fragments.add
 import android.app.AlertDialog
 import android.app.DatePickerDialog
 import android.app.TimePickerDialog
+import android.content.res.Resources
 import android.graphics.Color
 import android.os.Bundle
 import android.view.*
 import android.widget.*
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.recyclerview.widget.RecyclerView
 import com.fpis.money.R
 import com.fpis.money.models.Card
+import com.fpis.money.models.Transfer
 import com.fpis.money.utils.ToastType
 import com.fpis.money.utils.showCustomToast
 import com.google.firebase.auth.FirebaseAuth
@@ -32,6 +36,11 @@ class TransferFragment : Fragment() {
     private lateinit var saveTransferButton: Button
     private lateinit var dateTimeTextView: TextView
     private var selectedTimestamp: Long = System.currentTimeMillis()
+
+    private lateinit var favoritesRecycler: RecyclerView
+    private lateinit var favoritesAdapter: FavoriteTransfersAdapter
+    private lateinit var saveAsFavoriteButton: Button
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -120,6 +129,104 @@ class TransferFragment : Fragment() {
             resetAllFields()
             parentFragmentManager.popBackStack()
         }
+
+        favoritesRecycler = view.findViewById(R.id.favorites_recycler)
+        favoritesAdapter = FavoriteTransfersAdapter(
+            { favorite -> applyFavoriteTransfer(favorite) },
+            { favorite -> showDeleteFavoriteDialog(favorite) }
+        )
+        favoritesRecycler.adapter = favoritesAdapter
+
+        loadFavoriteTransfers()
+
+        val buttonLayout = view.findViewById<LinearLayout>(R.id.add_record_button_layout)
+        buttonLayout.orientation = LinearLayout.HORIZONTAL
+
+        saveAsFavoriteButton = Button(requireContext()).apply {
+            layoutParams = LinearLayout.LayoutParams(
+                0,
+                LinearLayout.LayoutParams.WRAP_CONTENT,
+                1f
+            ).apply {
+                marginEnd = 8.dpToPx()
+            }
+            text = "Save as Favorite"
+            setTextColor(ContextCompat.getColor(requireContext(), R.color.white))
+            background = ContextCompat.getDrawable(requireContext(), R.drawable.button_background_secondary)
+            setOnClickListener {
+                saveCurrentAsFavorite()
+            }
+        }
+
+        buttonLayout.addView(saveAsFavoriteButton, 0)
+    }
+
+    private fun showDeleteFavoriteDialog(favorite: Transfer) {
+            AlertDialog.Builder(requireContext())
+                .setTitle("Delete Favorite")
+                .setMessage("Are you sure you want to delete this favorite transaction?")
+                .setPositiveButton("Delete") { _, _ ->
+                    addViewModel.deleteFavoriteTransfer(favorite)
+                    showCustomToast(requireContext(), "Favorite deleted", ToastType.SUCCESS)
+                }
+                .setNegativeButton("Cancel", null)
+                .show()
+        }
+
+    private fun Int.dpToPx(): Int = (this * Resources.getSystem().displayMetrics.density).toInt()
+
+    private fun loadFavoriteTransfers() {
+        addViewModel.getFavoriteTransfers().observe(viewLifecycleOwner) { favorites ->
+            favoritesAdapter.submitList(favorites)
+        }
+    }
+
+    private fun applyFavoriteTransfer(favorite: Transfer) {
+        fromAccount = favorite.fromAccount
+        toAccount = favorite.toAccount
+        amount = favorite.amount.toString()
+        noteEditText.setText(favorite.notes)
+
+        fromAccountTextView.text = favorite.fromAccount
+        toAccountTextView.text = favorite.toAccount
+        amountTextView.text = "₸${favorite.amount}"
+
+        selectedTimestamp = System.currentTimeMillis()
+        updateDateTimeText(selectedTimestamp)
+
+        showCustomToast(requireContext(), "Favorite applied! Review and confirm", ToastType.INFO)
+    }
+
+    private fun saveCurrentAsFavorite() {
+        val parsedAmount = amount.toFloatOrNull()
+        val timestamp = selectedTimestamp
+
+        if (fromAccount.isNullOrBlank() || toAccount.isNullOrBlank()) {
+            showCustomToast(requireContext(), "Select both accounts", ToastType.INFO)
+            return
+        }
+
+        if (parsedAmount == null || parsedAmount <= 0) {
+            showCustomToast(requireContext(), "Enter a valid amount", ToastType.INFO)
+            return
+        }
+
+        if (fromAccount == toAccount) {
+            showCustomToast(requireContext(), "Cannot save transfer to the same account", ToastType.INFO)
+            return
+        }
+
+        val transfer = Transfer(
+            fromAccount = fromAccount!!,
+            toAccount = toAccount!!,
+            amount = parsedAmount,
+            date = timestamp,
+            notes = noteEditText.text.toString(),
+            isFavorite = true
+        )
+
+        addViewModel.saveAsFavoriteTransfer(transfer)
+        showCustomToast(requireContext(), "Transfer saved as favorite!", ToastType.SUCCESS)
     }
 
     private fun navigateToAddFragment(type: String) {

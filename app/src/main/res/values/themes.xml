@@ -5,4 +5,10 @@
         <item name="android:windowBackground">@drawable/color_almos_black</item>
         <item name="android:windowSplashScreenAnimatedIcon">@drawable/logo</item>
     </style>
+
+    <style name="Theme.Money.Admin" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <item name="android:windowBackground">@color/white</item>
+        <item name="android:windowSplashScreenAnimatedIcon">@drawable/logo</item>
+    </style>
+
 </resources>

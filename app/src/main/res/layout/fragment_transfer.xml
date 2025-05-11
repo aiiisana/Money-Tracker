@@ -409,6 +409,48 @@
                     </LinearLayout>
                 </LinearLayout>
 
+                <!-- После notes_input -->
+                <LinearLayout
+                    android:id="@+id/separator_6"
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="#0DFFFFFF"
+                    android:orientation="vertical"/>
+
+                <LinearLayout
+                    android:id="@+id/favorites_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="15dp">
+
+                    <TextView
+                        android:id="@+id/favorites_label"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Favorite Transfers"
+                        android:textColor="#FFFFFF"
+                        android:textSize="12sp"
+                        android:textStyle="bold"
+                        android:layout_marginBottom="5dp"/>
+
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/favorites_recycler"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:orientation="horizontal"
+                        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                        tools:listitem="@layout/item_favorite_transfer"/>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/separator_7"
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="#0DFFFFFF"
+                    android:orientation="vertical"/>
+
             </LinearLayout>
 
             <LinearLayout
@@ -417,12 +459,14 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentBottom="true"
                 android:background="#121418"
+                android:orientation="horizontal"
                 android:padding="10dp">
 
                 <Button
                     android:id="@+id/add_record_button"
-                    android:layout_width="match_parent"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
+                    android:layout_weight="1"
                     android:text="Add Record"
                     android:textColor="#FFFFFF"
                     android:textStyle="bold"

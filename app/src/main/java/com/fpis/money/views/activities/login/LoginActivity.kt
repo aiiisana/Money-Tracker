@@ -8,11 +8,14 @@ import android.widget.TextView
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
+import androidx.lifecycle.lifecycleScope
 import com.fpis.money.R
+import com.fpis.money.utils.AuthHelper
 import com.fpis.money.utils.ToastType
 import com.fpis.money.utils.preferences.SharedPreferencesManager
 import com.fpis.money.utils.showCustomToast
 import com.fpis.money.views.activities.MainActivity
+import kotlinx.coroutines.launch
 
 class LoginActivity : AppCompatActivity() {
 
@@ -58,10 +61,13 @@ class LoginActivity : AppCompatActivity() {
         loginViewModel.loginResult.observe(this, Observer { result ->
             when (result) {
                 is LoginResult.Success -> {
-                    val user = result.user
-                    println("User logged in: Username: ${user.username}, Email: ${user.email}")
-
                     sharedPrefs.setUserLoggedIn(true)
+
+                    lifecycleScope.launch {
+                        if (AuthHelper.isAdmin()) {
+                            sharedPrefs.setUserAdmin(true)
+                        }
+                    }
 
                     val intent = Intent(this@LoginActivity, MainActivity::class.java)
                     startActivity(intent)

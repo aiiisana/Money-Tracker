@@ -3,7 +3,7 @@ plugins {
     alias(libs.plugins.jetbrains.kotlin.android)
     id("com.google.gms.google-services")
     id("com.google.devtools.ksp")
-    id("org.jetbrains.kotlin.plugin.compose") version "2.0.0"
+//    id("org.jetbrains.kotlin.plugin.compose") version "2.0.0"
 }
 
 android {
@@ -45,12 +45,12 @@ android {
     buildFeatures {
         viewBinding = true
         dataBinding = true
-        compose = true
+//        compose = true
     }
 
-    composeOptions {
-        kotlinCompilerExtensionVersion = "1.5.5" // ✅ для Kotlin 2.0
-    }
+//    composeOptions {
+//        kotlinCompilerExtensionVersion = "1.5.5" // ✅ для Kotlin 2.0
+//    }
 
     packaging {
         resources {
@@ -60,7 +60,8 @@ android {
 }
 
 dependencies {
-    implementation ("io.insert-koin:koin-android:3.5.0")//koin
+    implementation ("io.insert-koin:koin-android:3.5.0")
+    implementation(libs.androidx.activity)//koin
 
     testImplementation ("junit:junit:4.13.2")
     testImplementation ("org.mockito:mockito-core:3.11.2")
@@ -85,12 +86,12 @@ dependencies {
     implementation("com.google.firebase:firebase-database-ktx")
     implementation("com.google.firebase:firebase-analytics-ktx")
 
-    // Compose
-    implementation("androidx.compose.ui:ui:1.6.1")
-    implementation("androidx.compose.material3:material3:1.2.1")
-    implementation("androidx.compose.ui:ui-tooling-preview:1.6.1")
-    implementation("androidx.activity:activity-compose:1.9.0")
-    implementation("androidx.navigation:navigation-compose:2.7.7")
+//    // Compose
+//    implementation("androidx.compose.ui:ui:1.6.1")
+//    implementation("androidx.compose.material3:material3:1.2.1")
+//    implementation("androidx.compose.ui:ui-tooling-preview:1.6.1")
+//    implementation("androidx.activity:activity-compose:1.9.0")
+//    implementation("androidx.navigation:navigation-compose:2.7.7")
 
     // Navigation
     implementation(libs.androidx.navigation.fragment.ktx)

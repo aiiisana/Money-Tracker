@@ -505,6 +505,47 @@
                 </LinearLayout>
 
                 <LinearLayout
+                    android:id="@+id/separator_8"
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="#0DFFFFFF"
+                    android:orientation="vertical"/>
+
+                <LinearLayout
+                    android:id="@+id/favorites_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="15dp">
+
+                    <TextView
+                        android:id="@+id/favorites_label"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Favorite Transactions"
+                        android:textColor="#FFFFFF"
+                        android:textSize="12sp"
+                        android:textStyle="bold"
+                        android:layout_marginBottom="5dp"/>
+
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/favorites_recycler"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:orientation="horizontal"
+                        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                        tools:listitem="@layout/item_favorite_transaction"/>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/separator_7"
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="#0DFFFFFF"
+                    android:orientation="vertical"/>
+
+                <LinearLayout
                     android:id="@+id/separator_6"
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
@@ -521,13 +562,25 @@
                     android:padding="10dp">
 
                     <Button
-                        android:id="@+id/add_record_button"
-                        android:layout_width="match_parent"
+                        android:id="@+id/add_favorite_button"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:layout_marginEnd="8dp"
+                        android:text="Save as Favorite"
+                        android:textColor="#FFFFFF"
+                        android:background="@drawable/button_background_secondary"/>
+
+                    <Button
+                        android:id="@+id/add_record_button"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
                         android:text="Add Record"
                         android:textColor="#FFFFFF"
                         android:textStyle="bold"
-                        android:background="@drawable/button_background" />
+                        android:background="@drawable/button_background"/>
+
                 </LinearLayout>
 
             </LinearLayout>

@@ -10,5 +10,6 @@ data class Transfer(
     val toAccount: String,
     val amount: Float,
     val date: Long,
-    val notes: String? = null
+    val notes: String? = null,
+    val isFavorite: Boolean = false
 )

@@ -18,7 +18,6 @@ import com.fpis.money.models.Category
 import com.fpis.money.views.fragments.add.category.icon.IconPickerBottomSheet
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 
-// CategoryBottomSheet.kt
 class CategoryBottomSheet(
     private val isIncome: Boolean,
     private val onCategorySelected: (Category) -> Unit

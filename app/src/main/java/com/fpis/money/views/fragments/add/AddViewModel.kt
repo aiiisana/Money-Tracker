@@ -19,6 +19,7 @@ import kotlinx.coroutines.launch
 class AddViewModel(application: Application) : AndroidViewModel(application as Application) {
 
     private val transactionDao = AppDatabase.getDatabase(application).transactionDao()
+    private val transferDao = AppDatabase.getDatabase(application).transferDao()
 
     fun saveTransaction(type: String, amount: String, category: String, date: Long, notes: String, paymentMethod: String, subcategory: String, iconRes: Int?, colorRes: Int): LiveData<Boolean> {
         val result = MutableLiveData<Boolean>()
@@ -32,7 +33,9 @@ class AddViewModel(application: Application) : AndroidViewModel(application as A
             subCategory = subcategory,
             notes = notes,
             iconRes = iconRes,
-            colorRes = colorRes
+            colorRes = colorRes,
+            isFavorite = false,
+            isTemplate = false
         )
 
         viewModelScope.launch {
@@ -52,7 +55,9 @@ class AddViewModel(application: Application) : AndroidViewModel(application as A
             amount = -amount,
             category = "Transfer",
             subCategory = toAccount,
-            notes = notes
+            notes = notes,
+            isFavorite = false,
+            isTemplate = false
         )
 
         val inTransaction = Transaction(
@@ -62,7 +67,9 @@ class AddViewModel(application: Application) : AndroidViewModel(application as A
             amount = amount,
             category = "Transfer",
             subCategory = fromAccount,
-            notes = notes
+            notes = notes,
+            isFavorite = false,
+            isTemplate = false
         )
 
         val transfer = Transfer(
@@ -70,7 +77,8 @@ class AddViewModel(application: Application) : AndroidViewModel(application as A
             toAccount = toAccount,
             amount = amount,
             date = date,
-            notes = notes
+            notes = notes,
+            isFavorite = false
         )
 
         viewModelScope.launch {
@@ -78,6 +86,40 @@ class AddViewModel(application: Application) : AndroidViewModel(application as A
             db.transactionDao().insert(outTransaction)
             db.transactionDao().insert(inTransaction)
             db.transferDao().insertTransfer(transfer)
+        }
+    }
+
+    fun getFavoriteTransactions(): LiveData<List<Transaction>> {
+        return transactionDao.getFavoriteTransactions()
+    }
+
+    fun saveAsFavorite(transaction: Transaction) {
+        viewModelScope.launch {
+            val favorite = transaction.copy(isFavorite = true, isTemplate = true)
+            transactionDao.insert(favorite)
+        }
+    }
+
+    fun getFavoriteTransfers(): LiveData<List<Transfer>> {
+        return transferDao.getFavoriteTransfers()
+    }
+
+    fun saveAsFavoriteTransfer(transfer: Transfer) {
+        viewModelScope.launch {
+            val favorite = transfer.copy(isFavorite = true)
+            transferDao.insertTransfer(favorite)
+        }
+    }
+
+    fun deleteFavorite(favorite: Transaction) {
+        viewModelScope.launch {
+            transactionDao.delete(favorite)
+        }
+    }
+
+    fun deleteFavoriteTransfer(favorite: Transfer) {
+        viewModelScope.launch {
+            transferDao.delete(favorite)
         }
     }
 }

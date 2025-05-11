@@ -2,6 +2,7 @@ package com.fpis.money.utils.preferences
 
 import android.content.Context
 import android.content.SharedPreferences
+import com.fpis.money.utils.AuthHelper
 
 class SharedPreferencesManager(context: Context) {
 
@@ -41,10 +42,20 @@ class SharedPreferencesManager(context: Context) {
         editor.apply()
     }
 
+    fun isUserAdmin(): Boolean {
+        return sharedPreferences.getBoolean(KEY_IS_ADMIN, false)
+    }
+
+    fun setUserAdmin(isAdmin: Boolean) {
+        editor.putBoolean(KEY_IS_ADMIN, isAdmin)
+        editor.apply()
+    }
+
     companion object {
         private const val PREF_NAME = "loginPrefs"
         private const val KEY_LOGIN = "login"
         private const val KEY_PASSWORD = "password"
         private const val KEY_IS_LOGGED_IN = "is_logged_in"
+        private const val KEY_IS_ADMIN = "is_admin"
     }
 }

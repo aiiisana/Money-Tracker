@@ -14,4 +14,5 @@
     <string name="share_statistics">Share statistics</string>
     <string name="hint_budget_name">Enter budget name</string>
     <string name="title_activity_chat_wrapper">ChatWrapperActivity</string>
+    <string name="title_activity_admin">AdminActivity</string>
 </resources>
