@@ -4,7 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
-import com.google.firebase.firestore.ktx.toObject
+import com.google.firebase.firestore.toObject
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -46,41 +46,40 @@ class AdminStatsViewModel : ViewModel() {
                 _loading.value = true
                 _error.value = null
 
-                // Load all data in parallel
-                val usersDeferred = firestore.collection("users").get().await()
-                val transactionsDeferred = firestore.collection("transactions")
-                    .orderBy("date", Query.Direction.DESCENDING)
-                    .limit(1000)
+                val usersSnapshot = firestore.collection("users").get().await()
+                val totalUsers = usersSnapshot.size()
+                val activeUsers = usersSnapshot.count { it.getBoolean("isActive") ?: false }
+
+                val calendar = Calendar.getInstance().apply {
+                    add(Calendar.DAY_OF_YEAR, -30)
+                }
+                val transactionsSnapshot = firestore.collection("transactions")
+                    .whereGreaterThanOrEqualTo("date", calendar.timeInMillis)
                     .get()
                     .await()
 
-                // Process users
-                val totalUsers = usersDeferred.size()
-                val activeUsers = usersDeferred.count { it.getBoolean("isActive") ?: false }
+                val transactions = transactionsSnapshot.documents.mapNotNull { doc ->
+                    doc.toObject<Transaction>()?.copy(id = doc.id)
+                }
 
-                // Process transactions
-                val transactions = transactionsDeferred.documents.mapNotNull { it.toObject<Transaction>() }
                 val totalTransactions = transactions.size
                 val avgTransactions = if (totalUsers > 0) totalTransactions.toDouble() / totalUsers else 0.0
 
-                // Financial stats
                 val totalIncome = transactions.filter { it.type == "income" }.sumOf { it.amount }
                 val totalExpenses = transactions.filter { it.type == "expense" }.sumOf { it.amount }
 
-                // Transactions by type
                 val transactionsByType = mapOf(
                     "expense" to transactions.count { it.type == "expense" },
                     "income" to transactions.count { it.type == "income" }
                 )
 
-                // Transactions by day (last 7 days)
-                val calendar = Calendar.getInstance()
                 val dayFormat = java.text.SimpleDateFormat("EEE", Locale.getDefault())
                 val transactionsByDay = HashMap<String, Int>().apply {
                     for (i in 6 downTo 0) {
-                        calendar.add(Calendar.DAY_OF_YEAR, -1)
+                        calendar.time = Date() // Reset to today
+                        calendar.add(Calendar.DAY_OF_YEAR, -i)
                         val day = dayFormat.format(calendar.time)
-                        put(day, 0) // Initialize all days
+                        put(day, 0)
                     }
 
                     transactions.groupBy { transaction ->
@@ -108,10 +107,11 @@ class AdminStatsViewModel : ViewModel() {
             }
         }
     }
-}
 
-data class Transaction(
-    val type: String = "",
-    val amount: Double = 0.0,
-    val date: Long = 0L
-)
+    data class Transaction(
+        val id: String = "",
+        val type: String = "",
+        val amount: Double = 0.0,
+        val date: Long = 0L
+    )
+}

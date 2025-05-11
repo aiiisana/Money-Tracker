@@ -19,25 +19,23 @@
             android:layout_height="wrap_content"
             android:padding="16dp">
 
-        <TextView
-            android:id="@+id/userName"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:text="@{user.username}"
-            android:textColor="@color/black"
-            android:textSize="18sp"
-            android:textStyle="bold"
-            app:layout_constraintEnd_toStartOf="@+id/editButton"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            tools:text="John Doe" />
+            <TextView
+                android:id="@+id/userName"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:textColor="@color/black"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                app:layout_constraintEnd_toStartOf="@+id/editButton"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:text="John Doe" />
 
         <TextView
             android:id="@+id/userEmail"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
-            android:text="@{user.email}"
             android:textColor="@color/black"
             android:textSize="14sp"
             app:layout_constraintEnd_toStartOf="@+id/editButton"
@@ -67,7 +65,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
-                android:checked="@{user.admin}"
                 tools:checked="true"
                 tools:ignore="TouchTargetSizeCheck" />
         </LinearLayout>

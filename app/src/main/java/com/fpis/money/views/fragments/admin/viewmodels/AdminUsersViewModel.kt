@@ -82,10 +82,16 @@ class AdminUsersViewModel : ViewModel() {
     fun updateUserRole(userId: String, isAdmin: Boolean) {
         viewModelScope.launch {
             try {
+                val newRole = if (isAdmin) "admin" else "user"
                 firestore.collection("users").document(userId)
-                    .update("role", if (isAdmin) "admin" else "user")
+                    .update("role", newRole)
                     .await()
-            } catch (_: Exception) {
+
+                _users.value = _users.value.map { user ->
+                    if (user.id == userId) user.copy(role = newRole) else user
+                }
+            } catch (e: Exception) {
+                Log.e("AdminUsersVM", "Error updating role", e)
             }
         }
     }

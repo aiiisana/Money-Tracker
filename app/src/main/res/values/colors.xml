@@ -57,4 +57,5 @@
     <color name="circle_color_22">#39525A</color>
     <color name="circle_color_23">#6C89F8</color>
     <color name="circle_color_24">#94D7F8</color>
+    <color name="colorPrimary">#6200EE</color>
 </resources>

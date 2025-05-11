@@ -4,25 +4,22 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
-import androidx.lifecycle.lifecycleScope
+import com.fpis.money.R
 import com.fpis.money.databinding.FragmentAdminStatsBinding
-import com.fpis.money.utils.showCustomToast
-import com.fpis.money.utils.ToastType
-import com.fpis.money.viewmodels.admin.AdminStatsViewModel
-import com.github.mikephil.charting.charts.BarChart
 import com.github.mikephil.charting.components.XAxis
 import com.github.mikephil.charting.data.BarData
 import com.github.mikephil.charting.data.BarDataSet
 import com.github.mikephil.charting.data.BarEntry
 import com.github.mikephil.charting.formatter.IndexAxisValueFormatter
-import kotlinx.coroutines.flow.collect
+import com.github.mikephil.charting.formatter.ValueFormatter
+import com.google.firebase.firestore.FirebaseFirestore
 
 class AdminStatsFragment : Fragment() {
     private var _binding: FragmentAdminStatsBinding? = null
     private val binding get() = _binding!!
-    private val viewModel: AdminStatsViewModel by viewModels()
+    private val db = FirebaseFirestore.getInstance()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -35,119 +32,74 @@ class AdminStatsFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
         setupCharts()
-        observeViewModel()
-        setupRefreshListener()
-    }
-
-    private fun setupRefreshListener() {
-        binding.swipeRefresh.setOnRefreshListener {
-            viewModel.loadStats()
-            binding.swipeRefresh.isRefreshing = false
-        }
-    }
-
-    private fun observeViewModel() {
-        lifecycleScope.launchWhenStarted {
-            viewModel.loading.collect { isLoading ->
-                binding.progressBar.visibility = if (isLoading) View.VISIBLE else View.GONE
-            }
-        }
-
-        lifecycleScope.launchWhenStarted {
-            viewModel.stats.collect { stats ->
-                stats?.let {
-                    updateStatsUI(it)
-                    updateCharts(it)
-                }
-            }
-        }
-
-        lifecycleScope.launchWhenStarted {
-            viewModel.error.collect { error ->
-                error?.let {
-                    showCustomToast(requireContext(), it, ToastType.ERROR)
-                }
-            }
-        }
-    }
-
-    private fun updateStatsUI(stats: AdminStatsViewModel.StatsData) {
-        with(binding) {
-            tvTotalUsers.text = stats.totalUsers.toString()
-            tvActiveUsers.text = stats.activeUsers.toString()
-            tvTotalTransactions.text = stats.totalTransactions.toString()
-            tvAvgTransactions.text = String.format("%.1f", stats.avgTransactionsPerUser)
-            tvIncomeAmount.text = String.format("₸%.2f", stats.totalIncome)
-            tvExpenseAmount.text = String.format("₸%.2f", stats.totalExpenses)
-        }
+        loadUserStats()
     }
 
     private fun setupCharts() {
-        setupChart(binding.chartTransactions, "Transactions")
-        setupChart(binding.chartFinancial, "Financial")
-    }
-
-    private fun setupChart(chart: BarChart, label: String) {
-        with(chart) {
+        // Simple bar chart setup
+        with(binding.dailyActiveChart) {
             description.isEnabled = false
             setDrawGridBackground(false)
             setDrawBarShadow(false)
-            isDragEnabled = true
-            setScaleEnabled(true)
-            setPinchZoom(true)
+            isDragEnabled = false
+            setScaleEnabled(false)
+            setPinchZoom(false)
 
-            xAxis.position = XAxis.XAxisPosition.BOTTOM
-            xAxis.setDrawGridLines(false)
-            xAxis.granularity = 1f
-            xAxis.labelRotationAngle = -45f
+            xAxis.apply {
+                position = XAxis.XAxisPosition.BOTTOM
+                setDrawGridLines(false)
+                granularity = 1f
+                valueFormatter = IndexAxisValueFormatter(listOf("May 3", "May 9"))
+            }
 
-            axisLeft.setDrawGridLines(true)
+            axisLeft.apply {
+                axisMinimum = 0f
+                granularity = 1f
+                setDrawGridLines(true)
+            }
             axisRight.isEnabled = false
 
-            legend.isEnabled = true
-            animateY(1000)
+            legend.isEnabled = false
         }
     }
 
-    private fun updateCharts(stats: AdminStatsViewModel.StatsData) {
-        // Transactions by type chart
-        val transactionEntries = listOf(
-            BarEntry(0f, stats.transactionsByType["expense"]?.toFloat() ?: 0f),
-            BarEntry(1f, stats.transactionsByType["income"]?.toFloat() ?: 0f)
-        )
+    private fun loadUserStats() {
+        db.collection("users").get()
+            .addOnSuccessListener { snapshot ->
+                val totalUsers = snapshot.size()
+                val activeUsers = snapshot.count { it.getBoolean("isActive") ?: false }
 
-        val transactionDataSet = BarDataSet(transactionEntries, "Transactions by Type").apply {
-            colors = listOf(
-                resources.getColor(android.R.color.holo_red_light),
-                resources.getColor(android.R.color.holo_green_light)
-            )
-            valueTextSize = 12f
+                binding.tvTotalUsers.text = totalUsers.toString()
+                binding.tvActiveUsers.text = activeUsers.toString()
+
+                // Update chart with sample data
+                updateDailyActiveChart(listOf(2f, 1f))
+            }
+            .addOnFailureListener {
+                // Handle error
+            }
+    }
+
+    private fun updateDailyActiveChart(values: List<Float>) {
+        val entries = values.mapIndexed { index, value ->
+            BarEntry(index.toFloat(), value)
         }
 
-        binding.chartTransactions.data = BarData(transactionDataSet).apply {
+        val dataSet = BarDataSet(entries, "Daily Active Users").apply {
+            color = ContextCompat.getColor(requireContext(), R.color.colorPrimary)
+            valueTextSize = 12f
+            valueFormatter = object : ValueFormatter() {
+                override fun getFormattedValue(value: Float): String {
+                    return value.toInt().toString()
+                }
+            }
+        }
+
+        binding.dailyActiveChart.data = BarData(dataSet).apply {
             barWidth = 0.4f
         }
-
-        binding.chartTransactions.xAxis.valueFormatter = IndexAxisValueFormatter(listOf("Expenses", "Income"))
-        binding.chartTransactions.invalidate()
-
-        // Transactions by day chart
-        val days = stats.transactionsByDay.keys.sorted()
-        val dayEntries = days.mapIndexed { index, day ->
-            BarEntry(index.toFloat(), stats.transactionsByDay[day]?.toFloat() ?: 0f)
-
-        }
-
-        val dayDataSet = BarDataSet(dayEntries, "Transactions by Day").apply {
-            color = resources.getColor(android.R.color.holo_blue_light)
-            valueTextSize = 10f
-        }
-
-        binding.chartFinancial.data = BarData(dayDataSet)
-        binding.chartFinancial.xAxis.valueFormatter = IndexAxisValueFormatter(days)
-        binding.chartFinancial.invalidate()
+        binding.dailyActiveChart.invalidate()
     }
 
     override fun onDestroyView() {

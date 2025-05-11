@@ -13,9 +13,13 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.lifecycleScope
 import com.fpis.money.R
+import com.fpis.money.utils.AuthHelper
 import com.fpis.money.utils.ToastType
 import com.fpis.money.utils.showCustomToast
+import com.fpis.money.views.activities.admin.AdminActivity
+import kotlinx.coroutines.launch
 
 class MenuFragment : Fragment() {
 
@@ -25,6 +29,7 @@ class MenuFragment : Fragment() {
     private lateinit var supportLayout: LinearLayout
     private lateinit var restorePurchasesLayout: LinearLayout
     private lateinit var profileLayout: LinearLayout
+    private lateinit var adminLayout: LinearLayout
 
     private var selectedMenuItem: LinearLayout? = null
 
@@ -38,6 +43,10 @@ class MenuFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        viewLifecycleOwner.lifecycleScope.launch {
+            val isAdmin = AuthHelper.isAdmin()
+            adminLayout.visibility = if (isAdmin) View.VISIBLE else View.GONE
+        }
         val getPremiumLayout = view.findViewById<LinearLayout>(R.id.get_premium_layout)
         getPremiumLayout.setOnClickListener {
             openPremiumFragment()
@@ -54,6 +63,7 @@ class MenuFragment : Fragment() {
         supportLayout = view.findViewById(R.id.support_layout)
         restorePurchasesLayout = view.findViewById(R.id.restore_purchases_layout)
         profileLayout = view.findViewById(R.id.profile_layout)
+        adminLayout = view.findViewById(R.id.admin_layout)
 
         setupMenuItemClickListeners()
 
@@ -67,7 +77,8 @@ class MenuFragment : Fragment() {
             rateUsLayout,
             supportLayout,
             restorePurchasesLayout,
-            profileLayout
+            profileLayout,
+            adminLayout
         )
 
         menuItems.forEach { menuItem ->
@@ -133,6 +144,7 @@ class MenuFragment : Fragment() {
             R.id.support_layout -> R.id.support_icon_container
             R.id.restore_purchases_layout -> R.id.restore_purchases_icon_container
             R.id.profile_layout -> R.id.profile_icon_container
+            R.id.admin_layout -> R.id.admin_icon_container
             else -> 0
         }
     }
@@ -145,6 +157,7 @@ class MenuFragment : Fragment() {
             R.id.support_layout -> R.id.support_icon
             R.id.restore_purchases_layout -> R.id.restore_purchases_icon
             R.id.profile_layout -> R.id.log_out_icon
+            R.id.admin_layout -> R.id.admin_icon
             else -> 0
         }
     }
@@ -157,6 +170,7 @@ class MenuFragment : Fragment() {
             R.id.support_layout -> R.id.support_text
             R.id.restore_purchases_layout -> R.id.restore_purchases_text
             R.id.profile_layout -> R.id.profile_text
+            R.id.admin_layout -> R.id.admin_text
             else -> 0
         }
     }
@@ -169,6 +183,7 @@ class MenuFragment : Fragment() {
             R.id.support_layout -> R.id.support_arrow
             R.id.restore_purchases_layout -> R.id.restore_purchases_arrow
             R.id.profile_layout -> R.id.profile_arrow
+            R.id.admin_layout -> R.id.admin_arrow
             else -> 0
         }
     }
@@ -198,6 +213,9 @@ class MenuFragment : Fragment() {
             }
             R.id.profile_layout -> {
                 seeProfile()
+            }
+            R.id.admin_layout -> {
+                startActivity(Intent(requireContext(), AdminActivity::class.java))
             }
         }
     }

@@ -30,7 +30,7 @@ interface TransactionDao {
     @Query("SELECT * FROM transactions WHERE type = :transactionType")
     suspend fun getTransactionsByType(transactionType: String): List<Transaction>
 
-    @Query("SELECT * FROM transactions WHERE date BETWEEN :startDate AND :endDate")
+    @Query("SELECT * FROM transactions WHERE date BETWEEN :startDate AND :endDate AND isFavorite = 0")
     fun getTransactionsByDateRange(startDate: Long, endDate: Long): Flow<List<Transaction>>
 
     @Query("SELECT SUM(amount) FROM transactions WHERE type = 'expense' AND category = :category")

@@ -56,7 +56,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun setupFragments() {
         fragmentManager.beginTransaction().apply {
-            add(R.id.fragment_container, fragmentFive, "5")
+            add(R.id.fragment_container, fragmentFive, "5").
             add(R.id.fragment_container, fragmentFour, "4").hide(fragmentFour)
             add(R.id.fragment_container, fragmentThree, "3").hide(fragmentThree)
             add(R.id.fragment_container, fragmentTwo, "2").hide(fragmentTwo)
@@ -94,13 +94,7 @@ class MainActivity : AppCompatActivity() {
                 }
 
                 R.id.nav_menu -> {
-                    lifecycleScope.launch {
-                        if (AuthHelper.isAdmin()) {
-                            startActivity(Intent(this@MainActivity, AdminActivity::class.java))
-                        } else {
-                            showFragment(fragmentOne)
-                        }
-                    }
+                    showFragment(fragmentOne)
                     true
                 }
 
